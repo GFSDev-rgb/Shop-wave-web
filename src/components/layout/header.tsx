@@ -11,6 +11,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
+
 import { useCart } from "@/hooks/use-cart";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { useAuth } from "@/hooks/use-auth";
@@ -33,18 +41,12 @@ export function Header() {
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlist();
   const { user, signOut, loading } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-
-  const toggleMenu = () => {
-    setIsMenuOpen(prev => !prev);
-  }
 
   const renderUserAuth = () => {
     if (loading) {
@@ -92,123 +94,154 @@ export function Header() {
   };
 
   return (
-    <>
-      <header className="sticky top-0 z-50 w-full border-b bg-background/10 backdrop-blur supports-[backdrop-filter]:bg-background/10">
-        <div className="container mx-auto flex h-20 items-center justify-between px-4">
-          <Logo />
-          <nav className="hidden md:flex gap-8 items-center">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="flex items-center gap-2 text-sm font-medium text-foreground/80 transition-all hover:text-foreground hover:scale-105"
-              >
-                <link.icon className="h-4 w-4 transition-transform group-hover:rotate-[-5deg]" />
-                <span>{link.label}</span>
-              </Link>
-            ))}
-          </nav>
-          <div className="flex items-center gap-1 md:gap-2">
-            <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-              <Search className="h-5 w-5" />
-              <span className="sr-only">Search</span>
-            </Button>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/10 backdrop-blur supports-[backdrop-filter]:bg-background/10">
+      <div className="container mx-auto flex h-20 items-center justify-between px-4">
+        <Logo />
+        <nav className="hidden md:flex gap-8 items-center">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="flex items-center gap-2 text-sm font-medium text-foreground/80 transition-all hover:text-foreground hover:scale-105"
+            >
+              <link.icon className="h-4 w-4 transition-transform group-hover:rotate-[-5deg]" />
+              <span>{link.label}</span>
+            </Link>
+          ))}
+        </nav>
+        <div className="flex items-center gap-1 md:gap-2">
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
+            <Search className="h-5 w-5" />
+            <span className="sr-only">Search</span>
+          </Button>
 
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="/wishlist" className="relative">
-                <Heart className="h-5 w-5" />
-                {isClient && wishlistCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
-                    {wishlistCount}
-                  </span>
-                )}
-                <span className="sr-only">Wishlist</span>
-              </Link>
-            </Button>
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="/cart" className="relative">
-                <ShoppingBag className="h-5 w-5" />
-                {isClient && cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
-                    {cartCount}
-                  </span>
-                )}
-                <span className="sr-only">Cart</span>
-              </Link>
-            </Button>
-            
-            <ThemeToggle />
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/wishlist" className="relative">
+              <Heart className="h-5 w-5" />
+              {isClient && wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
+                  {wishlistCount}
+                </span>
+              )}
+              <span className="sr-only">Wishlist</span>
+            </Link>
+          </Button>
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/cart" className="relative">
+              <ShoppingBag className="h-5 w-5" />
+              {isClient && cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
+                  {cartCount}
+                </span>
+              )}
+              <span className="sr-only">Cart</span>
+            </Link>
+          </Button>
+          
+          <ThemeToggle />
 
-            <div className="hidden md:flex items-center gap-2">
-              {renderUserAuth()}
-            </div>
-            
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleMenu}>
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
+          <div className="hidden md:flex items-center gap-2">
+            {renderUserAuth()}
+          </div>
+          
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px] sm:w-[400px] bg-background/80 backdrop-blur-sm border-r-white/10 p-6">
+                <Logo />
+                <nav className="flex flex-col gap-2 mt-8">
+                  {navLinks.map((link) => (
+                    <SheetClose asChild key={link.href}>
+                      <Link
+                        href={link.href}
+                        className={cn(
+                            "flex items-center gap-4 px-2.5 py-2 rounded-lg text-lg",
+                            pathname === link.href ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                        )}
+                      >
+                        <link.icon className="h-5 w-5" />
+                        {link.label}
+                      </Link>
+                    </SheetClose>
+                  ))}
+                  <Separator className="my-4"/>
+                  {loading ? (
+                    <div className="space-y-4">
+                      <Skeleton className="h-10 w-full" />
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                  ) : user ? (
+                     <>
+                      <SheetClose asChild>
+                        <Link
+                          href="/wishlist"
+                          className={cn(
+                              "flex items-center gap-4 px-2.5 py-2 rounded-lg text-lg",
+                              pathname === '/wishlist' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                          )}
+                        >
+                          <Heart className="h-5 w-5" />
+                          Wishlist
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link
+                          href="/cart"
+                          className={cn(
+                              "flex items-center gap-4 px-2.5 py-2 rounded-lg text-lg",
+                              pathname === '/cart' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                          )}
+                        >
+                          <ShoppingBag className="h-5 w-5" />
+                          Cart
+                        </Link>
+                       </SheetClose>
+                       <SheetClose asChild>
+                        <Button variant="outline" onClick={signOut} className="w-full justify-start gap-4 px-2.5 py-2 text-lg h-auto">
+                          <LogOut className="h-5 w-5" />
+                          Logout
+                        </Button>
+                       </SheetClose>
+                     </>
+                  ) : (
+                    <>
+                      <SheetClose asChild>
+                        <Link
+                          href="/login"
+                          className={cn(
+                              "flex items-center gap-4 px-2.5 py-2 rounded-lg text-lg",
+                              pathname === '/login' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                          )}
+                        >
+                          <User className="h-5 w-5" />
+                          Log In
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link
+                          href="/signup"
+                          className={cn(
+                              "flex items-center gap-4 px-2.5 py-2 rounded-lg text-lg",
+                              pathname === '/signup' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                          )}
+                        >
+                          <User className="h-5 w-5" />
+                          Sign Up
+                        </Link>
+                      </SheetClose>
+                    </>
+                  )}
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-      </header>
-
-      <div id="menu" className={cn(isMenuOpen && "open", "z-50")}>
-        <div className="shine"></div>
-        <div className="shine shine-bottom"></div>
-        <div className="glow glow-bright"></div>
-        <div className="glow"></div>
-        <div className="glow glow-bright glow-bottom"></div>
-        <div className="glow glow-bottom"></div>
-
-        <div className="inner">
-            <label>
-                <Search />
-                <input type="search" placeholder="Search..." />
-            </label>
-            <section>
-                <header>Navigation</header>
-                <ul>
-                    {navLinks.map((link) => (
-                        <li key={link.href} className={cn(pathname === link.href && "selected")} onClick={() => setIsMenuOpen(false)}>
-                            <Link href={link.href} className="flex items-center gap-2 w-full h-full">
-                              <link.icon />
-                              <span>{link.label}</span>
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </section>
-            <hr />
-            <section>
-                <header>Account</header>
-                <ul>
-                    {loading ? (
-                        <li><Skeleton className="h-4 w-20 bg-gray-600" /></li>
-                    ) : user ? (
-                        <>
-                           <li onClick={() => setIsMenuOpen(false)}>
-                                <Link href="/wishlist" className="flex items-center gap-2 w-full h-full"><Heart /> Wishlist</Link>
-                           </li>
-                           <li onClick={() => setIsMenuOpen(false)}>
-                                <Link href="/cart" className="flex items-center gap-2 w-full h-full"><ShoppingBag /> Cart</Link>
-                           </li>
-                           <li onClick={() => { signOut(); setIsMenuOpen(false); }}>
-                                <span className="flex items-center gap-2 w-full h-full"><LogOut /> Logout</span>
-                           </li>
-                        </>
-                    ) : (
-                        <>
-                           <li onClick={() => setIsMenuOpen(false)} className={cn(pathname === "/login" && "selected")}>
-                                <Link href="/login" className="flex items-center gap-2 w-full h-full"><User /> Log In</Link>
-                           </li>
-                           <li onClick={() => setIsMenuOpen(false)} className={cn(pathname === "/signup" && "selected")}>
-                                <Link href="/signup" className="flex items-center gap-2 w-full h-full"><User /> Sign Up</Link>
-                           </li>
-                        </>
-                    )}
-                </ul>
-            </section>
-        </div>
-    </div>
-    </>
+      </div>
+    </header>
   );
 }
