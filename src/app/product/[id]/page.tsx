@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 
-export default function ProductPage({ params }: { params: { id: string } }) {
-  const product = products.find((p) => p.id === params.id);
+export default function ProductPage({ params: { id } }: { params: { id: string } }) {
+  const product = products.find((p) => p.id === id);
 
   if (!product) {
     notFound();
