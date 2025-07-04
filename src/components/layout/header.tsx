@@ -1,7 +1,8 @@
+
 "use client";
 
 import Link from "next/link";
-import { Heart, Menu, Search, ShoppingBag, User, LogOut, Home, Store, Users, Mail } from "lucide-react";
+import { Heart, Menu, Search, ShoppingBag, UserPlus, LogIn, LogOut, Home, Store, Users, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -152,16 +153,42 @@ export function Header() {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px] bg-background/80 backdrop-blur-sm border-r-white/10 p-6">
-                <Logo />
-                <nav className="flex flex-col gap-2 mt-8">
+              <SheetContent side="left" className="flex flex-col w-[300px] sm:w-[400px] bg-background/90 backdrop-blur-lg p-0 border-r border-white/10">
+                {/* Header */}
+                <div className="p-6 border-b border-white/10">
+                  {loading ? (
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-10 w-10 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-3 w-32" />
+                      </div>
+                    </div>
+                  ) : user ? (
+                    <div className="flex items-center gap-4">
+                      <Avatar>
+                        <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? user.email ?? 'User'} />
+                        <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold text-foreground">{user.displayName ?? user.email}</p>
+                        <p className="text-xs text-muted-foreground">Welcome back</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <Logo />
+                  )}
+                </div>
+
+                {/* Main Nav */}
+                <nav className="flex-1 p-6 space-y-1 overflow-y-auto">
                   {navLinks.map((link) => (
                     <SheetClose asChild key={link.href}>
                       <Link
                         href={link.href}
                         className={cn(
-                            "flex items-center gap-4 px-2.5 py-2 rounded-lg text-lg",
-                            pathname === link.href ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                          "flex items-center gap-4 px-2.5 py-3 rounded-lg text-base font-medium",
+                          pathname === link.href ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
                         )}
                       >
                         <link.icon className="h-5 w-5" />
@@ -169,20 +196,16 @@ export function Header() {
                       </Link>
                     </SheetClose>
                   ))}
-                  <Separator className="my-4"/>
-                  {loading ? (
-                    <div className="space-y-4">
-                      <Skeleton className="h-10 w-full" />
-                      <Skeleton className="h-10 w-full" />
-                    </div>
-                  ) : user ? (
-                     <>
+
+                  {user && (
+                    <>
+                      <Separator className="my-4 bg-white/10" />
                       <SheetClose asChild>
                         <Link
                           href="/wishlist"
                           className={cn(
-                              "flex items-center gap-4 px-2.5 py-2 rounded-lg text-lg",
-                              pathname === '/wishlist' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                            "flex items-center gap-4 px-2.5 py-3 rounded-lg text-base font-medium",
+                            pathname === '/wishlist' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
                           )}
                         >
                           <Heart className="h-5 w-5" />
@@ -193,50 +216,55 @@ export function Header() {
                         <Link
                           href="/cart"
                           className={cn(
-                              "flex items-center gap-4 px-2.5 py-2 rounded-lg text-lg",
-                              pathname === '/cart' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                            "flex items-center gap-4 px-2.5 py-3 rounded-lg text-base font-medium",
+                            pathname === '/cart' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
                           )}
                         >
                           <ShoppingBag className="h-5 w-5" />
                           Cart
                         </Link>
-                       </SheetClose>
-                       <SheetClose asChild>
-                        <Button variant="outline" onClick={signOut} className="w-full justify-start gap-4 px-2.5 py-2 text-lg h-auto">
-                          <LogOut className="h-5 w-5" />
-                          Logout
-                        </Button>
-                       </SheetClose>
-                     </>
-                  ) : (
-                    <>
-                      <SheetClose asChild>
-                        <Link
-                          href="/login"
-                          className={cn(
-                              "flex items-center gap-4 px-2.5 py-2 rounded-lg text-lg",
-                              pathname === '/login' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
-                          )}
-                        >
-                          <User className="h-5 w-5" />
-                          Log In
-                        </Link>
-                      </SheetClose>
-                      <SheetClose asChild>
-                        <Link
-                          href="/signup"
-                          className={cn(
-                              "flex items-center gap-4 px-2.5 py-2 rounded-lg text-lg",
-                              pathname === '/signup' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
-                          )}
-                        >
-                          <User className="h-5 w-5" />
-                          Sign Up
-                        </Link>
                       </SheetClose>
                     </>
                   )}
                 </nav>
+
+                {/* Footer */}
+                <div className="p-4 mt-auto border-t border-white/10">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      {loading ? (
+                        <Skeleton className="h-10 w-24 rounded-lg" />
+                      ) : user ? (
+                        <SheetClose asChild>
+                          <Button variant="outline" onClick={signOut}>
+                            <LogOut className="mr-2 h-4 w-4" />
+                            Logout
+                          </Button>
+                        </SheetClose>
+                      ) : (
+                        <div className="flex gap-2">
+                          <SheetClose asChild>
+                            <Button asChild>
+                              <Link href="/login">
+                                <LogIn className="mr-2 h-4 w-4" />
+                                Log In
+                              </Link>
+                            </Button>
+                          </SheetClose>
+                          <SheetClose asChild>
+                            <Button asChild variant="secondary">
+                              <Link href="/signup">
+                                <UserPlus className="mr-2 h-4 w-4" />
+                                Sign Up
+                              </Link>
+                            </Button>
+                          </SheetClose>
+                        </div>
+                      )}
+                    </div>
+                    <ThemeToggle />
+                  </div>
+                </div>
               </SheetContent>
             </Sheet>
           </div>

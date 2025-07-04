@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Heart, ShoppingCart } from "lucide-react";
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
@@ -24,6 +24,15 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [mouse, setMouse] = useState({ x: 0, y: 0, active: false });
   const mouseLeaveDelay = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    // This cleans up the timeout when the component unmounts, preventing memory leaks and HMR issues.
+    return () => {
+      if (mouseLeaveDelay.current) {
+        clearTimeout(mouseLeaveDelay.current);
+      }
+    };
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
