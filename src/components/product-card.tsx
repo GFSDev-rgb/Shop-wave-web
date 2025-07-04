@@ -49,7 +49,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   };
 
   return (
-    <Card className={cn("group overflow-hidden rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col", className)}>
+    <Card className={cn("group overflow-hidden rounded-lg border border-white/10 hover:border-white/20 transition-all duration-300 flex flex-col bg-black/20 backdrop-blur-sm", className)}>
       <CardHeader className="p-0 relative overflow-hidden">
         <Link href={`/product/${product.id}`} className="block">
           <Image
