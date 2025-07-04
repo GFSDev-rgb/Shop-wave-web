@@ -12,29 +12,35 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-16 md:gap-24">
-      <section className="relative h-[60vh] md:h-[70vh] w-full">
-        <Image
-          src="https://placehold.co/1800x900.png"
-          alt="Hero background"
-          data-ai-hint="fashion store interior"
-          layout="fill"
-          objectFit="cover"
-          className="brightness-50"
-        />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-          <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl font-bold drop-shadow-lg">
-            Experience the New Wave
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg md:text-xl text-primary-foreground/90">
-            Discover curated collections and unique finds. ShopWave brings you the best in modern style and quality.
-          </p>
-          <Button asChild size="lg" className="mt-8 bg-accent hover:bg-accent/90 text-accent-foreground">
-            <Link href="/shop">
-              Shop Now <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
+      {/* Hero Section */}
+      <section className="bg-background">
+        <div className="container mx-auto grid md:grid-cols-2 items-center gap-8 px-4 py-12">
+          <div className="flex flex-col items-center md:items-start text-center md:text-left">
+            <h1 className="font-headline text-5xl md:text-6xl lg:text-7xl font-bold text-foreground">
+              Experience the New Wave
+            </h1>
+            <p className="mt-4 max-w-xl text-lg text-muted-foreground">
+              Discover curated collections and unique finds. ShopWave brings you the best in modern style and quality.
+            </p>
+            <Button asChild size="lg" className="mt-8">
+              <Link href="/shop">
+                Shop Now <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
+          <div className="flex justify-center">
+            <Image
+              src="https://storage.googleapis.com/aifirebase-7996c.appspot.com/image_1720743588204_67531.png"
+              alt="An illustration of a person shopping online from a large mobile phone screen"
+              data-ai-hint="online shopping"
+              width={600}
+              height={400}
+              className="rounded-lg object-contain"
+            />
+          </div>
         </div>
       </section>
+
 
       <section className="container mx-auto px-4">
         <h2 className="font-headline text-4xl font-bold text-center mb-12">Featured Products</h2>
