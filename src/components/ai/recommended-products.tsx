@@ -26,7 +26,7 @@ export default function RecommendedProducts() {
   return (
     <section className="bg-transparent relative py-16 overflow-hidden">
       <Image
-        src="https://scontent.fjsr13-1.fna.fbcdn.net/v/t39.30808-6/514349647_122134628744805080_5530986704383849379_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_ohc=1VZz36hMxkEQ7kNvwFk9q8Y&_nc_oc=AdmNQD88QlNJbsdW1T1TmVufnkjY6N1__VQMnIKYkQSoN6VXV9a3pPDegNGD3M3c-Hw&_nc_zt=23&_nc_ht=scontent.fjsr13-1.fna&_nc_gid=8zwbUOCjsHcUI-Rpus2F1Q&oh=00_AfMgVSB6UTnurSp4qT2_wvjCL4f2Ij2KqsGQzw-U8LeJ7Q&oe=686DF26E"
+        src="https://scontent.fjsr13-1.fna.fbcdn.net/v/t39.30808-6/514349647_122134628744805080_5530986704383849379_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_ohc=1VZz36hMxkEQ7kNvwFk9q8Y&_nc_oc=AdmNQD88QlNJbsdW1T1TmVufnkjY6N1__VQMnIKYkQSoN6VXV9a3pPDegNGD3M3c-Hw&_nc_zt=23&_nc_ht=scontent.fjsr13-1.fna&_nc_gid=X42o6_BkYhwN7G8el28l8A&oh=00_AfN3z4PnY3YZxB-6aBed0FNRW-8cgjd90Db9abN9CuyF3g&oe=686DF26E"
         alt="Fashion models"
         data-ai-hint="fashion models"
         layout="fill"
