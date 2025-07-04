@@ -7,8 +7,8 @@ export const products: Product[] = [
     description:
       'A timeless trench coat designed for the modern traveler. Made with water-resistant gabardine fabric, it features a classic double-breasted front, a detachable belt, and spacious pockets. Perfect for navigating city streets in any weather.',
     price: 249.99,
-    image: 'https://placehold.co/600x800.png',
-    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    image: 'https://i.pinimg.com/736x/a8/79/fa/a879fad4fc0fc8467602730a0b58f07a.jpg',
+    images: ['https://i.pinimg.com/736x/a8/79/fa/a879fad4fc0fc8467602730a0b58f07a.jpg', 'https://i.pinimg.com/736x/a8/79/fa/a879fad4fc0fc8467602730a0b58f07a.jpg', 'https://i.pinimg.com/736x/a8/79/fa/a879fad4fc0fc8467602730a0b58f07a.jpg'],
     category: 'Apparel',
     rating: 4.8,
     reviews: 120,
@@ -19,8 +19,8 @@ export const products: Product[] = [
     description:
       'Handcrafted from full-grain leather, this messenger bag combines durability with sophisticated style. It has a padded laptop compartment, multiple organizational pockets, and an adjustable shoulder strap for comfort.',
     price: 189.50,
-    image: 'https://placehold.co/600x800.png',
-    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    image: 'https://i.pinimg.com/736x/ec/c5/49/ecc54943da530e14a22926dcece5a47d.jpg',
+    images: ['https://i.pinimg.com/736x/ec/c5/49/ecc54943da530e14a22926dcece5a47d.jpg', 'https://i.pinimg.com/736x/ec/c5/49/ecc54943da530e14a22926dcece5a47d.jpg', 'https://i.pinimg.com/736x/ec/c5/49/ecc54943da530e14a22926dcece5a47d.jpg'],
     category: 'Accessories',
     rating: 4.9,
     reviews: 250,
@@ -31,8 +31,8 @@ export const products: Product[] = [
     description:
       'A masterpiece of minimalist design, the Zenith watch features a clean, uncluttered dial with a Swiss quartz movement. The sapphire crystal glass and stainless steel case ensure it stands the test of time.',
     price: 350.0,
-    image: 'https://placehold.co/600x800.png',
-    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    image: 'https://i.pinimg.com/736x/88/ce/6a/88ce6a8635419f5c5daadc40fec15ded.jpg',
+    images: ['https://i.pinimg.com/736x/88/ce/6a/88ce6a8635419f5c5daadc40fec15ded.jpg', 'https://i.pinimg.com/736x/88/ce/6a/88ce6a8635419f5c5daadc40fec15ded.jpg', 'https://i.pinimg.com/736x/88/ce/6a/88ce6a8635419f5c5daadc40fec15ded.jpg'],
     category: 'Watches',
     rating: 4.7,
     reviews: 95,
@@ -43,8 +43,8 @@ export const products: Product[] = [
     description:
       "Experience unparalleled comfort with our 100% Mongolian cashmere sweater. Its lightweight, breathable knit makes it an ideal layering piece for all seasons. Ethically sourced and exceptionally soft.",
     price: 199.0,
-    image: 'https://placehold.co/600x800.png',
-    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    image: 'https://i.pinimg.com/736x/bc/5c/5c/bc5c5c46045fdf5588da2cc8bc051b36.jpg',
+    images: ['https://i.pinimg.com/736x/bc/5c/5c/bc5c5c46045fdf5588da2cc8bc051b36.jpg', 'https://i.pinimg.com/736x/bc/5c/5c/bc5c5c46045fdf5588da2cc8bc051b36.jpg', 'https://i.pinimg.com/736x/bc/5c/5c/bc5c5c46045fdf5588da2cc8bc051b36.jpg'],
     category: 'Apparel',
     rating: 5.0,
     reviews: 310,
