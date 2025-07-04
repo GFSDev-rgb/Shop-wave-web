@@ -69,7 +69,7 @@ export default function LoginPage() {
                 className="bg-background/50 border-white/20"
               />
             </div>
-            <Button type="submit" className="w-full mt-2 bg-accent hover:bg-accent/90 text-accent-foreground font-headline" disabled={loading}>
+            <Button type="submit" className="w-full mt-2 font-headline" disabled={loading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Login'}
             </Button>
           </form>
