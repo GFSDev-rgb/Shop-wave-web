@@ -18,7 +18,7 @@ import { Logo } from "@/components/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeToggle } from "../theme-toggle";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +35,12 @@ export function Header() {
   const { user, signOut, loading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   const toggleMenu = () => {
     setIsMenuOpen(prev => !prev);
@@ -43,10 +49,7 @@ export function Header() {
   const renderUserAuth = () => {
     if (loading) {
       return (
-        <>
-          <Skeleton className="h-9 w-16" />
-          <Skeleton className="h-9 w-24" />
-        </>
+        <Skeleton className="h-10 w-10 rounded-full" />
       );
     }
 
@@ -114,7 +117,7 @@ export function Header() {
             <Button variant="ghost" size="icon" asChild>
               <Link href="/wishlist" className="relative">
                 <Heart className="h-5 w-5" />
-                {wishlistCount > 0 && (
+                {isClient && wishlistCount > 0 && (
                   <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
                     {wishlistCount}
                   </span>
@@ -125,7 +128,7 @@ export function Header() {
             <Button variant="ghost" size="icon" asChild>
               <Link href="/cart" className="relative">
                 <ShoppingBag className="h-5 w-5" />
-                {cartCount > 0 && (
+                {isClient && cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
                     {cartCount}
                   </span>
@@ -133,7 +136,7 @@ export function Header() {
                 <span className="sr-only">Cart</span>
               </Link>
             </Button>
-
+            
             <ThemeToggle />
 
             <div className="hidden md:flex items-center gap-2">
@@ -148,7 +151,7 @@ export function Header() {
         </div>
       </header>
 
-      <div id="menu" className={cn(isMenuOpen && "open")}>
+      <div id="menu" className={cn(isMenuOpen && "open", "z-50")}>
         <div className="shine"></div>
         <div className="shine shine-bottom"></div>
         <div className="glow glow-bright"></div>
