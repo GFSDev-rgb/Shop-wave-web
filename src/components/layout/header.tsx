@@ -1,12 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
+import { Heart, Menu, Search, ShoppingBag, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useCart } from "@/hooks/use-cart";
 import { useWishlist } from "@/hooks/use-wishlist";
+import { useAuth } from "@/hooks/use-auth";
 import { Logo } from "@/components/logo";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -18,6 +29,48 @@ const navLinks = [
 export function Header() {
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlist();
+  const { user, signOut, loading } = useAuth();
+
+  const renderUserAuth = () => {
+    if (loading) {
+      return <Skeleton className="h-10 w-10 rounded-full" />;
+    }
+
+    if (user) {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <Avatar>
+                <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? user.email ?? 'User'} />
+                <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem disabled>Profile</DropdownMenuItem>
+            <DropdownMenuItem disabled>Settings</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={signOut}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    }
+
+    return (
+       <Button variant="ghost" size="icon" asChild>
+          <Link href="/login">
+            <User className="h-5 w-5" />
+            <span className="sr-only">Account</span>
+          </Link>
+        </Button>
+    );
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -39,10 +92,11 @@ export function Header() {
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
           </Button>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-            <User className="h-5 w-5" />
-            <span className="sr-only">Account</span>
-          </Button>
+
+          <div className="hidden md:flex">
+            {renderUserAuth()}
+          </div>
+          
           <Button variant="ghost" size="icon" asChild>
             <Link href="/wishlist" className="relative">
               <Heart className="h-5 w-5" />
@@ -73,7 +127,7 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left">
-              <div className="flex flex-col gap-6 p-6">
+              <div className="flex h-full flex-col gap-6 p-6">
                 <Logo />
                 <nav className="flex flex-col gap-4">
                   {navLinks.map((link) => (
@@ -86,6 +140,20 @@ export function Header() {
                     </Link>
                   ))}
                 </nav>
+                <div className="mt-auto flex flex-col gap-2">
+                  {loading ? (
+                    <Skeleton className="h-10 w-full" />
+                  ) : user ? (
+                    <Button onClick={signOut}>
+                      <LogOut className="mr-2 h-4 w-4" /> Log out
+                    </Button>
+                  ) : (
+                    <>
+                      <Button asChild><Link href="/login">Log In</Link></Button>
+                      <Button asChild variant="secondary"><Link href="/signup">Sign Up</Link></Button>
+                    </>
+                  )}
+                </div>
               </div>
             </SheetContent>
           </Sheet>
