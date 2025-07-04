@@ -1,0 +1,100 @@
+import type { Product } from './types';
+
+export const products: Product[] = [
+  {
+    id: '1',
+    name: 'Elegant Voyager Trench Coat',
+    description:
+      'A timeless trench coat designed for the modern traveler. Made with water-resistant gabardine fabric, it features a classic double-breasted front, a detachable belt, and spacious pockets. Perfect for navigating city streets in any weather.',
+    price: 249.99,
+    image: 'https://placehold.co/600x800.png',
+    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    category: 'Apparel',
+    rating: 4.8,
+    reviews: 120,
+  },
+  {
+    id: '2',
+    name: 'Artisan Leather Messenger Bag',
+    description:
+      'Handcrafted from full-grain leather, this messenger bag combines durability with sophisticated style. It has a padded laptop compartment, multiple organizational pockets, and an adjustable shoulder strap for comfort.',
+    price: 189.50,
+    image: 'https://placehold.co/600x800.png',
+    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    category: 'Accessories',
+    rating: 4.9,
+    reviews: 250,
+  },
+  {
+    id: '3',
+    name: 'Zenith Minimalist Watch',
+    description:
+      'A masterpiece of minimalist design, the Zenith watch features a clean, uncluttered dial with a Swiss quartz movement. The sapphire crystal glass and stainless steel case ensure it stands the test of time.',
+    price: 350.0,
+    image: 'https://placehold.co/600x800.png',
+    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    category: 'Watches',
+    rating: 4.7,
+    reviews: 95,
+  },
+  {
+    id: '4',
+    name: 'Cloud-Soft Cashmere Sweater',
+    description:
+      "Experience unparalleled comfort with our 100% Mongolian cashmere sweater. Its lightweight, breathable knit makes it an ideal layering piece for all seasons. Ethically sourced and exceptionally soft.",
+    price: 199.0,
+    image: 'https://placehold.co/600x800.png',
+    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    category: 'Apparel',
+    rating: 5.0,
+    reviews: 310,
+  },
+  {
+    id: '5',
+    name: 'Nomad Tech Organizer',
+    description:
+      'Keep your cables, chargers, and gadgets neatly organized with the Nomad Tech Organizer. Made from durable, water-repellent canvas, it has elastic loops and mesh pockets to secure all your essentials.',
+    price: 59.99,
+    image: 'https://placehold.co/600x800.png',
+    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    category: 'Electronics',
+    rating: 4.6,
+    reviews: 180,
+  },
+  {
+    id: '6',
+    name: 'TerraGrip Hiking Boots',
+    description:
+      'Conquer any trail with the TerraGrip Hiking Boots. Featuring a waterproof membrane, superior ankle support, and a high-traction outsole, these boots provide comfort and stability on rugged terrain.',
+    price: 175.0,
+    image: 'https://placehold.co/600x800.png',
+    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    category: 'Footwear',
+    rating: 4.8,
+    reviews: 215,
+  },
+  {
+    id: '7',
+    name: 'AeroPress Go Travel Coffee Maker',
+    description:
+      'Enjoy delicious, grit-free coffee anywhere. The AeroPress Go is engineered for travel, packing up neatly into its own mug. It brews Americano, espresso, and cold brew style coffee in about a minute.',
+    price: 39.95,
+    image: 'https://placehold.co/600x800.png',
+    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    category: 'Home Goods',
+    rating: 4.9,
+    reviews: 500,
+  },
+  {
+    id: '8',
+    name: 'Velocity Performance Sunglasses',
+    description:
+      'Designed for athletes, the Velocity sunglasses offer a lightweight, frameless design for an unobstructed field of view. The polarized lenses reduce glare and provide 100% UV protection.',
+    price: 85.0,
+    image: 'https://placehold.co/600x800.png',
+    images: ['https://placehold.co/600x800.png', 'https://placehold.co/600x800.png', 'https://placehold.co/600x800.png'],
+    category: 'Accessories',
+    rating: 4.7,
+    reviews: 140,
+  },
+];

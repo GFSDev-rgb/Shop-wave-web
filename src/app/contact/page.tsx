@@ -1,0 +1,69 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Mail, Phone, MapPin } from "lucide-react";
+
+export default function ContactPage() {
+  return (
+    <div className="container mx-auto px-4 py-16">
+      <header className="text-center mb-16">
+        <h1 className="font-headline text-5xl md:text-6xl font-bold">Get In Touch</h1>
+        <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
+          We're here to help. Whether you have a question about our products, an order, or just want to say hello, we'd love to hear from you.
+        </p>
+      </header>
+
+      <div className="grid md:grid-cols-2 gap-12">
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-headline text-3xl">Send us a Message</CardTitle>
+            <CardDescription>Fill out the form and our team will get back to you within 24 hours.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-6">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input id="name" placeholder="Your name" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" placeholder="Your email" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="subject">Subject</Label>
+                <Input id="subject" placeholder="What's this about?" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="message">Message</Label>
+                <Textarea id="message" placeholder="Your message..." rows={5} />
+              </div>
+              <Button type="submit" size="lg" className="w-full">Send Message</Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <div className="space-y-8">
+            <h2 className="font-headline text-3xl font-bold text-primary">Contact Information</h2>
+            <div className="space-y-6 text-lg">
+                <div className="flex items-center gap-4">
+                    <Mail className="h-6 w-6 text-accent" />
+                    <a href="mailto:support@shopwave.com" className="hover:underline">support@shopwave.com</a>
+                </div>
+                 <div className="flex items-center gap-4">
+                    <Phone className="h-6 w-6 text-accent" />
+                    <span>+1 (555) 123-4567</span>
+                </div>
+                 <div className="flex items-center gap-4">
+                    <MapPin className="h-6 w-6 text-accent" />
+                    <span>123 Wave Street, Ocean View, 90210</span>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  );
+}
