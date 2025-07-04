@@ -33,7 +33,12 @@ export function Header() {
 
   const renderUserAuth = () => {
     if (loading) {
-      return <Skeleton className="h-10 w-10 rounded-full" />;
+      return (
+        <>
+          <Skeleton className="h-9 w-16" />
+          <Skeleton className="h-9 w-24" />
+        </>
+      );
     }
 
     if (user) {
@@ -63,12 +68,14 @@ export function Header() {
     }
 
     return (
-       <Button variant="ghost" size="icon" asChild>
-          <Link href="/login">
-            <User className="h-5 w-5" />
-            <span className="sr-only">Account</span>
-          </Link>
+      <>
+        <Button asChild variant="ghost">
+          <Link href="/login">Log In</Link>
         </Button>
+        <Button asChild>
+          <Link href="/signup">Sign Up</Link>
+        </Button>
+      </>
     );
   };
 
@@ -93,7 +100,7 @@ export function Header() {
             <span className="sr-only">Search</span>
           </Button>
 
-          <div className="hidden md:flex">
+          <div className="hidden md:flex items-center gap-2">
             {renderUserAuth()}
           </div>
           
