@@ -42,15 +42,15 @@ export function Filters({
   };
 
   return (
-    <Card className="bg-black/20 backdrop-blur-sm border border-white/10 lg:bg-transparent lg:backdrop-blur-none lg:border-none lg:p-0">
-      <CardHeader className="flex flex-row items-center justify-between p-4 lg:p-0 lg:pb-4">
-        <CardTitle className="lg:text-2xl">Filters</CardTitle>
+    <Card className="bg-black/20 backdrop-blur-sm border border-white/10">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>Filters</CardTitle>
         <Button variant="ghost" size="sm" onClick={clearFilters}>Clear all</Button>
       </CardHeader>
-      <CardContent className="p-4 pt-0 lg:p-0">
+      <CardContent>
         <Accordion type="multiple" defaultValue={["category", "price"]} className="w-full">
           <AccordionItem value="category" className="border-b border-white/10">
-            <AccordionTrigger className="text-base font-semibold">Category</AccordionTrigger>
+            <AccordionTrigger className="text-base font-semibold hover:no-underline">Category</AccordionTrigger>
             <AccordionContent>
               <div className="grid gap-4 mt-2">
                 {categories.map((category) => (
@@ -69,7 +69,7 @@ export function Filters({
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="price" className="border-b-0">
-            <AccordionTrigger className="text-base font-semibold">Price Range</AccordionTrigger>
+            <AccordionTrigger className="text-base font-semibold hover:no-underline">Price Range</AccordionTrigger>
             <AccordionContent>
                 <div className="mt-4">
                     <Slider
