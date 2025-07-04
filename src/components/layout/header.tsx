@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import Link from "next/link";
@@ -113,12 +111,6 @@ export function Header() {
               <span className="sr-only">Search</span>
             </Button>
 
-            <div className="hidden md:flex items-center gap-2">
-              {renderUserAuth()}
-            </div>
-            
-            <ThemeToggle />
-
             <Button variant="ghost" size="icon" asChild>
               <Link href="/wishlist" className="relative">
                 <Heart className="h-5 w-5" />
@@ -141,6 +133,13 @@ export function Header() {
                 <span className="sr-only">Cart</span>
               </Link>
             </Button>
+
+            <ThemeToggle />
+
+            <div className="hidden md:flex items-center gap-2">
+              {renderUserAuth()}
+            </div>
+            
             <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleMenu}>
               <Menu className="h-6 w-6" />
               <span className="sr-only">Toggle menu</span>
