@@ -1,7 +1,8 @@
+
 "use client";
 
 import Link from "next/link";
-import { Heart, Menu, Search, ShoppingBag, User, LogOut } from "lucide-react";
+import { Heart, Menu, Search, ShoppingBag, User, LogOut, Home, Store, Users, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -21,10 +22,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeToggle } from "../theme-toggle";
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/shop", label: "Shop" },
-  { href: "/about", label: "About Us" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", label: "Home", icon: Home },
+  { href: "/shop", label: "Shop", icon: Store },
+  { href: "/about", label: "About Us", icon: Users },
+  { href: "/contact", label: "Contact", icon: Mail },
 ];
 
 export function Header() {
@@ -84,18 +85,19 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-20 items-center justify-between px-4">
         <Logo />
-        <nav className="hidden md:flex gap-6 items-center">
+        <nav className="hidden md:flex gap-8 items-center">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+              className="flex items-center gap-2 text-sm font-medium text-foreground/80 transition-all hover:text-foreground hover:scale-105"
             >
-              {link.label}
+              <link.icon className="h-4 w-4 transition-transform group-hover:rotate-[-5deg]" />
+              <span>{link.label}</span>
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-1 md:gap-2">
           <Button variant="ghost" size="icon" className="hidden md:inline-flex">
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
@@ -137,16 +139,19 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left">
-              <div className="flex h-full flex-col gap-6 p-6">
-                <Logo />
-                <nav className="flex flex-col gap-4">
+              <div className="flex h-full flex-col p-6">
+                <div className="mb-8">
+                  <Logo />
+                </div>
+                <nav className="flex flex-col gap-2">
                   {navLinks.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="text-lg font-medium"
+                      className="flex items-center gap-4 rounded-lg p-3 text-lg font-medium hover:bg-muted"
                     >
-                      {link.label}
+                      <link.icon className="h-5 w-5 text-muted-foreground" />
+                      <span>{link.label}</span>
                     </Link>
                   ))}
                 </nav>
