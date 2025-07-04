@@ -1,16 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/hooks/use-cart";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { useToast } from "@/hooks/use-toast";
@@ -20,10 +11,9 @@ import { cn } from "@/lib/utils";
 
 interface ProductDetailsClientProps {
   product: Product;
-  images?: string[]; // Make images optional
 }
 
-export default function ProductDetailsClient({ product, images }: ProductDetailsClientProps) {
+export default function ProductDetailsClient({ product }: ProductDetailsClientProps) {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
@@ -53,33 +43,6 @@ export default function ProductDetailsClient({ product, images }: ProductDetails
       });
     }
   };
-
-  if (images) {
-    return (
-      <Carousel className="w-full">
-        <CarouselContent>
-          {images.map((img, index) => (
-            <CarouselItem key={index}>
-              <Card className="overflow-hidden rounded-lg">
-                <CardContent className="p-0">
-                  <Image
-                    src={img}
-                    alt={`${product.name} image ${index + 1}`}
-                    data-ai-hint="product photo"
-                    width={800}
-                    height={1000}
-                    className="w-full h-auto aspect-[4/5] object-cover"
-                  />
-                </CardContent>
-              </Card>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="left-4" />
-        <CarouselNext className="right-4" />
-      </Carousel>
-    );
-  }
 
   return (
     <div className="space-y-6">

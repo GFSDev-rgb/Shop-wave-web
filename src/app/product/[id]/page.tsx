@@ -3,6 +3,14 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import ProductDetailsClient from "./product-details-client";
 import { Star } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   const product = products.find((p) => p.id === params.id);
@@ -14,7 +22,29 @@ export default function ProductPage({ params }: { params: { id: string } }) {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="grid md:grid-cols-2 gap-12 items-start">
-        <ProductDetailsClient images={product.images} />
+        <Carousel className="w-full">
+          <CarouselContent>
+            {product.images.map((img, index) => (
+              <CarouselItem key={index}>
+                <Card className="overflow-hidden rounded-lg">
+                  <CardContent className="p-0">
+                    <Image
+                      src={img}
+                      alt={`${product.name} image ${index + 1}`}
+                      data-ai-hint="product photo"
+                      width={800}
+                      height={1000}
+                      className="w-full h-auto aspect-[4/5] object-cover"
+                    />
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-4" />
+          <CarouselNext className="right-4" />
+        </Carousel>
+
         <div className="space-y-6">
           <div>
             <p className="text-sm text-muted-foreground">{product.category}</p>
