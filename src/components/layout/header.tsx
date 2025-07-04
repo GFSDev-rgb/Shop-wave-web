@@ -18,6 +18,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Logo } from "@/components/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ThemeToggle } from "../theme-toggle";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -104,6 +105,8 @@ export function Header() {
             {renderUserAuth()}
           </div>
           
+          <ThemeToggle />
+
           <Button variant="ghost" size="icon" asChild>
             <Link href="/wishlist" className="relative">
               <Heart className="h-5 w-5" />
