@@ -1,24 +1,119 @@
+"use client";
+
+import { useState, useMemo } from "react";
 import { products } from "@/lib/data";
+import type { Product } from "@/lib/types";
 import ProductCard from "@/components/product-card";
 import { Filters } from "./filters";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Filter, ArrowUpDown } from "lucide-react";
 
 export default function ShopPage() {
+  const [sortOption, setSortOption] = useState("newest");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const sortedAndFilteredProducts = useMemo(() => {
+    let result = products
+      .filter((product) => {
+        const inCategory =
+          selectedCategories.length === 0 || selectedCategories.includes(product.category);
+        const inPriceRange =
+          product.price >= priceRange[0] && product.price <= priceRange[1];
+        return inCategory && inPriceRange;
+      });
+
+    switch (sortOption) {
+      case "price-asc":
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case "rating-desc":
+        result.sort((a, b) => b.rating - a.rating);
+        break;
+      case "newest":
+      default:
+        // Assuming products are already somewhat sorted by newness or just use default order
+        break;
+    }
+    return result;
+  }, [sortOption, priceRange, selectedCategories]);
+
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <header className="mb-12 text-center">
-        <h1 className="font-headline text-5xl font-bold">Our Collection</h1>
-        <p className="mt-2 text-lg text-muted-foreground">
-          Browse our curated selection of high-quality products.
-        </p>
+      <header className="mb-12 text-center relative overflow-hidden rounded-lg p-8 bg-black/20 backdrop-blur-sm border border-white/10">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
+        <div className="relative">
+          <h1 className="font-headline text-5xl font-bold">Our Collection</h1>
+          <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
+            Browse our curated selection of high-quality products, crafted with passion and precision.
+          </p>
+        </div>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <aside className="lg:col-span-1">
-          <Filters />
+        {/* Desktop Filters */}
+        <aside className="hidden lg:block lg:col-span-1">
+          <div className="sticky top-24">
+            <Filters 
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
+            />
+          </div>
         </aside>
+
         <main className="lg:col-span-3">
+          <div className="flex justify-between items-center mb-6 p-4 rounded-lg bg-black/20 backdrop-blur-sm border border-white/10">
+              <p className="text-sm text-muted-foreground">{sortedAndFilteredProducts.length} Products</p>
+              <div className="flex items-center gap-4">
+                  {/* Mobile Filters Trigger */}
+                  <Sheet>
+                      <SheetTrigger asChild>
+                          <Button variant="outline" className="lg:hidden flex items-center gap-2">
+                              <Filter className="h-4 w-4" />
+                              <span>Filters</span>
+                          </Button>
+                      </SheetTrigger>
+                      <SheetContent side="left" className="bg-card border-l-0 border-r border-white/10">
+                         <Filters 
+                            priceRange={priceRange}
+                            setPriceRange={setPriceRange}
+                            selectedCategories={selectedCategories}
+                            setSelectedCategories={setSelectedCategories}
+                          />
+                      </SheetContent>
+                  </Sheet>
+                  
+                  <Select value={sortOption} onValueChange={setSortOption}>
+                      <SelectTrigger className="w-[180px] bg-background border-white/20">
+                          <ArrowUpDown className="h-4 w-4 mr-2" />
+                          <SelectValue placeholder="Sort by" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          <SelectItem value="newest">Newest</SelectItem>
+                          <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                          <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                          <SelectItem value="rating-desc">Top Rated</SelectItem>
+                      </SelectContent>
+                  </Select>
+              </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-            {products.map((product) => (
+            {sortedAndFilteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
