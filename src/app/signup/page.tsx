@@ -69,7 +69,11 @@ export default function SignupPage() {
                 className="bg-background/50 border-white/20"
               />
             </div>
-            <Button type="submit" className="w-full mt-2 font-headline" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full mt-2 font-headline bg-white/10 border border-white/20 backdrop-blur-sm hover:bg-white/20"
+              disabled={loading}
+            >
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Create an account'}
             </Button>
           </form>
