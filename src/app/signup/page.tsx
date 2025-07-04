@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, UserPlus } from 'lucide-react';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -31,17 +31,18 @@ export default function SignupPage() {
       toast({
         variant: 'destructive',
         title: 'Signup Failed',
-        description: error.message,
+        description: error.message || "An unknown error occurred.",
       });
     }
   };
 
   return (
-    <div className="container flex min-h-dvh w-screen flex-col items-center justify-center">
-      <Card className="mx-auto max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Sign Up</CardTitle>
-          <CardDescription>Enter your information to create an account</CardDescription>
+    <div className="container flex min-h-dvh w-screen flex-col items-center justify-center p-4">
+      <Card className="mx-auto max-w-sm w-full bg-card/50 backdrop-blur-lg border-white/20">
+        <CardHeader className="items-center text-center">
+          <UserPlus className="h-10 w-10 mb-4 text-primary" />
+          <CardTitle className="text-3xl font-headline">Create Your Account</CardTitle>
+          <CardDescription>Join ShopWave to start your style journey.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignUp} className="grid gap-4">
@@ -54,6 +55,7 @@ export default function SignupPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="bg-background/50 border-white/20"
               />
             </div>
             <div className="grid gap-2">
@@ -64,15 +66,16 @@ export default function SignupPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="bg-background/50 border-white/20"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full mt-2" disabled={loading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Create an account'}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
             Already have an account?{' '}
-            <Link href="/login" className="underline">
+            <Link href="/login" className="underline hover:text-primary">
               Login
             </Link>
           </div>
