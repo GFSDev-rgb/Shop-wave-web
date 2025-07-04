@@ -22,7 +22,7 @@ export default function Home() {
             <p className="mt-4 max-w-xl text-lg text-muted-foreground">
               Discover curated collections and unique finds. ShopWave brings you the best in modern style and quality.
             </p>
-            <Button asChild size="lg" className="mt-8">
+            <Button asChild size="lg" className="mt-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <Link href="/shop">
                 Shop Now <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
