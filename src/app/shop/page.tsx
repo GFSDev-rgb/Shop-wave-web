@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { products } from "@/lib/data";
-import type { Product } from "@/lib/types";
+import { Product } from "@/lib/types";
 import ProductCard from "@/components/product-card";
 import { Filters } from "./filters";
 import { Button } from "@/components/ui/button";
@@ -54,6 +54,15 @@ export default function ShopPage() {
     setSelectedCategories([]);
   };
 
+  const filtersComponent = (
+    <Filters
+      priceRange={priceRange}
+      setPriceRange={setPriceRange}
+      selectedCategories={selectedCategories}
+      setSelectedCategories={setSelectedCategories}
+    />
+  );
+
   return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-12 text-center relative overflow-hidden rounded-lg p-8 bg-black/20 backdrop-blur-sm border border-white/10">
@@ -65,55 +74,63 @@ export default function ShopPage() {
           </p>
         </div>
       </header>
-
-      <div className="grid grid-cols-1 gap-8">
-        <main>
-          <div className="flex justify-between items-center mb-6 p-4 rounded-lg bg-black/20 backdrop-blur-sm border border-white/10">
-              <Sheet>
-                  <SheetTrigger asChild>
-                      <Button variant="outline" className="flex items-center gap-2">
-                          <Filter className="h-4 w-4" />
-                          <span>Filters</span>
-                      </Button>
-                  </SheetTrigger>
-                  <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r border-white/10">
-                     <SheetHeader className="flex-row justify-between items-center border-b pb-4">
-                        <SheetTitle>Filters</SheetTitle>
-                        <Button variant="ghost" size="sm" onClick={clearFilters}>Clear all</Button>
-                     </SheetHeader>
-                     <div className="py-4">
-                       <Filters 
-                          priceRange={priceRange}
-                          setPriceRange={setPriceRange}
-                          selectedCategories={selectedCategories}
-                          setSelectedCategories={setSelectedCategories}
-                        />
-                     </div>
-                  </SheetContent>
-              </Sheet>
-              
-              <div className="flex items-center gap-4">
-                <p className="hidden sm:block text-sm text-muted-foreground">{sortedAndFilteredProducts.length} Products</p>
-                <Select value={sortOption} onValueChange={setSortOption}>
-                    <SelectTrigger className="w-[180px] bg-background border-white/20">
-                        <ArrowUpDown className="h-4 w-4 mr-2" />
-                        <SelectValue placeholder="Sort by" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="newest">Newest</SelectItem>
-                        <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                        <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                        <SelectItem value="rating-desc">Top Rated</SelectItem>
-                    </SelectContent>
-                </Select>
-              </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        {/* Desktop Filters */}
+        <aside className="hidden lg:block lg:col-span-1">
+          <div className="p-6 rounded-lg bg-black/20 backdrop-blur-sm border border-white/10 sticky top-24">
+            <div className="flex justify-between items-center border-b pb-4 mb-4">
+              <h3 className="font-headline text-xl font-bold">Filters</h3>
+              <Button variant="ghost" size="sm" onClick={clearFilters}>Clear all</Button>
+            </div>
+            {filtersComponent}
           </div>
+        </aside>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-            {sortedAndFilteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+        <main className="lg:col-span-3">
+            <div className="flex justify-between items-center mb-6">
+                {/* Mobile Filters */}
+                <div className="lg:hidden">
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button variant="outline" className="flex items-center gap-2">
+                                <Filter className="h-4 w-4" />
+                                <span>Filters</span>
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r border-white/10 p-6">
+                            <SheetHeader className="flex-row justify-between items-center border-b pb-4 mb-4">
+                                <SheetTitle>Filters</SheetTitle>
+                                <Button variant="ghost" size="sm" onClick={clearFilters}>Clear all</Button>
+                            </SheetHeader>
+                            {filtersComponent}
+                        </SheetContent>
+                    </Sheet>
+                </div>
+                
+                <div className="flex items-center gap-4 ml-auto">
+                    <p className="hidden sm:block text-sm text-muted-foreground">{sortedAndFilteredProducts.length} Products</p>
+                    <Select value={sortOption} onValueChange={setSortOption}>
+                        <SelectTrigger className="w-[180px] bg-background border-white/20">
+                            <ArrowUpDown className="h-4 w-4 mr-2" />
+                            <SelectValue placeholder="Sort by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="newest">Newest</SelectItem>
+                            <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                            <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                            <SelectItem value="rating-desc">Top Rated</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                {sortedAndFilteredProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                ))}
+            </div>
         </main>
       </div>
     </div>
