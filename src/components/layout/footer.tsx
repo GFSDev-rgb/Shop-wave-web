@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export function Footer() {
   return (
-    <footer className="bg-muted text-muted-foreground border-t">
+    <footer className="bg-black/20 backdrop-blur-sm text-muted-foreground border-t border-white/10">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
@@ -46,12 +46,12 @@ export function Footer() {
             <h3 className="font-headline text-lg font-semibold text-foreground">Newsletter</h3>
             <p className="mt-4 text-sm">Subscribe for the latest trends and offers.</p>
             <form className="mt-4 flex gap-2">
-              <Input type="email" placeholder="Your email" className="bg-background"/>
-              <Button type="submit" variant="outline" className="bg-primary text-primary-foreground hover:bg-primary/90">Subscribe</Button>
+              <Input type="email" placeholder="Your email" className="bg-black/20 border-white/20 placeholder:text-muted-foreground"/>
+              <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">Subscribe</Button>
             </form>
           </div>
         </div>
-        <div className="mt-12 border-t pt-8 text-center text-sm">
+        <div className="mt-12 border-t border-white/10 pt-8 text-center text-sm">
           <p>&copy; {new Date().getFullYear()} ShopWave. All Rights Reserved.</p>
         </div>
       </div>
