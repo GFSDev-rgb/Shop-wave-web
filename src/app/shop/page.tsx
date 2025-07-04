@@ -87,12 +87,13 @@ export default function ShopPage() {
                               <span>Filters</span>
                           </Button>
                       </SheetTrigger>
-                      <SheetContent side="left" className="bg-card border-l-0 border-r border-white/10">
+                      <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r border-white/10">
                          <Filters 
                             priceRange={priceRange}
                             setPriceRange={setPriceRange}
                             selectedCategories={selectedCategories}
                             setSelectedCategories={setSelectedCategories}
+                            className="bg-transparent border-none shadow-none"
                           />
                       </SheetContent>
                   </Sheet>

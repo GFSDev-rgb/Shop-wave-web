@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const categories = ["Apparel", "Accessories", "Footwear", "Home Goods", "Electronics", "Watches"];
 
@@ -19,6 +20,7 @@ interface FiltersProps {
   setPriceRange: (value: [number, number]) => void;
   selectedCategories: string[];
   setSelectedCategories: (categories: string[]) => void;
+  className?: string;
 }
 
 export function Filters({ 
@@ -26,6 +28,7 @@ export function Filters({
   setPriceRange,
   selectedCategories,
   setSelectedCategories,
+  className,
 }: FiltersProps) {
   
   const handleCategoryChange = (category: string) => {
@@ -42,7 +45,7 @@ export function Filters({
   };
 
   return (
-    <Card className="bg-black/20 backdrop-blur-sm border border-white/10">
+    <Card className={cn("bg-black/20 backdrop-blur-sm border border-white/10", className)}>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Filters</CardTitle>
         <Button variant="ghost" size="sm" onClick={clearFilters}>Clear all</Button>
