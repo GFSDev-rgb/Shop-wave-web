@@ -22,20 +22,20 @@ export default function Home() {
             <p className="mt-4 max-w-xl text-lg text-muted-foreground">
               Discover curated collections and unique finds. ShopWave brings you the best in modern style and quality.
             </p>
-            <Button asChild size="lg" className="mt-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <Button asChild size="lg" className="mt-8 shadow-lg hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1">
               <Link href="/shop">
                 Shop Now <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-center [perspective:1000px]">
             <Image
               src="https://storage.googleapis.com/aifirebase-7996c.appspot.com/image_1720743588204_67531.png"
               alt="An illustration of a person shopping online from a large mobile phone screen"
               data-ai-hint="online shopping"
               width={600}
               height={400}
-              className="rounded-lg object-contain"
+              className="rounded-lg object-contain shadow-2xl transition-transform duration-700 ease-in-out hover:[transform:rotateY(10deg)_scale(1.05)]"
               priority
             />
           </div>
