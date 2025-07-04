@@ -13,9 +13,9 @@ export default function AboutPage() {
 
         <div className="relative w-full h-96 rounded-lg overflow-hidden shadow-xl mb-16">
             <Image 
-                src="https://placehold.co/1200x500.png"
-                alt="Our Team"
-                data-ai-hint="diverse creative team"
+                src="https://i.pinimg.com/736x/a8/79/fa/a879fad4fc0fc8467602730a0b58f07a.jpg"
+                alt="Our Workspace"
+                data-ai-hint="creative workspace"
                 layout="fill"
                 objectFit="cover"
             />
