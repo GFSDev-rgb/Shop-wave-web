@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Filter, ArrowUpDown } from "lucide-react";
 
 export default function ShopPage() {
@@ -49,6 +49,10 @@ export default function ShopPage() {
     return result;
   }, [sortOption, priceRange, selectedCategories]);
 
+  const clearFilters = () => {
+    setPriceRange([0, 500]);
+    setSelectedCategories([]);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -73,13 +77,18 @@ export default function ShopPage() {
                       </Button>
                   </SheetTrigger>
                   <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r border-white/10">
-                     <Filters 
-                        priceRange={priceRange}
-                        setPriceRange={setPriceRange}
-                        selectedCategories={selectedCategories}
-                        setSelectedCategories={setSelectedCategories}
-                        className="bg-transparent border-none shadow-none"
-                      />
+                     <SheetHeader className="flex-row justify-between items-center border-b pb-4">
+                        <SheetTitle>Filters</SheetTitle>
+                        <Button variant="ghost" size="sm" onClick={clearFilters}>Clear all</Button>
+                     </SheetHeader>
+                     <div className="py-4">
+                       <Filters 
+                          priceRange={priceRange}
+                          setPriceRange={setPriceRange}
+                          selectedCategories={selectedCategories}
+                          setSelectedCategories={setSelectedCategories}
+                        />
+                     </div>
                   </SheetContent>
               </Sheet>
               
