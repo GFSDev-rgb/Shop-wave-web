@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { AppProviders } from '@/components/providers';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
+import { MainLayout } from '@/components/layout/main-layout';
 
 export const metadata: Metadata = {
   title: 'ShopWave',
@@ -27,11 +26,7 @@ export default function RootLayout({
       </head>
       <body className={cn('min-h-screen font-body antialiased')}>
         <AppProviders>
-          <div id="app" className="relative flex min-h-dvh flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          <MainLayout>{children}</MainLayout>
         </AppProviders>
       </body>
     </html>
