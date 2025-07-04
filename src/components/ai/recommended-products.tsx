@@ -23,7 +23,7 @@ export default function RecommendedProducts() {
   }, []);
 
   return (
-    <section className="bg-muted">
+    <section className="bg-transparent">
       <div className="container mx-auto px-4 py-16">
         <div className="flex items-center justify-center gap-4 mb-12">
             <Wand2 className="h-8 w-8 text-primary" />
