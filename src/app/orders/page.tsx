@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/use-auth';
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, orderBy, Timestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import type { Order } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,11 +32,10 @@ export default function OrdersPage() {
       try {
         const ordersCollectionRef = collection(db, 'orders');
         // Query for orders where the userId matches the current user's UID.
-        // This ensures data is isolated and private.
+        // Sorting is done client-side to avoid needing a composite index.
         const q = query(
           ordersCollectionRef, 
-          where('userId', '==', user.uid),
-          orderBy('createdAt', 'desc')
+          where('userId', '==', user.uid)
         );
 
         const querySnapshot = await getDocs(q);
@@ -50,6 +49,10 @@ export default function OrdersPage() {
               createdAt,
             }
         });
+        
+        // Sort orders by date client-side, newest first
+        fetchedOrders.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
         setOrders(fetchedOrders);
       } catch (error) {
         console.error("Error fetching orders:", error);
