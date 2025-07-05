@@ -3,7 +3,7 @@
 import { notFound, useParams } from "next/navigation";
 import Image from "next/image";
 import ProductDetailsClient from "./product-details-client";
-import { Star } from "lucide-react";
+import { Star, Pencil } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -13,14 +13,29 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { useProducts } from "@/hooks/use-products";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import type { Product } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import ProductForm from "@/components/admin/product-form";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
-  const { products, loading: productsLoading } = useProducts();
+  const { products, loading: productsLoading, updateProduct } = useProducts();
+  const { user, loading: authLoading } = useAuth();
   const [product, setProduct] = useState<Product | undefined | null>(undefined);
+  const [isEditSheetOpen, setEditSheetOpen] = useState(false);
+
+  const isAdmin = useMemo(() => user?.email === 'emammahadi822@gmail.com', [user]);
 
   useEffect(() => {
     if (!productsLoading && id) {
@@ -29,8 +44,15 @@ export default function ProductPage() {
     }
   }, [id, products, productsLoading]);
 
+  const handleUpdate = async (data: any) => {
+    if (product) {
+      await updateProduct(product.id, data);
+    }
+  };
 
-  if (productsLoading || product === undefined) {
+  const isLoading = productsLoading || authLoading;
+
+  if (isLoading || product === undefined) {
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="grid md:grid-cols-2 gap-12 items-start">
@@ -80,8 +102,34 @@ export default function ProductPage() {
 
         <div className="space-y-6">
           <div>
-            <p className="text-sm text-muted-foreground">{product.category}</p>
-            <h1 className="font-headline text-4xl md:text-5xl font-bold mt-1">{product.name}</h1>
+            <div className="flex justify-between items-start gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">{product.category}</p>
+                <h1 className="font-headline text-4xl md:text-5xl font-bold mt-1">{product.name}</h1>
+              </div>
+              {isAdmin && (
+                <Sheet open={isEditSheetOpen} onOpenChange={setEditSheetOpen}>
+                    <SheetTrigger asChild>
+                        <Button variant="outline">
+                            <Pencil className="mr-2 h-4 w-4"/>
+                            Edit
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l border-white/10 p-6 w-full max-w-md overflow-y-auto">
+                        <SheetHeader>
+                            <SheetTitle>Edit Product</SheetTitle>
+                            <SheetDescription>Update the details for "{product.name}".</SheetDescription>
+                        </SheetHeader>
+                        <ProductForm 
+                            product={product} 
+                            onSave={handleUpdate}
+                            onFinished={() => setEditSheetOpen(false)} 
+                        />
+                    </SheetContent>
+                </Sheet>
+              )}
+            </div>
+
             <div className="flex items-center gap-2 mt-4">
               <div className="flex items-center">
                 {Array.from({ length: 5 }).map((_, i) => (
