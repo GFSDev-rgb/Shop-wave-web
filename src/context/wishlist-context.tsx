@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useEffect, ReactNode, useCallback } from "react";
+import React, { createContext, useState, useEffect, ReactNode, useCallback, useMemo } from "react";
 import type { Product } from "@/lib/types";
 import { useAuth } from "@/hooks/use-auth";
 import { db } from "@/lib/firebase";
@@ -13,6 +13,7 @@ interface WishlistContextType {
   removeFromWishlist: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
   wishlistCount: number;
+  loading: boolean;
 }
 
 export const WishlistContext = createContext<WishlistContextType | undefined>(
@@ -21,6 +22,7 @@ export const WishlistContext = createContext<WishlistContextType | undefined>(
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
+  const [isContextLoaded, setIsContextLoaded] = useState(false);
   const { user, loading: authLoading } = useAuth();
   const { products, loading: productsLoading } = useProducts();
 
@@ -30,13 +32,14 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
       const storedWishlistRaw = localStorage.getItem("wishlist");
       if (storedWishlistRaw) {
         try {
-          const storedProducts: Product[] = JSON.parse(storedWishlistRaw);
-          setWishlistIds(storedProducts.map(p => p.id));
+          const storedIds: string[] = JSON.parse(storedWishlistRaw);
+          setWishlistIds(storedIds);
         } catch (error) {
           console.error("Error parsing wishlist from localStorage", error);
           localStorage.removeItem("wishlist");
         }
       }
+      setIsContextLoaded(true);
     }
   }, [user, authLoading]);
   
@@ -49,13 +52,12 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         const localWishlistRaw = localStorage.getItem("wishlist");
         if (localWishlistRaw) {
           try {
-            const localProducts: Product[] = JSON.parse(localWishlistRaw);
+            const localIds: string[] = JSON.parse(localWishlistRaw);
             localStorage.removeItem("wishlist");
 
-            if (localProducts.length > 0) {
+            if (localIds.length > 0) {
               const docSnap = await getDoc(wishlistDocRef);
               const remoteIds = docSnap.exists() ? (docSnap.data().productIds as string[]) : [];
-              const localIds = localProducts.map(p => p.id);
               const mergedIds = [...new Set([...remoteIds, ...localIds])];
               await setDoc(wishlistDocRef, { productIds: mergedIds }, { merge: true });
             }
@@ -73,8 +75,10 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setWishlistIds([]);
         }
+        setIsContextLoaded(true);
       }, (error) => {
         console.error("Error with wishlist snapshot listener:", error);
+        setIsContextLoaded(true);
       });
       return unsubscribe;
     }
@@ -86,13 +90,9 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
       const wishlistDocRef = doc(db, "wishlists", user.uid);
       await setDoc(wishlistDocRef, { productIds: newWishlistIds });
     } else {
-      if (productsLoading) return; // Don't save if products aren't loaded
-      const wishlistItemsForStorage = newWishlistIds
-        .map(id => products.find(p => p.id === id))
-        .filter((p): p is Product => !!p);
-      localStorage.setItem("wishlist", JSON.stringify(wishlistItemsForStorage));
+      localStorage.setItem("wishlist", JSON.stringify(newWishlistIds));
     }
-  }, [user, products, productsLoading]);
+  }, [user]);
 
   const addToWishlist = (product: Product) => {
     if (wishlistIds.includes(product.id)) return;
@@ -109,9 +109,14 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     return wishlistIds.includes(productId);
   };
   
-  const wishlistItems: Product[] = wishlistIds
-    .map((id) => products.find((p) => p.id === id))
-    .filter((p): p is Product => p !== undefined);
+  const wishlistItems: Product[] = useMemo(() => {
+    if (productsLoading) return [];
+    return wishlistIds
+      .map((id) => products.find((p) => p.id === id))
+      .filter((p): p is Product => p !== undefined);
+  }, [wishlistIds, products, productsLoading]);
+
+  const loading = authLoading || productsLoading || !isContextLoaded;
 
   return (
     <WishlistContext.Provider
@@ -121,6 +126,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         removeFromWishlist,
         isInWishlist,
         wishlistCount: wishlistItems.length,
+        loading
       }}
     >
       {children}
