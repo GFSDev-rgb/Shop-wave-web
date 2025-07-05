@@ -37,7 +37,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="container flex min-h-dvh w-screen flex-col items-center justify-center p-4">
+    <div className="container flex flex-1 flex-col items-center justify-center p-4">
       <Card className="mx-auto max-w-sm w-full bg-card/50 backdrop-blur-lg border-white/20">
         <CardHeader className="items-center text-center">
           <UserPlus className="h-10 w-10 mb-4 text-primary" />
@@ -71,7 +71,7 @@ export default function SignupPage() {
             </div>
             <Button
               type="submit"
-              className="w-full mt-2 font-headline bg-white/10 border border-white/20 backdrop-blur-sm hover:bg-white/20"
+              className="w-full mt-2 font-headline"
               disabled={loading}
             >
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Create an account'}
