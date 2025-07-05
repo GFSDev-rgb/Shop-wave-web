@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useState, useEffect, ReactNode, useCallback } from "react";
@@ -87,48 +88,66 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
 
   const addProduct = useCallback(async (productData: ProductFormData) => {
     if (!db) {
-        console.error("Cannot add product, Firestore is not configured.");
-        return;
+      const error = new Error("Cannot add product, Firestore is not configured.");
+      console.error(error);
+      throw error;
     }
-    const productsCollectionRef = collection(db, "products");
-    const { image1, image2, image3, ...rest } = productData;
-    const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
-    const newProductData = {
-      ...rest,
-      rating: 0,
-      reviews: 0,
-      image: image1,
-      images: images,
-    };
-    await addDoc(productsCollectionRef, newProductData);
-    await fetchProducts(); // Refetch to update UI
+    try {
+      const productsCollectionRef = collection(db, "products");
+      const { image1, image2, image3, ...rest } = productData;
+      const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
+      const newProductData = {
+        ...rest,
+        rating: 0,
+        reviews: 0,
+        image: image1,
+        images: images,
+      };
+      await addDoc(productsCollectionRef, newProductData);
+      await fetchProducts(); // Refetch to update UI
+    } catch (error) {
+      console.error("Error adding product in context:", error);
+      throw error;
+    }
   }, [fetchProducts]);
 
   const updateProduct = useCallback(async (productId: string, productData: ProductFormData) => {
     if (!db) {
-        console.error("Cannot update product, Firestore is not configured.");
-        return;
+        const error = new Error("Cannot update product, Firestore is not configured.");
+        console.error(error);
+        throw error;
     }
-    const productDoc = doc(db, "products", productId);
-    const { image1, image2, image3, ...rest } = productData;
-    const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
-    const updatedData = {
-      ...rest,
-      image: image1,
-      images: images,
-    };
-    await updateDoc(productDoc, updatedData);
-    await fetchProducts(); // Refetch to update UI
+    try {
+      const productDoc = doc(db, "products", productId);
+      const { image1, image2, image3, ...rest } = productData;
+      const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
+      const updatedData = {
+        ...rest,
+        image: image1,
+        images: images,
+      };
+      await updateDoc(productDoc, updatedData);
+      await fetchProducts(); // Refetch to update UI
+    } catch (error) {
+        console.error("Error updating product in context:", error);
+        throw error;
+    }
   }, [fetchProducts]);
 
   const deleteProduct = useCallback(async (productId: string) => {
     if (!db) {
-        console.error("Cannot delete product, Firestore is not configured.");
-        return;
+      const error = new Error("Cannot delete product, Firestore is not configured.");
+      console.error(error);
+      throw error;
     }
-    const productDoc = doc(db, "products", productId);
-    await deleteDoc(productDoc);
-    await fetchProducts(); // Refetch to update UI
+    try {
+      const productDoc = doc(db, "products", productId);
+      await deleteDoc(productDoc);
+      await fetchProducts(); // Refetch to update UI
+    } catch (error) {
+      console.error("Error deleting product in context:", error);
+      throw error;
+    }
   }, [fetchProducts]);
 
   return (
