@@ -63,21 +63,6 @@ export default function ShopPage() {
     setSelectedCategories([]);
   };
 
-  const filtersContent = (
-    <div className="p-6">
-      <div className="flex justify-between items-center border-b pb-4 mb-4">
-        <h3 className="font-headline text-xl font-bold">Filters</h3>
-        <Button variant="ghost" size="sm" onClick={clearFilters}>Clear all</Button>
-      </div>
-      <Filters
-        priceRange={priceRange}
-        setPriceRange={setPriceRange}
-        selectedCategories={selectedCategories}
-        setSelectedCategories={setSelectedCategories}
-      />
-    </div>
-  );
-
   return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-12 text-center relative overflow-hidden rounded-lg p-8 bg-black/20 backdrop-blur-sm border border-white/10">
@@ -102,8 +87,24 @@ export default function ShopPage() {
                                 <span>Filters</span>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r border-white/10 p-0 w-[320px] sm:w-[400px]">
-                            {filtersContent}
+                        <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r border-white/10 w-[320px] sm:w-[400px] flex flex-col p-0">
+                            <SheetHeader className="p-6 pb-4 border-b border-white/10">
+                                <SheetTitle className="font-headline text-2xl">Filter Products</SheetTitle>
+                                <SheetDescription>
+                                    Refine your search by category and price.
+                                </SheetDescription>
+                            </SheetHeader>
+                            <div className="p-6 flex-1 overflow-y-auto">
+                                <Filters
+                                    priceRange={priceRange}
+                                    setPriceRange={setPriceRange}
+                                    selectedCategories={selectedCategories}
+                                    setSelectedCategories={setSelectedCategories}
+                                />
+                            </div>
+                            <div className="p-6 border-t border-white/10">
+                                <Button variant="ghost" className="w-full" onClick={clearFilters}>Clear all filters</Button>
+                            </div>
                         </SheetContent>
                     </Sheet>
 
