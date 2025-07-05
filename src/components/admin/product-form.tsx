@@ -65,13 +65,22 @@ export default function ProductForm({ product, onSave, onFinished }: ProductForm
   const { isSubmitting } = form.formState;
 
   const handleSubmit = async (data: ProductFormValues) => {
-    await onSave(data);
-    toast({
-      title: product ? "Product Updated" : "Product Added",
-      description: `"${data.name}" has been saved successfully.`,
-    });
-    onFinished?.();
-    if (!product) form.reset();
+    try {
+      await onSave(data);
+      toast({
+        title: product ? "Product Updated" : "Product Added",
+        description: `"${data.name}" has been saved successfully.`,
+      });
+      onFinished?.();
+      if (!product) form.reset();
+    } catch (error) {
+      console.error("Failed to save product:", error);
+      toast({
+        variant: "destructive",
+        title: "Save Failed",
+        description: "Could not save product. Please check console for errors.",
+      });
+    }
   };
 
   return (

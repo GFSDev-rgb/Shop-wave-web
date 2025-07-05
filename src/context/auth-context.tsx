@@ -70,6 +70,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!auth) return;
     await firebaseSignOut(auth);
     setUser(null);
+    // Clear guest data on sign out
+    localStorage.removeItem('cart');
+    localStorage.removeItem('wishlist');
     router.push('/login');
   };
 

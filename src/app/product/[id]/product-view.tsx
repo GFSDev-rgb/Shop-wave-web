@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import ProductDetailsClient from "./product-details-client";
 import { Star, Pencil } from "lucide-react";
@@ -27,17 +27,27 @@ import {
 import ProductForm from "@/components/admin/product-form";
 
 export default function ProductView({ initialProduct }: { initialProduct: Product }) {
-  const { updateProduct } = useProducts();
+  const { products, updateProduct } = useProducts();
   const { isAdmin } = useAuth();
   // Use state to allow for optimistic updates by admins
   const [product, setProduct] = useState<Product>(initialProduct);
   const [isEditSheetOpen, setEditSheetOpen] = useState(false);
 
+  // This effect ensures the product data on this page is always in sync 
+  // with the global state after an edit.
+  useEffect(() => {
+    const updatedProductFromContext = products.find(p => p.id === initialProduct.id);
+    if (updatedProductFromContext) {
+      setProduct(updatedProductFromContext);
+    }
+  }, [products, initialProduct.id]);
+
+
   const handleUpdate = async (data: any) => {
     if (product) {
       // Optimistically update UI
       const updatedImages = [data.image1, data.image2, data.image3].filter((img): img is string => !!img && img.trim() !== '');
-      const optimisticProduct = {
+      const optimisticProduct: Product = {
         ...product,
         ...data,
         images: updatedImages,
@@ -49,6 +59,10 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
       await updateProduct(product.id, data);
     }
   };
+
+  if (!product) {
+      return null;
+  }
 
   return (
     <div className="container mx-auto px-4 py-12">
