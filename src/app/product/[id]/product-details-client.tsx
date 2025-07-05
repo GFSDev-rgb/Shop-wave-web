@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -34,7 +35,6 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
       title: "Added to cart",
       description: `${quantity} x ${product.name} added to your cart.`,
     });
-    router.push("/cart");
   };
 
   const handleWishlistToggle = () => {

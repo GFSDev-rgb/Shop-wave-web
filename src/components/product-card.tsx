@@ -110,7 +110,6 @@ export default function ProductCard({ product, className }: ProductCardProps) {
         title: "Added to cart",
         description: `${localProduct.name} is now in your cart.`,
       });
-      router.push("/cart");
     }
   };
 
@@ -127,12 +126,20 @@ export default function ProductCard({ product, className }: ProductCardProps) {
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
       handleAdminAction(e);
-      await deleteProduct(localProduct.id);
-      toast({
-          variant: "destructive",
-          title: "Product Deleted",
-          description: `"${localProduct.name}" has been removed.`,
-      })
+      try {
+        await deleteProduct(localProduct.id);
+        toast({
+            variant: "destructive",
+            title: "Product Deleted",
+            description: `"${localProduct.name}" has been removed.`,
+        })
+      } catch (error: any) {
+         toast({
+            variant: "destructive",
+            title: "Delete Failed",
+            description: error.message || "Could not delete product.",
+        })
+      }
   }
 
   return (
