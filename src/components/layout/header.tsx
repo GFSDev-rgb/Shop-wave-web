@@ -32,7 +32,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const navLinks = [
+const allNavLinks = [
   { href: "/", label: "Home", icon: Home },
   { href: "/shop", label: "Shop", icon: Store },
   { href: "/about", label: "About Us", icon: Users },
@@ -49,6 +49,13 @@ export function Header() {
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const navLinks = allNavLinks.filter(link => {
+    if (pathname === '/profile' && link.href === '/about') {
+      return false;
+    }
+    return true;
+  });
 
   const renderUserAuth = () => {
     if (loading) {
