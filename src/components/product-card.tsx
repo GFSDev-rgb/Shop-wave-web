@@ -109,9 +109,9 @@ export default function ProductCard({ product, className }: ProductCardProps) {
     }
   };
 
-  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
       handleAdminAction(e);
-      deleteProduct(product.id);
+      await deleteProduct(product.id);
       toast({
           variant: "destructive",
           title: "Product Deleted",
@@ -119,8 +119,8 @@ export default function ProductCard({ product, className }: ProductCardProps) {
       })
   }
 
-  const handleUpdate = (data: any) => {
-    updateProduct(product.id, data)
+  const handleUpdate = async (data: any) => {
+    await updateProduct(product.id, data)
   }
 
   return (

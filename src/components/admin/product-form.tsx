@@ -39,7 +39,7 @@ type ProductFormValues = z.infer<typeof productSchema>;
 
 interface ProductFormProps {
   product?: Product;
-  onSave: (data: ProductFormValues) => void;
+  onSave: (data: ProductFormValues) => Promise<void>;
   onFinished?: () => void;
 }
 
@@ -62,8 +62,8 @@ export default function ProductForm({ product, onSave, onFinished }: ProductForm
 
   const { isSubmitting } = form.formState;
 
-  const handleSubmit = (data: ProductFormValues) => {
-    onSave(data);
+  const handleSubmit = async (data: ProductFormValues) => {
+    await onSave(data);
     toast({
       title: product ? "Product Updated" : "Product Added",
       description: `"${data.name}" has been saved successfully.`,

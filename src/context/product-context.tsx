@@ -3,6 +3,15 @@
 import React, { createContext, useState, useEffect, ReactNode, useCallback } from "react";
 import type { Product } from "@/lib/types";
 import { products as initialProducts } from "@/lib/data";
+import { db } from "@/lib/firebase";
+import { 
+  collection, 
+  getDocs, 
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  doc
+} from "firebase/firestore";
 
 // This is the shape of the data coming from the updated product form
 interface ProductFormData {
@@ -18,85 +27,87 @@ interface ProductFormData {
 interface ProductContextType {
   products: Product[];
   loading: boolean;
-  addProduct: (productData: ProductFormData) => void;
-  updateProduct: (productId: string, productData: ProductFormData) => void;
-  deleteProduct: (productId: string) => void;
+  addProduct: (productData: ProductFormData) => Promise<void>;
+  updateProduct: (productId: string, productData: ProductFormData) => Promise<void>;
+  deleteProduct: (productId: string) => Promise<void>;
 }
 
 export const ProductContext = createContext<ProductContextType | undefined>(undefined);
+
+const productsCollectionRef = collection(db, "products");
 
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
     try {
-      const storedProducts = localStorage.getItem("products");
-      if (storedProducts) {
-        setProducts(JSON.parse(storedProducts));
+      const data = await getDocs(productsCollectionRef);
+
+      // Seed database if it's empty
+      if (data.empty && initialProducts.length > 0) {
+        for (const product of initialProducts) {
+          const { id, ...productData } = product; // Firestore will generate its own ID
+          await addDoc(productsCollectionRef, productData);
+        }
+        // Refetch after seeding
+        const seededData = await getDocs(productsCollectionRef);
+        const seededProducts = seededData.docs.map((doc) => ({
+            ...(doc.data() as Omit<Product, 'id'>),
+            id: doc.id,
+        }));
+        setProducts(seededProducts);
       } else {
-        // If nothing in local storage, initialize with static data
-        setProducts(initialProducts);
-        localStorage.setItem("products", JSON.stringify(initialProducts));
+        const fetchedProducts = data.docs.map((doc) => ({
+          ...(doc.data() as Omit<Product, 'id'>),
+          id: doc.id,
+        }));
+        setProducts(fetchedProducts);
       }
     } catch (error) {
-      console.error("Failed to access localStorage:", error);
-      // Fallback to initial data if localStorage is unavailable
-      setProducts(initialProducts);
+      console.error("Error fetching products from Firestore:", error);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if (!loading) {
-        try {
-            localStorage.setItem("products", JSON.stringify(products));
-        } catch (error) {
-            console.error("Failed to save to localStorage:", error);
-        }
-    }
-  }, [products, loading]);
+    fetchProducts();
+  }, [fetchProducts]);
 
-  const addProduct = useCallback((productData: ProductFormData) => {
-    setProducts((prevProducts) => {
-      const { image1, image2, image3, ...rest } = productData;
-      const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
-      const newProduct: Product = {
-        ...rest,
-        id: new Date().toISOString(), // Simple unique ID
-        rating: 0,
-        reviews: 0,
-        image: image1,
-        images: images,
-      };
-      return [...prevProducts, newProduct];
-    });
-  }, []);
+  const addProduct = useCallback(async (productData: ProductFormData) => {
+    const { image1, image2, image3, ...rest } = productData;
+    const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
+    const newProductData = {
+      ...rest,
+      rating: 0,
+      reviews: 0,
+      image: image1,
+      images: images,
+    };
+    await addDoc(productsCollectionRef, newProductData);
+    await fetchProducts(); // Refetch to update UI
+  }, [fetchProducts]);
 
-  const updateProduct = useCallback((productId: string, productData: ProductFormData) => {
-    setProducts((prevProducts) =>
-      prevProducts.map((p) => {
-        if (p.id === productId) {
-          const { image1, image2, image3, ...rest } = productData;
-          const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
-          return {
-            ...p,
-            ...rest,
-            image: image1,
-            images: images,
-          };
-        }
-        return p;
-      })
-    );
-  }, []);
+  const updateProduct = useCallback(async (productId: string, productData: ProductFormData) => {
+    const productDoc = doc(db, "products", productId);
+    const { image1, image2, image3, ...rest } = productData;
+    const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
+    const updatedData = {
+      ...rest,
+      image: image1,
+      images: images,
+    };
+    await updateDoc(productDoc, updatedData);
+    await fetchProducts(); // Refetch to update UI
+  }, [fetchProducts]);
 
-  const deleteProduct = useCallback((productId: string) => {
-    setProducts((prevProducts) =>
-      prevProducts.filter((p) => p.id !== productId)
-    );
-  }, []);
+  const deleteProduct = useCallback(async (productId: string) => {
+    const productDoc = doc(db, "products", productId);
+    await deleteDoc(productDoc);
+    await fetchProducts(); // Refetch to update UI
+  }, [fetchProducts]);
 
   return (
     <ProductContext.Provider
