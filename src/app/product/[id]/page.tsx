@@ -19,18 +19,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
-  const { getProductById } = useProducts();
+  const { getProductById, loading: productsLoading } = useProducts();
   const [product, setProduct] = useState<Product | undefined | null>(undefined);
 
   useEffect(() => {
-    if (id) {
+    if (!productsLoading && id) {
       const foundProduct = getProductById(id);
       setProduct(foundProduct);
     }
-  }, [id, getProductById]);
+  }, [id, getProductById, productsLoading]);
 
 
-  if (product === undefined) {
+  if (productsLoading || product === undefined) {
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="grid md:grid-cols-2 gap-12 items-start">

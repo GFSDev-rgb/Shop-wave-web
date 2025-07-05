@@ -17,6 +17,7 @@ interface ProductFormData {
 
 interface ProductContextType {
   products: Product[];
+  loading: boolean;
   addProduct: (productData: ProductFormData) => void;
   updateProduct: (productId: string, productData: ProductFormData) => void;
   deleteProduct: (productId: string) => void;
@@ -26,7 +27,8 @@ interface ProductContextType {
 export const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     try {
@@ -35,22 +37,27 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
         setProducts(JSON.parse(storedProducts));
       } else {
         // If nothing in local storage, initialize with static data
+        setProducts(initialProducts);
         localStorage.setItem("products", JSON.stringify(initialProducts));
       }
     } catch (error) {
       console.error("Failed to access localStorage:", error);
       // Fallback to initial data if localStorage is unavailable
       setProducts(initialProducts);
+    } finally {
+        setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    try {
-      localStorage.setItem("products", JSON.stringify(products));
-    } catch (error) {
-      console.error("Failed to save to localStorage:", error);
+    if (!loading) {
+        try {
+            localStorage.setItem("products", JSON.stringify(products));
+        } catch (error) {
+            console.error("Failed to save to localStorage:", error);
+        }
     }
-  }, [products]);
+  }, [products, loading]);
 
   const addProduct = useCallback((productData: ProductFormData) => {
     setProducts((prevProducts) => {
@@ -99,7 +106,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ProductContext.Provider
-      value={{ products, addProduct, updateProduct, deleteProduct, getProductById }}
+      value={{ products, loading, addProduct, updateProduct, deleteProduct, getProductById }}
     >
       {children}
     </ProductContext.Provider>

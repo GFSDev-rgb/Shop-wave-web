@@ -25,10 +25,11 @@ export default function ShopPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isAddSheetOpen, setAddSheetOpen] = useState(false);
 
-  const { products, addProduct } = useProducts();
+  const { products, addProduct, loading: productsLoading } = useProducts();
   const { user, loading: authLoading } = useAuth();
 
   const isAdmin = useMemo(() => user?.email === 'emammahadi822@gmail.com', [user]);
+  const isLoading = authLoading || productsLoading;
 
   const sortedAndFilteredProducts = useMemo(() => {
     let result = products
@@ -79,18 +80,18 @@ export default function ShopPage() {
   );
 
   const mobileFilters = (
-    <>
-      <SheetHeader className="flex-row justify-between items-center border-b pb-4 mb-4">
-        <SheetTitle>Filters</SheetTitle>
+    <div className="p-6">
+      <div className="flex-row justify-between items-center border-b pb-4 mb-4 flex">
+        <h3 className="font-headline text-xl font-bold">Filters</h3>
         <Button variant="ghost" size="sm" onClick={clearFilters}>Clear all</Button>
-      </SheetHeader>
+      </div>
       <Filters
         priceRange={priceRange}
         setPriceRange={setPriceRange}
         selectedCategories={selectedCategories}
         setSelectedCategories={setSelectedCategories}
       />
-    </>
+    </div>
   );
 
   return (
@@ -121,7 +122,7 @@ export default function ShopPage() {
                                 <span>Filters</span>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r border-white/10 p-6">
+                        <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r border-white/10 p-0">
                             {mobileFilters}
                         </SheetContent>
                     </Sheet>
@@ -163,7 +164,7 @@ export default function ShopPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-                {authLoading ? (
+                {isLoading ? (
                     Array.from({ length: 6 }).map((_, i) => (
                         <div key={i} className="flex flex-col space-y-3">
                             <Skeleton className="h-[400px] w-full rounded-lg bg-black/20" />

@@ -12,9 +12,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
 
 export default function Home() {
-  const { products } = useProducts();
+  const { products, loading: productsLoading } = useProducts();
   const { loading: authLoading } = useAuth();
   const featuredProducts = products.slice(0, 4);
+
+  const isLoading = authLoading || productsLoading;
 
   return (
     <div className="flex flex-col gap-16 md:gap-24">
@@ -52,7 +54,7 @@ export default function Home() {
       <section className="container mx-auto px-4">
         <h2 className="font-headline text-4xl font-bold text-center mb-12">Featured Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {authLoading ? (
+          {isLoading ? (
              Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex flex-col space-y-3">
                     <Skeleton className="h-[400px] w-full rounded-lg bg-black/20" />
