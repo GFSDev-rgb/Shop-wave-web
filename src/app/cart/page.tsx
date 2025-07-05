@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +16,7 @@ import type { Metadata } from "next";
 
 export default function CartPage() {
   const { cartItems, updateQuantity, removeFromCart, cartTotal, cartCount, loading } = useCart();
+  const router = useRouter();
 
   if (loading) {
     return (
@@ -50,8 +52,8 @@ export default function CartPage() {
           <ShoppingBag className="mx-auto h-16 w-16 text-muted-foreground" />
           <h2 className="mt-6 text-2xl font-semibold">Your cart is empty</h2>
           <p className="mt-2 text-muted-foreground">Looks like you haven't added anything to your cart yet.</p>
-          <Button asChild className="mt-6">
-            <Link href="/shop">Start Shopping</Link>
+          <Button className="mt-6" onClick={() => router.push('/shop')}>
+            Start Shopping
           </Button>
         </div>
       ) : (
