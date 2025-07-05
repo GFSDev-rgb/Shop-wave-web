@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -5,9 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin } from "lucide-react";
 
+export const metadata: Metadata = {
+  title: 'Contact Us',
+  description: 'Have a question? We\'d love to hear from you. Contact the ShopWave team via our form, email, or phone.',
+};
+
 export default function ContactPage() {
   return (
-    <div className="container mx-auto px-4 py-16">
+    <div className="container mx-auto px-4 py-16 flex-1">
       <header className="text-center mb-16">
         <h1 className="font-headline text-5xl md:text-6xl font-bold">Get In Touch</h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">

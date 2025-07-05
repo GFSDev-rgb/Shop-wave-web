@@ -5,17 +5,20 @@ import Link from "next/link";
 import { useCart } from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import type { Metadata } from "next";
+
+// Note: Metadata cannot be exported from client components. 
+// This would need to be a server component to have page-specific metadata.
 
 export default function CartPage() {
   const { cartItems, updateQuantity, removeFromCart, cartTotal, cartCount, loading } = useCart();
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-12 flex-1">
         <header className="text-center mb-12">
             <Skeleton className="h-12 w-3/4 mx-auto" />
             <Skeleton className="h-6 w-1/4 mx-auto mt-4" />
@@ -34,7 +37,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 flex-1">
       <header className="text-center mb-12">
         <h1 className="font-headline text-5xl font-bold">Your Shopping Cart</h1>
         <p className="mt-2 text-lg text-muted-foreground">

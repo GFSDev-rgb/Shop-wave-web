@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import type { Metadata } from "next";
 import { Product } from "@/lib/types";
 import ProductCard from "@/components/product-card";
 import { Filters } from "./filters";
@@ -18,6 +19,9 @@ import { useProducts } from "@/hooks/use-products";
 import { useAuth } from "@/hooks/use-auth";
 import ProductForm from "@/components/admin/product-form";
 import { Skeleton } from "@/components/ui/skeleton";
+
+// Note: Metadata cannot be exported from client components. 
+// This would need to be a server component to have page-specific metadata.
 
 export default function ShopPage() {
   const [sortOption, setSortOption] = useState("newest");
@@ -64,8 +68,8 @@ export default function ShopPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <header className="mb-12 text-center relative overflow-hidden rounded-lg p-8 bg-black/20 backdrop-blur-sm border border-white/10">
+    <div className="container mx-auto px-4 py-8 flex-1">
+      <header className="mb-12 text-center relative overflow-hidden rounded-lg p-8 bg-card/50 backdrop-blur-sm border">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
         <div className="relative">
           <h1 className="font-headline text-5xl font-bold">Our Collection</h1>
@@ -87,8 +91,8 @@ export default function ShopPage() {
                                 <span>Filters</span>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r border-white/10 w-[320px] sm:w-[400px] flex flex-col p-0">
-                            <SheetHeader className="p-6 pb-4 border-b border-white/10">
+                        <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r w-[320px] sm:w-[400px] flex flex-col p-0">
+                            <SheetHeader className="p-6 pb-4 border-b">
                                 <SheetTitle className="font-headline text-2xl">Filter Products</SheetTitle>
                                 <SheetDescription>
                                     Refine your search by category and price.
@@ -102,7 +106,7 @@ export default function ShopPage() {
                                     setSelectedCategories={setSelectedCategories}
                                 />
                             </div>
-                            <div className="p-6 border-t border-white/10">
+                            <div className="p-6 border-t">
                                 <Button variant="ghost" className="w-full" onClick={clearFilters}>Clear all filters</Button>
                             </div>
                         </SheetContent>
@@ -116,7 +120,7 @@ export default function ShopPage() {
                                     Add Product
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l border-white/10 p-6 w-full max-w-md overflow-y-auto">
+                            <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l p-6 w-full max-w-md overflow-y-auto">
                                 <SheetHeader>
                                     <SheetTitle>Add a New Product</SheetTitle>
                                     <SheetDescription>Fill in the details below to add a new product to the store.</SheetDescription>
@@ -130,7 +134,7 @@ export default function ShopPage() {
                 <div className="flex items-center gap-4">
                     <p className="hidden sm:block text-sm text-muted-foreground">{sortedAndFilteredProducts.length} Products</p>
                     <Select value={sortOption} onValueChange={setSortOption}>
-                        <SelectTrigger className="w-[180px] bg-background border-white/20">
+                        <SelectTrigger className="w-[180px] bg-background">
                             <ArrowUpDown className="h-4 w-4 mr-2" />
                             <SelectValue placeholder="Sort by" />
                         </SelectTrigger>
@@ -148,7 +152,7 @@ export default function ShopPage() {
                 {isLoading ? (
                     Array.from({ length: 6 }).map((_, i) => (
                         <div key={i} className="flex flex-col space-y-3">
-                            <Skeleton className="h-[400px] w-full rounded-lg bg-black/20" />
+                            <Skeleton className="h-[400px] w-full rounded-lg" />
                         </div>
                     ))
                 ) : sortedAndFilteredProducts.map((product) => (

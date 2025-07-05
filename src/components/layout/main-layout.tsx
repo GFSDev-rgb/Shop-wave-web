@@ -12,9 +12,9 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const showHeaderFooter = !noHeaderFooterPaths.includes(pathname);
 
   return (
-    <div id="app" className="relative flex min-h-dvh flex-col">
+    <div className="relative flex min-h-dvh flex-col">
       {showHeaderFooter && <Header />}
-      <main className="flex-1 flex">{children}</main>
+      <main className="flex flex-1 flex-col">{children}</main>
       {showHeaderFooter && <Footer />}
     </div>
   );

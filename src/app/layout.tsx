@@ -5,8 +5,11 @@ import { AppProviders } from '@/components/providers';
 import { MainLayout } from '@/components/layout/main-layout';
 
 export const metadata: Metadata = {
-  title: 'ShopWave',
-  description: 'The new wave of online shopping.',
+  title: {
+    template: '%s | ShopWave',
+    default: 'ShopWave - The New Wave of Online Shopping',
+  },
+  description: 'Discover curated collections and unique finds. ShopWave brings you the best in modern style and quality, delivered to your doorstep.',
 };
 
 export default function RootLayout({
@@ -20,7 +23,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Asap:wght@300&family=Playfair+Display:wght@700&family=PT+Sans:wght@400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=PT+Sans:wght@400;700&display=swap"
           rel="stylesheet"
         />
       </head>

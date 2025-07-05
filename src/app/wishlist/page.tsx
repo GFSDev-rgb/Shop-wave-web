@@ -7,11 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Heart } from "lucide-react";
 
+// Note: Metadata cannot be exported from client components. 
+// This would need to be a server component to have page-specific metadata.
+
 export default function WishlistPage() {
   const { wishlistItems, loading } = useWishlist();
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 flex-1">
       <header className="text-center mb-12">
         <h1 className="font-headline text-5xl font-bold">Your Wishlist</h1>
         <p className="mt-2 text-lg text-muted-foreground">
@@ -23,7 +26,7 @@ export default function WishlistPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex flex-col space-y-3">
-                    <Skeleton className="h-[400px] w-full rounded-lg bg-black/20" />
+                    <Skeleton className="h-[400px] w-full rounded-lg" />
                 </div>
             ))}
           </div>
