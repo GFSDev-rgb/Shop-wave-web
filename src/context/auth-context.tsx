@@ -10,8 +10,8 @@ interface AuthContextType {
   loading: boolean;
   isAdmin: boolean;
   isFirebaseEnabled: boolean;
-  signIn: (email: string, pass: string) => Promise<any>;
-  signUp: (email: string, pass: string) => Promise<any>;
+  signIn: (email: string, pass: string) => Promise<void>;
+  signUp: (email: string, pass: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -40,11 +40,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!auth) throw new Error("Firebase is not configured. Please check your .env file.");
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-      setUser(userCredential.user);
-      return userCredential;
+      // The onAuthStateChanged listener handles setting the user state, this just performs the login.
+      await signInWithEmailAndPassword(auth, email, pass);
     } catch(error) {
-        console.error("Error signing in", error)
+        console.error("Error signing in", error);
         throw error;
     } finally {
       setLoading(false);
@@ -55,11 +54,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!auth) throw new Error("Firebase is not configured. Please check your .env file.");
     setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-      setUser(userCredential.user);
-      return userCredential;
+      // The onAuthStateChanged listener handles setting the user state, this just performs the signup.
+      await createUserWithEmailAndPassword(auth, email, pass);
     } catch(error) {
-        console.error("Error signing up", error)
+        console.error("Error signing up", error);
         throw error;
     } finally {
       setLoading(false);
@@ -69,8 +67,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = async () => {
     if (!auth) return;
     await firebaseSignOut(auth);
-    setUser(null);
-    // Clear guest data on sign out
+    // User state will be set to null by onAuthStateChanged.
+    // Clear guest data from local storage on sign out.
     localStorage.removeItem('cart');
     localStorage.removeItem('wishlist');
     router.push('/login');

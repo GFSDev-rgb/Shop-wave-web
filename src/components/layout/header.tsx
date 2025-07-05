@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, Menu, Search, ShoppingBag, UserPlus, LogIn, LogOut, Home, Store, Users, Mail } from "lucide-react";
+import { Heart, Menu, Search, ShoppingBag, UserPlus, LogIn, LogOut, Home, Store, Users, Mail, Package, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -71,10 +71,22 @@ export function Header() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem disabled>Profile</DropdownMenuItem>
-            <DropdownMenuItem disabled>Settings</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/orders" className="cursor-pointer flex items-center">
+                <Package className="mr-2 h-4 w-4" />
+                <span>My Orders</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem disabled>
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+            </DropdownMenuItem>
+             <DropdownMenuItem disabled>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={signOut}>
+            <DropdownMenuItem onClick={signOut} className="cursor-pointer">
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>
@@ -201,6 +213,18 @@ export function Header() {
                   {user && (
                     <>
                       <Separator className="my-4 bg-white/10" />
+                       <SheetClose asChild>
+                        <Link
+                          href="/orders"
+                          className={cn(
+                            "flex items-center gap-4 px-2.5 py-3 rounded-lg text-base font-medium",
+                            pathname === '/orders' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                          )}
+                        >
+                          <Package className="h-5 w-5" />
+                          My Orders
+                        </Link>
+                      </SheetClose>
                       <SheetClose asChild>
                         <Link
                           href="/wishlist"

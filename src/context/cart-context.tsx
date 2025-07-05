@@ -46,7 +46,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user, authLoading]);
 
-  // Effect to sync cart with Firestore for logged-in users
+  // Effect to sync cart with Firestore for logged-in users.
+  // The cart for a user is stored in a document inside the 'carts' collection,
+  // with the document ID being the user's UID for data isolation.
   useEffect(() => {
     if (user && db) {
       const cartDocRef = doc(db, "carts", user.uid);
@@ -62,7 +64,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
               const docSnap = await getDoc(cartDocRef);
               const remoteState = docSnap.exists() ? (docSnap.data().items as CartState) : {};
               
-              // Merge local cart into remote cart
+              // Merge guest cart into the logged-in user's cart
               Object.entries(localCartState).forEach(([productId, quantity]) => {
                 remoteState[productId] = (remoteState[productId] || 0) + quantity;
               });

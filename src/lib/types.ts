@@ -18,3 +18,19 @@ export type CartItem = {
 export type WishlistItem = {
   product: Product;
 };
+
+export type OrderItem = {
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+};
+
+export type Order = {
+  id: string;
+  userId: string;
+  createdAt: number; // Using number for JS Date timestamp
+  items: OrderItem[];
+  total: number;
+};

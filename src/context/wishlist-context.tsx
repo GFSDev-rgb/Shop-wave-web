@@ -43,7 +43,9 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user, authLoading]);
   
-  // Sync with Firestore for logged-in users
+  // Sync with Firestore for logged-in users.
+  // The wishlist for a user is stored in a document inside the 'wishlists' collection,
+  // with the document ID being the user's UID for data isolation.
   useEffect(() => {
     if (user && db) {
       const wishlistDocRef = doc(db, "wishlists", user.uid);
@@ -58,6 +60,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
             if (localIds.length > 0) {
               const docSnap = await getDoc(wishlistDocRef);
               const remoteIds = docSnap.exists() ? (docSnap.data().productIds as string[]) : [];
+              // Merge and deduplicate IDs from guest session and Firestore
               const mergedIds = [...new Set([...remoteIds, ...localIds])];
               await setDoc(wishlistDocRef, { productIds: mergedIds }, { merge: true });
             }
