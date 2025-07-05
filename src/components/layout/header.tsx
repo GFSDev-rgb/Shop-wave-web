@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -50,12 +49,7 @@ export function Header() {
     setIsClient(true);
   }, []);
 
-  const navLinks = allNavLinks.filter(link => {
-    if (pathname === '/profile' && link.href === '/about') {
-      return false;
-    }
-    return true;
-  });
+  const navLinks = allNavLinks;
 
   const renderUserAuth = () => {
     if (loading) {
