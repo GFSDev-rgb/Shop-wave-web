@@ -35,7 +35,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
   const [isEditSheetOpen, setEditSheetOpen] = useState(false);
 
   // This effect ensures the product data on this page is always in sync 
-  // with the global state after an edit.
+  // with the global state from the context.
   useEffect(() => {
     const updatedProductFromContext = products.find(p => p.id === initialProduct.id);
     if (updatedProductFromContext) {
@@ -44,28 +44,11 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
   }, [products, initialProduct.id]);
 
 
+  // The handler now simply calls the update function from the context.
+  // The form itself will handle loading states and success/error toasts.
   const handleUpdate = async (data: any) => {
     if (product) {
-      const originalProduct = { ...product }; // Store original state
-      // Optimistically update UI
-      const updatedImages = [data.image1, data.image2, data.image3].filter((img): img is string => !!img && img.trim() !== '');
-      const optimisticProduct: Product = {
-        ...product,
-        ...data,
-        images: updatedImages,
-        image: data.image1,
-      };
-      setProduct(optimisticProduct);
-      
-      try {
-        // Send update to server
-        await updateProduct(product.id, data);
-      } catch (error) {
-        // On error, revert the optimistic update
-        setProduct(originalProduct);
-        // Let the form know about the error
-        throw error;
-      }
+      await updateProduct(product.id, data);
     }
   };
 

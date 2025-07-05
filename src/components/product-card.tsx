@@ -43,6 +43,8 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   const [localProduct, setLocalProduct] = useState<Product>(product);
   const [isEditSheetOpen, setEditSheetOpen] = useState(false);
 
+  // This effect ensures the card's local state is in sync with the global state
+  // that is passed down via props.
   useEffect(() => {
     setLocalProduct(product);
   }, [product]);
@@ -133,23 +135,10 @@ export default function ProductCard({ product, className }: ProductCardProps) {
       })
   }
 
+  // The handler now simply calls the update function from the context.
+  // The form will handle loading states and success/error toasts.
   const handleUpdate = async (data: any) => {
-    const originalProduct = { ...localProduct };
-    const updatedImages = [data.image1, data.image2, data.image3].filter((img): img is string => !!img && img.trim() !== '');
-    const optimisticProduct: Product = {
-      ...localProduct,
-      ...data,
-      images: updatedImages,
-      image: data.image1,
-    };
-    setLocalProduct(optimisticProduct);
-
-    try {
-      await updateProduct(localProduct.id, data);
-    } catch (error) {
-      setLocalProduct(originalProduct); // Revert on error
-      throw error; // Re-throw for the form to handle
-    }
+    await updateProduct(localProduct.id, data);
   }
 
   return (
