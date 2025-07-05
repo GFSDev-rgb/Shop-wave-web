@@ -1,7 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
-import { useEffect, useRef } from 'react';
+import { useFormStatus } from 'react-dom';
+import { useActionState, useEffect, useRef } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
@@ -24,7 +24,7 @@ function SubmitButton() {
 
 export function NewsletterForm() {
   const { toast } = useToast();
-  const [state, formAction] = useFormState(subscribeNewsletter, initialState);
+  const [state, formAction] = useActionState(subscribeNewsletter, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
