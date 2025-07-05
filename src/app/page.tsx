@@ -25,7 +25,7 @@ export default function Home() {
       <section className="bg-transparent">
         <div className="container mx-auto grid md:grid-cols-2 items-center gap-8 px-4 py-12">
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <h1 className="font-headline text-5xl md:text-6xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-primary via-accent to-primary/80">
+            <h1 className="font-headline text-5xl md:text-6xl lg:text-7xl font-bold text-primary">
               Experience the New Wave
             </h1>
             <p className="mt-4 max-w-xl text-lg text-muted-foreground">
