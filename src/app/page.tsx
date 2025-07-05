@@ -39,12 +39,12 @@ export default function Home() {
           </div>
           <div className="flex justify-center [perspective:1000px]">
             <Image
-              src="https://placehold.co/600x400.png"
-              alt="An illustration of a person shopping online"
-              data-ai-hint="online shopping illustration"
+              src="https://scontent.fjsr13-1.fna.fbcdn.net/v/t39.30808-6/515905510_122134625648805080_4405844629990309115_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=127cfc&_nc_ohc=LAWGFzy8f40Q7kNvwHI1-2e&_nc_oc=Adkru0mOY8Cg9Eg41BuKBoU8HbLb39W-E0ox867q6CqXwMab-ZtJsevaZT2lh_LHzHM&_nc_zt=23&_nc_ht=scontent.fjsr13-1.fna&_nc_gid=Ja9ajww_2-109BGilQz-fA&oh=00_AfTX6gKyLMUReE7wYjIOJDiLpbIX4wcmbNHg1x-cXl2hUQ&oe=686EDCAA"
+              alt="A stylish arrangement of fashion products"
+              data-ai-hint="fashion layout"
               width={600}
               height={400}
-              className="rounded-lg object-contain shadow-2xl transition-transform duration-700 ease-in-out hover:[transform:rotateY(10deg)_scale(1.05)]"
+              className="rounded-lg object-cover shadow-2xl transition-transform duration-700 ease-in-out hover:[transform:rotateY(10deg)_scale(1.05)]"
               priority
             />
           </div>
