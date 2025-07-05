@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -24,6 +25,7 @@ import {
 import type { Product } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const productSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters long"),
@@ -39,7 +41,7 @@ type ProductFormValues = z.infer<typeof productSchema>;
 
 interface ProductFormProps {
   product?: Product;
-  onSave: (data: ProductFormValues) => Promise<void>;
+  onSave: (data: any) => Promise<void>;
   onFinished?: () => void;
 }
 
@@ -74,108 +76,123 @@ export default function ProductForm({ product, onSave, onFinished }: ProductForm
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 p-1">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Product Name</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g. Minimalist Watch" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Describe the product..." {...field} rows={4} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="grid grid-cols-2 gap-4">
-            <FormField
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8 p-1 mt-6">
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium text-foreground">Product Details</h3>
+          <FormField
             control={form.control}
-            name="price"
+            name="name"
             render={({ field }) => (
-                <FormItem>
-                <FormLabel>Price</FormLabel>
+              <FormItem>
+                <FormLabel>Product Name</FormLabel>
                 <FormControl>
-                    <Input type="number" step="0.01" placeholder="e.g. 199.99" {...field} />
+                  <Input placeholder="e.g. Minimalist Watch" {...field} />
                 </FormControl>
                 <FormMessage />
-                </FormItem>
+              </FormItem>
             )}
-            />
-            <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Category</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                            <SelectTrigger>
-                            <SelectValue placeholder="Select a category" />
-                            </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            {categories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
-                        </SelectContent>
-                        </Select>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Describe the product..." {...field} rows={4} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
-        <FormField
-          control={form.control}
-          name="image1"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Main Image URL</FormLabel>
-              <FormControl>
-                <Input placeholder="https://example.com/image.jpg" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="image2"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Additional Image URL 2</FormLabel>
-              <FormControl>
-                <Input placeholder="https://example.com/image2.jpg" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="image3"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Additional Image URL 3</FormLabel>
-              <FormControl>
-                <Input placeholder="https://example.com/image3.jpg" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
+
+        <Separator />
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium text-foreground">Pricing & Category</h3>
+          <div className="grid grid-cols-2 gap-4">
+              <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                      <Input type="number" step="0.01" placeholder="e.g. 199.99" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                  </FormItem>
+              )}
+              />
+              <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Category</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                              <SelectTrigger>
+                              <SelectValue placeholder="Select a category" />
+                              </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                              {categories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+                          </SelectContent>
+                          </Select>
+                          <FormMessage />
+                      </FormItem>
+                  )}
+              />
+          </div>
+        </div>
+
+        <Separator />
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium text-foreground">Images</h3>
+          <FormField
+            control={form.control}
+            name="image1"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Main Image URL</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://example.com/image.jpg" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="image2"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Additional Image URL 2</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://example.com/image2.jpg" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="image3"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Additional Image URL 3</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://example.com/image3.jpg" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <Button type="submit" className="w-full !mt-10" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {product ? "Save Changes" : "Add Product"}
         </Button>
