@@ -19,15 +19,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
-  const { getProductById, loading: productsLoading } = useProducts();
+  const { products, loading: productsLoading } = useProducts();
   const [product, setProduct] = useState<Product | undefined | null>(undefined);
 
   useEffect(() => {
     if (!productsLoading && id) {
-      const foundProduct = getProductById(id);
+      const foundProduct = products.find(p => p.id === id);
       setProduct(foundProduct);
     }
-  }, [id, getProductById, productsLoading]);
+  }, [id, products, productsLoading]);
 
 
   if (productsLoading || product === undefined) {

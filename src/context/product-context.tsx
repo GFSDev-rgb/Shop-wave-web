@@ -21,7 +21,6 @@ interface ProductContextType {
   addProduct: (productData: ProductFormData) => void;
   updateProduct: (productId: string, productData: ProductFormData) => void;
   deleteProduct: (productId: string) => void;
-  getProductById: (productId: string) => Product | undefined;
 }
 
 export const ProductContext = createContext<ProductContextType | undefined>(undefined);
@@ -99,14 +98,9 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     );
   }, []);
 
-  const getProductById = useCallback((productId: string) => {
-    return products.find(p => p.id === productId);
-  }, [products]);
-
-
   return (
     <ProductContext.Provider
-      value={{ products, loading, addProduct, updateProduct, deleteProduct, getProductById }}
+      value={{ products, loading, addProduct, updateProduct, deleteProduct }}
     >
       {children}
     </ProductContext.Provider>
