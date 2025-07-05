@@ -34,15 +34,22 @@ interface ProductContextType {
 
 export const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
-const productsCollectionRef = collection(db, "products");
-
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
+
+    if (!db) {
+        console.warn("Firestore is not initialized. Using local product data.");
+        setProducts(initialProducts);
+        setLoading(false);
+        return;
+    }
+
     try {
+      const productsCollectionRef = collection(db, "products");
       const data = await getDocs(productsCollectionRef);
 
       // Seed database if it's empty
@@ -67,6 +74,8 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error("Error fetching products from Firestore:", error);
+      // Fallback to local data on error
+      setProducts(initialProducts);
     } finally {
       setLoading(false);
     }
@@ -77,6 +86,11 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   }, [fetchProducts]);
 
   const addProduct = useCallback(async (productData: ProductFormData) => {
+    if (!db) {
+        console.error("Cannot add product, Firestore is not configured.");
+        return;
+    }
+    const productsCollectionRef = collection(db, "products");
     const { image1, image2, image3, ...rest } = productData;
     const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
     const newProductData = {
@@ -91,6 +105,10 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   }, [fetchProducts]);
 
   const updateProduct = useCallback(async (productId: string, productData: ProductFormData) => {
+    if (!db) {
+        console.error("Cannot update product, Firestore is not configured.");
+        return;
+    }
     const productDoc = doc(db, "products", productId);
     const { image1, image2, image3, ...rest } = productData;
     const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
@@ -104,6 +122,10 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   }, [fetchProducts]);
 
   const deleteProduct = useCallback(async (productId: string) => {
+    if (!db) {
+        console.error("Cannot delete product, Firestore is not configured.");
+        return;
+    }
     const productDoc = doc(db, "products", productId);
     await deleteDoc(productDoc);
     await fetchProducts(); // Refetch to update UI

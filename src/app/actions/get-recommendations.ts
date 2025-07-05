@@ -6,6 +6,10 @@ import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 async function getAllProducts(): Promise<Product[]> {
+    if (!db) {
+        console.warn("Firestore is not initialized. Skipping product fetch.");
+        return [];
+    }
     const productsCollectionRef = collection(db, "products");
     const data = await getDocs(productsCollectionRef);
     return data.docs.map(doc => ({ ...(doc.data() as Omit<Product, 'id'>), id: doc.id }));
@@ -14,6 +18,8 @@ async function getAllProducts(): Promise<Product[]> {
 export async function getRecommendationsAction(): Promise<Product[]> {
   try {
     const allProducts = await getAllProducts();
+    if (allProducts.length === 0) return [];
+
     const userHistory = "viewed: Artisan Leather Messenger Bag, wishlist: Cloud-Soft Cashmere Sweater";
     const productCatalog = allProducts.map((p) => p.name).join(", ");
     

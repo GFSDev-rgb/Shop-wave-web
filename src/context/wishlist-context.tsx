@@ -45,7 +45,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   
   // Sync with Firestore for logged-in users
   useEffect(() => {
-    if (user) {
+    if (user && db) {
       const wishlistDocRef = doc(db, "wishlists", user.uid);
       
       const syncLocalToFirestore = async () => {
@@ -81,12 +81,14 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         setIsContextLoaded(true);
       });
       return unsubscribe;
+    } else if (user && !db) {
+        console.warn("Firestore not available, wishlist will not be synced for logged in user.")
     }
   }, [user]);
 
   const updateWishlist = useCallback(async (newWishlistIds: string[]) => {
     setWishlistIds(newWishlistIds);
-    if (user) {
+    if (user && db) {
       const wishlistDocRef = doc(db, "wishlists", user.uid);
       await setDoc(wishlistDocRef, { productIds: newWishlistIds });
     } else {

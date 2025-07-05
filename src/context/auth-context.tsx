@@ -22,6 +22,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
@@ -32,6 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAdmin = useMemo(() => user?.email === 'emammahadi822@gmail.com', [user]);
 
   const signIn = async (email: string, pass: string) => {
+    if (!auth) throw new Error("Firebase is not configured. Please check your .env file.");
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, pass);
@@ -46,6 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   
   const signUp = async (email: string, pass: string) => {
+    if (!auth) throw new Error("Firebase is not configured. Please check your .env file.");
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
@@ -60,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
+    if (!auth) return;
     await firebaseSignOut(auth);
     setUser(null);
     router.push('/login');

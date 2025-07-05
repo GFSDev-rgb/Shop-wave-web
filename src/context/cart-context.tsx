@@ -48,7 +48,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   // Effect to sync cart with Firestore for logged-in users
   useEffect(() => {
-    if (user) {
+    if (user && db) {
       const cartDocRef = doc(db, "carts", user.uid);
       
       const syncLocalToFirestore = async () => {
@@ -89,12 +89,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setIsContextLoaded(true);
       });
       return unsubscribe;
+    } else if (user && !db) {
+        console.warn("Firestore not available, cart will not be synced for logged in user.")
     }
   }, [user]);
   
   const updateCart = useCallback(async (newCartState: CartState) => {
     setCartState(newCartState);
-    if (user) {
+    if (user && db) {
         const cartDocRef = doc(db, "carts", user.uid);
         await setDoc(cartDocRef, { items: newCartState });
     } else {
