@@ -61,11 +61,11 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
             </Button>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row gap-4">
-        <Button size="lg" onClick={handleAddToCart} className="flex-1">
+      <div className="flex flex-wrap gap-4">
+        <Button size="lg" onClick={handleAddToCart} className="flex-1 min-w-[200px]">
           <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
         </Button>
-        <Button size="lg" variant="outline" onClick={handleWishlistToggle} className="flex-1">
+        <Button size="lg" variant="outline" onClick={handleWishlistToggle} className="flex-1 min-w-[200px]">
           <Heart
             className={cn(
               "mr-2 h-5 w-5",
