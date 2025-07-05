@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
@@ -29,7 +30,7 @@ export default function ShopPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isAddSheetOpen, setAddSheetOpen] = useState(false);
 
-  const { products, addProduct, loading: productsLoading } = useProducts();
+  const { products, loading: productsLoading } = useProducts();
   const { loading: authLoading, isAdmin } = useAuth();
 
   const isLoading = authLoading || productsLoading;
@@ -125,7 +126,7 @@ export default function ShopPage() {
                                     <SheetTitle>Add a New Product</SheetTitle>
                                     <SheetDescription>Fill in the details below to add a new product to the store.</SheetDescription>
                                 </SheetHeader>
-                                <ProductForm onSave={addProduct} onFinished={() => setAddSheetOpen(false)} />
+                                <ProductForm onFinished={() => setAddSheetOpen(false)} />
                             </SheetContent>
                         </Sheet>
                     )}

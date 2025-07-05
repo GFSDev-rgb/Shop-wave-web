@@ -28,7 +28,7 @@ import {
 import ProductForm from "@/components/admin/product-form";
 
 export default function ProductView({ initialProduct }: { initialProduct: Product }) {
-  const { products, updateProduct } = useProducts();
+  const { products } = useProducts();
   const { isAdmin } = useAuth();
   // Use state to allow for optimistic updates by admins
   const [product, setProduct] = useState<Product>(initialProduct);
@@ -42,15 +42,6 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
       setProduct(updatedProductFromContext);
     }
   }, [products, initialProduct.id]);
-
-
-  // The handler now simply calls the update function from the context.
-  // The form itself will handle loading states and success/error toasts.
-  const handleUpdate = async (data: any) => {
-    if (product) {
-      await updateProduct(product.id, data);
-    }
-  };
 
   if (!product) {
       return null;
@@ -105,7 +96,6 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
                         </SheetHeader>
                         <ProductForm 
                             product={product} 
-                            onSave={handleUpdate}
                             onFinished={() => setEditSheetOpen(false)} 
                         />
                     </SheetContent>

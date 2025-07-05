@@ -26,6 +26,7 @@ import type { Product } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useProducts } from "@/hooks/use-products";
 
 const productSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters long"),
@@ -41,14 +42,15 @@ type ProductFormValues = z.infer<typeof productSchema>;
 
 interface ProductFormProps {
   product?: Product;
-  onSave: (data: any) => Promise<void>;
   onFinished?: () => void;
 }
 
 const categories = ["Apparel", "Accessories", "Footwear", "Home Goods", "Electronics", "Watches"];
 
-export default function ProductForm({ product, onSave, onFinished }: ProductFormProps) {
+export default function ProductForm({ product, onFinished }: ProductFormProps) {
   const { toast } = useToast();
+  const { addProduct, updateProduct } = useProducts();
+
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -66,19 +68,23 @@ export default function ProductForm({ product, onSave, onFinished }: ProductForm
 
   const handleSubmit = async (data: ProductFormValues) => {
     try {
-      await onSave(data);
+      if (product) {
+        await updateProduct(product.id, data);
+      } else {
+        await addProduct(data);
+      }
       toast({
         title: product ? "Product Updated" : "Product Added",
         description: `"${data.name}" has been saved successfully.`,
       });
       onFinished?.();
       if (!product) form.reset();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to save product:", error);
       toast({
         variant: "destructive",
         title: "Save Failed",
-        description: "Could not save product. Please check console for errors.",
+        description: error.message || "Could not save product. Please check console for errors.",
       });
     }
   };

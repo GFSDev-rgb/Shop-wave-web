@@ -37,7 +37,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   const { addToWishlist, isInWishlist, removeFromWishlist } = useWishlist();
   const { toast } = useToast();
   const { isAdmin } = useAuth();
-  const { updateProduct, deleteProduct } = useProducts();
+  const { deleteProduct } = useProducts();
   const router = useRouter();
 
   const [localProduct, setLocalProduct] = useState<Product>(product);
@@ -135,12 +135,6 @@ export default function ProductCard({ product, className }: ProductCardProps) {
       })
   }
 
-  // The handler now simply calls the update function from the context.
-  // The form will handle loading states and success/error toasts.
-  const handleUpdate = async (data: any) => {
-    await updateProduct(localProduct.id, data);
-  }
-
   return (
     <Link href={`/product/${localProduct.id}`} className="block">
       <div
@@ -166,7 +160,6 @@ export default function ProductCard({ product, className }: ProductCardProps) {
                       </SheetHeader>
                       <ProductForm 
                           product={localProduct} 
-                          onSave={handleUpdate}
                           onFinished={() => setEditSheetOpen(false)} 
                       />
                   </SheetContent>
