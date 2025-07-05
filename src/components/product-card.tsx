@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -39,13 +40,18 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   const { updateProduct, deleteProduct } = useProducts();
   const router = useRouter();
 
+  const [localProduct, setLocalProduct] = useState<Product>(product);
   const [isEditSheetOpen, setEditSheetOpen] = useState(false);
+
+  useEffect(() => {
+    setLocalProduct(product);
+  }, [product]);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const [mouse, setMouse] = useState({ x: 0, y: 0, active: false });
   const mouseLeaveDelay = useRef<NodeJS.Timeout | null>(null);
   
-  const isInCart = cartItems.some(item => item.product.id === product.id);
+  const isInCart = cartItems.some(item => item.product.id === localProduct.id);
 
   useEffect(() => {
     return () => {
@@ -97,10 +103,10 @@ export default function ProductCard({ product, className }: ProductCardProps) {
     if (isInCart) {
       router.push('/cart');
     } else {
-      await addToCart(product);
+      await addToCart(localProduct);
       toast({
         title: "Added to cart",
-        description: `${product.name} is now in your cart.`,
+        description: `${localProduct.name} is now in your cart.`,
       });
       router.push("/cart");
     }
@@ -108,31 +114,46 @@ export default function ProductCard({ product, className }: ProductCardProps) {
 
   const handleWishlistToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     handleAdminAction(e);
-    if (isInWishlist(product.id)) {
-      removeFromWishlist(product.id);
+    if (isInWishlist(localProduct.id)) {
+      removeFromWishlist(localProduct.id);
       toast({ title: "Removed from wishlist" });
     } else {
-      addToWishlist(product);
+      addToWishlist(localProduct);
       toast({ title: "Added to wishlist" });
     }
   };
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
       handleAdminAction(e);
-      await deleteProduct(product.id);
+      await deleteProduct(localProduct.id);
       toast({
           variant: "destructive",
           title: "Product Deleted",
-          description: `"${product.name}" has been removed.`,
+          description: `"${localProduct.name}" has been removed.`,
       })
   }
 
   const handleUpdate = async (data: any) => {
-    await updateProduct(product.id, data)
+    const originalProduct = { ...localProduct };
+    const updatedImages = [data.image1, data.image2, data.image3].filter((img): img is string => !!img && img.trim() !== '');
+    const optimisticProduct: Product = {
+      ...localProduct,
+      ...data,
+      images: updatedImages,
+      image: data.image1,
+    };
+    setLocalProduct(optimisticProduct);
+
+    try {
+      await updateProduct(localProduct.id, data);
+    } catch (error) {
+      setLocalProduct(originalProduct); // Revert on error
+      throw error; // Re-throw for the form to handle
+    }
   }
 
   return (
-    <Link href={`/product/${product.id}`} className="block">
+    <Link href={`/product/${localProduct.id}`} className="block">
       <div
         className={cn("card-wrap", className)}
         onMouseMove={handleMouseMove}
@@ -152,10 +173,10 @@ export default function ProductCard({ product, className }: ProductCardProps) {
                   <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l border-white/10 p-6 w-full max-w-md overflow-y-auto">
                       <SheetHeader>
                           <SheetTitle>Edit Product</SheetTitle>
-                          <SheetDescription>Update the details for "{product.name}".</SheetDescription>
+                          <SheetDescription>Update the details for "{localProduct.name}".</SheetDescription>
                       </SheetHeader>
                       <ProductForm 
-                          product={product} 
+                          product={localProduct} 
                           onSave={handleUpdate}
                           onFinished={() => setEditSheetOpen(false)} 
                       />
@@ -172,7 +193,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
                       <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                       <AlertDialogDescription>
                           This action cannot be undone. This will permanently delete the product
-                          "{product.name}".
+                          "{localProduct.name}".
                       </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -189,19 +210,19 @@ export default function ProductCard({ product, className }: ProductCardProps) {
               className="absolute top-3 right-3 rounded-full h-9 w-9 bg-background/50 hover:bg-background z-20 transition-opacity duration-300 card-heart"
               onClick={handleWishlistToggle}
             >
-              <Heart className={cn("h-5 w-5", isInWishlist(product.id) ? "text-red-500 fill-current" : "text-foreground/80")} />
+              <Heart className={cn("h-5 w-5", isInWishlist(localProduct.id) ? "text-red-500 fill-current" : "text-foreground/80")} />
             </Button>
           )}
 
           <div
             className="card-bg"
             data-ai-hint="product photo"
-            style={{ ...cardBgTransform, backgroundImage: `url(${product.image})` }}
+            style={{ ...cardBgTransform, backgroundImage: `url(${localProduct.image})` }}
           />
           <div className="card-info">
-            <p className="card-category text-sm text-muted-foreground mb-1">{product.category}</p>
-            <h3 className="card-title">{product.name}</h3>
-            <p className="card-price">${product.price.toFixed(2)}</p>
+            <p className="card-category text-sm text-muted-foreground mb-1">{localProduct.category}</p>
+            <h3 className="card-title">{localProduct.name}</h3>
+            <p className="card-price">${localProduct.price.toFixed(2)}</p>
             <div className="card-buttons">
                 <Button onClick={handleCartAction} variant="secondary" className="w-full">
                   {isInCart ? 'View Cart' : (

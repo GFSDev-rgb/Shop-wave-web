@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -45,6 +46,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
 
   const handleUpdate = async (data: any) => {
     if (product) {
+      const originalProduct = { ...product }; // Store original state
       // Optimistically update UI
       const updatedImages = [data.image1, data.image2, data.image3].filter((img): img is string => !!img && img.trim() !== '');
       const optimisticProduct: Product = {
@@ -55,8 +57,15 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
       };
       setProduct(optimisticProduct);
       
-      // Send update to server
-      await updateProduct(product.id, data);
+      try {
+        // Send update to server
+        await updateProduct(product.id, data);
+      } catch (error) {
+        // On error, revert the optimistic update
+        setProduct(originalProduct);
+        // Let the form know about the error
+        throw error;
+      }
     }
   };
 
