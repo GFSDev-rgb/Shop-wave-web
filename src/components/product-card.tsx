@@ -92,12 +92,12 @@ export default function ProductCard({ product, className }: ProductCardProps) {
     e.stopPropagation();
   };
 
-  const handleCartAction = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCartAction = async (e: React.MouseEvent<HTMLButtonElement>) => {
     handleAdminAction(e);
     if (isInCart) {
       router.push('/cart');
     } else {
-      addToCart(product);
+      await addToCart(product);
       toast({
         title: "Added to cart",
         description: `${product.name} is now in your cart.`,

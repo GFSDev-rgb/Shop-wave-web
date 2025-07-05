@@ -9,10 +9,10 @@ import { useProducts } from "@/hooks/use-products";
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product, quantityToAdd?: number) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  clearCart: () => void;
+  addToCart: (product: Product, quantityToAdd?: number) => Promise<void>;
+  removeFromCart: (productId: string) => Promise<void>;
+  updateQuantity: (productId: string, quantity: number) => Promise<void>;
+  clearCart: () => Promise<void>;
   cartCount: number;
   cartTotal: number;
 }
@@ -109,31 +109,31 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
   }, [user, products, productsLoading]);
 
-  const addToCart = (product: Product, quantityToAdd: number = 1) => {
+  const addToCart = useCallback(async (product: Product, quantityToAdd: number = 1) => {
     const newState = { ...cartState };
     newState[product.id] = (newState[product.id] || 0) + quantityToAdd;
-    updateCart(newState);
-  };
+    await updateCart(newState);
+  }, [cartState, updateCart]);
 
-  const removeFromCart = (productId: string) => {
+  const removeFromCart = useCallback(async (productId: string) => {
     const newState = { ...cartState };
     delete newState[productId];
-    updateCart(newState);
-  };
-
-  const updateQuantity = (productId: string, quantity: number) => {
+    await updateCart(newState);
+  }, [cartState, updateCart]);
+  
+  const updateQuantity = useCallback(async (productId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      await removeFromCart(productId);
     } else {
       const newState = { ...cartState };
       newState[productId] = quantity;
-      updateCart(newState);
+      await updateCart(newState);
     }
-  };
+  }, [cartState, updateCart, removeFromCart]);
 
-  const clearCart = () => {
-    updateCart({});
-  };
+  const clearCart = useCallback(async () => {
+    await updateCart({});
+  }, [updateCart]);
 
   const cartItems: CartItem[] = Object.entries(cartState)
     .map(([productId, quantity]) => {

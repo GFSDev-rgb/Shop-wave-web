@@ -23,13 +23,13 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
   const isInCart = cartItems.some((item) => item.product.id === product.id);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (isInCart) {
       router.push("/cart");
       return;
     }
 
-    addToCart(product, quantity);
+    await addToCart(product, quantity);
     toast({
       title: "Added to cart",
       description: `${quantity} x ${product.name} added to your cart.`,
