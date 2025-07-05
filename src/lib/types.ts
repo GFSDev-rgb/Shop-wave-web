@@ -28,9 +28,18 @@ export type OrderItem = {
 };
 
 export type Order = {
-  id: string;
+  id:string;
   userId: string;
   createdAt: number; // Using number for JS Date timestamp
   items: OrderItem[];
   total: number;
+};
+
+export type UserProfile = {
+  fullName: string;
+  email: string;
+  photoURL: string;
+  phoneNumber: string;
+  address: string;
+  bio: string;
 };

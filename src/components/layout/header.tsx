@@ -72,14 +72,16 @@ export function Header() {
             <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
+              <Link href="/profile" className="cursor-pointer flex items-center">
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link href="/orders" className="cursor-pointer flex items-center">
                 <Package className="mr-2 h-4 w-4" />
                 <span>My Orders</span>
               </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem disabled>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
             </DropdownMenuItem>
              <DropdownMenuItem disabled>
                 <Settings className="mr-2 h-4 w-4" />
@@ -213,6 +215,18 @@ export function Header() {
                   {user && (
                     <>
                       <Separator className="my-4 bg-white/10" />
+                       <SheetClose asChild>
+                        <Link
+                          href="/profile"
+                          className={cn(
+                            "flex items-center gap-4 px-2.5 py-3 rounded-lg text-base font-medium",
+                            pathname === '/profile' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                          )}
+                        >
+                          <User className="h-5 w-5" />
+                          Profile
+                        </Link>
+                      </SheetClose>
                        <SheetClose asChild>
                         <Link
                           href="/orders"
