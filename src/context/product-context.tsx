@@ -11,7 +11,8 @@ import {
   addDoc, 
   updateDoc, 
   deleteDoc, 
-  doc
+  doc,
+  DocumentReference
 } from "firebase/firestore";
 
 // This is the shape of the data coming from the updated product form
@@ -96,6 +97,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       const productsCollectionRef = collection(db, "products");
       const { image1, image2, image3, ...rest } = productData;
       const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
+      
       const newProductData = {
         ...rest,
         rating: 0,
@@ -103,13 +105,20 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
         image: image1,
         images: images,
       };
-      await addDoc(productsCollectionRef, newProductData);
-      await fetchProducts(); // Refetch to update UI
+
+      const docRef = await addDoc(productsCollectionRef, newProductData);
+
+      // Update state locally instead of refetching
+      setProducts(prevProducts => [
+        ...prevProducts,
+        { ...newProductData, id: docRef.id }
+      ]);
+
     } catch (error) {
       console.error("Error adding product in context:", error);
       throw error;
     }
-  }, [fetchProducts]);
+  }, []);
 
   const updateProduct = useCallback(async (productId: string, productData: ProductFormData) => {
     if (!db) {
@@ -120,8 +129,8 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     try {
       const productDoc = doc(db, "products", productId);
       
-      // Explicitly construct the update object to prevent any invalid data
       const images = [productData.image1, productData.image2, productData.image3].filter((img): img is string => !!img && img.trim() !== '');
+      
       const updatedData = {
         name: productData.name,
         description: productData.description,
@@ -132,12 +141,19 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       };
 
       await updateDoc(productDoc, updatedData);
-      await fetchProducts(); // Refetch to update UI
+
+      // Update state locally instead of refetching
+      setProducts(prevProducts =>
+        prevProducts.map(p => 
+          p.id === productId ? { ...p, ...updatedData } : p
+        )
+      );
+
     } catch (error) {
         console.error("Error updating product in context:", error);
         throw error;
     }
-  }, [fetchProducts]);
+  }, []);
 
   const deleteProduct = useCallback(async (productId: string) => {
     if (!db) {
@@ -148,12 +164,15 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     try {
       const productDoc = doc(db, "products", productId);
       await deleteDoc(productDoc);
-      await fetchProducts(); // Refetch to update UI
+      
+      // Update state locally instead of refetching
+      setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+      
     } catch (error) {
       console.error("Error deleting product in context:", error);
       throw error;
     }
-  }, [fetchProducts]);
+  }, []);
 
   return (
     <ProductContext.Provider
