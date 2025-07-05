@@ -30,7 +30,9 @@ const productSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters long"),
   price: z.coerce.number().min(0, "Price must be a positive number"),
   category: z.string().min(1, "Please select a category"),
-  image: z.string().url("Please enter a valid image URL"),
+  image1: z.string().url("Please enter a valid URL for the main image."),
+  image2: z.string().url("Please enter a valid URL or leave empty.").optional().or(z.literal('')),
+  image3: z.string().url("Please enter a valid URL or leave empty.").optional().or(z.literal('')),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -52,7 +54,9 @@ export default function ProductForm({ product, onSave, onFinished }: ProductForm
       description: product?.description || "",
       price: product?.price || 0,
       category: product?.category || "",
-      image: product?.image || "",
+      image1: product?.images?.[0] || product?.image || "",
+      image2: product?.images?.[1] || "",
+      image3: product?.images?.[2] || "",
     },
   });
 
@@ -134,12 +138,38 @@ export default function ProductForm({ product, onSave, onFinished }: ProductForm
         </div>
         <FormField
           control={form.control}
-          name="image"
+          name="image1"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Image URL</FormLabel>
+              <FormLabel>Main Image URL</FormLabel>
               <FormControl>
                 <Input placeholder="https://example.com/image.jpg" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="image2"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Additional Image URL 2</FormLabel>
+              <FormControl>
+                <Input placeholder="https://example.com/image2.jpg" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="image3"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Additional Image URL 3</FormLabel>
+              <FormControl>
+                <Input placeholder="https://example.com/image3.jpg" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

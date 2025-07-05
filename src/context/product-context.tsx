@@ -4,10 +4,21 @@ import React, { createContext, useState, useEffect, ReactNode, useCallback } fro
 import type { Product } from "@/lib/types";
 import { products as initialProducts } from "@/lib/data";
 
+// This is the shape of the data coming from the updated product form
+interface ProductFormData {
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  image1: string;
+  image2?: string;
+  image3?: string;
+}
+
 interface ProductContextType {
   products: Product[];
-  addProduct: (productData: Omit<Product, 'id' | 'rating' | 'reviews' | 'images'> & {image: string}) => void;
-  updateProduct: (productId: string, productData: Partial<Omit<Product, 'id'>>) => void;
+  addProduct: (productData: ProductFormData) => void;
+  updateProduct: (productId: string, productData: ProductFormData) => void;
   deleteProduct: (productId: string) => void;
   getProductById: (productId: string) => Product | undefined;
 }
@@ -41,24 +52,37 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [products]);
 
-  const addProduct = useCallback((productData: Omit<Product, 'id' | 'rating' | 'reviews' | 'images'> & {image: string}) => {
+  const addProduct = useCallback((productData: ProductFormData) => {
     setProducts((prevProducts) => {
+      const { image1, image2, image3, ...rest } = productData;
+      const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
       const newProduct: Product = {
-        ...productData,
+        ...rest,
         id: new Date().toISOString(), // Simple unique ID
         rating: 0,
         reviews: 0,
-        images: [productData.image], // Use the main image as the only image in the array
+        image: image1,
+        images: images,
       };
       return [...prevProducts, newProduct];
     });
   }, []);
 
-  const updateProduct = useCallback((productId: string, productData: Partial<Omit<Product, 'id'>>) => {
+  const updateProduct = useCallback((productId: string, productData: ProductFormData) => {
     setProducts((prevProducts) =>
-      prevProducts.map((p) =>
-        p.id === productId ? { ...p, ...productData, images: productData.image ? [productData.image] : p.images } : p
-      )
+      prevProducts.map((p) => {
+        if (p.id === productId) {
+          const { image1, image2, image3, ...rest } = productData;
+          const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
+          return {
+            ...p,
+            ...rest,
+            image: image1,
+            images: images,
+          };
+        }
+        return p;
+      })
     );
   }, []);
 
