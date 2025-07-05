@@ -22,10 +22,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const router = useRouter();
 
   const handleAddToCart = () => {
-    // A little more complex logic to add specific quantity
-    for (let i = 0; i < quantity; i++) {
-        addToCart(product);
-    }
+    addToCart(product, quantity);
     toast({
       title: "Added to cart",
       description: `${quantity} x ${product.name} added to your cart.`,

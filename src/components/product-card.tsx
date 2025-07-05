@@ -32,7 +32,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, className }: ProductCardProps) {
-  const { addToCart } = useCart();
+  const { addToCart, cartItems } = useCart();
   const { addToWishlist, isInWishlist, removeFromWishlist } = useWishlist();
   const { toast } = useToast();
   const { isAdmin } = useAuth();
@@ -44,6 +44,8 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [mouse, setMouse] = useState({ x: 0, y: 0, active: false });
   const mouseLeaveDelay = useRef<NodeJS.Timeout | null>(null);
+  
+  const isInCart = cartItems.some(item => item.product.id === product.id);
 
   useEffect(() => {
     return () => {
@@ -90,14 +92,18 @@ export default function ProductCard({ product, className }: ProductCardProps) {
     e.stopPropagation();
   };
 
-  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCartAction = (e: React.MouseEvent<HTMLButtonElement>) => {
     handleAdminAction(e);
-    addToCart(product);
-    toast({
-      title: "Added to cart",
-      description: `${product.name} is now in your cart.`,
-    });
-    router.push("/cart");
+    if (isInCart) {
+      router.push('/cart');
+    } else {
+      addToCart(product);
+      toast({
+        title: "Added to cart",
+        description: `${product.name} is now in your cart.`,
+      });
+      router.push("/cart");
+    }
   };
 
   const handleWishlistToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -197,9 +203,13 @@ export default function ProductCard({ product, className }: ProductCardProps) {
             <h3 className="card-title">{product.name}</h3>
             <p className="card-price">${product.price.toFixed(2)}</p>
             <div className="card-buttons">
-                <Button onClick={handleAddToCart} variant="secondary" className="w-full">
-                    <ShoppingCart className="mr-2 h-4 w-4" />
-                    Add to Cart
+                <Button onClick={handleCartAction} variant="secondary" className="w-full">
+                  {isInCart ? 'View Cart' : (
+                    <>
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      Add to Cart
+                    </>
+                  )}
                 </Button>
             </div>
           </div>

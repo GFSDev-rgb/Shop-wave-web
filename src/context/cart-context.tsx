@@ -9,7 +9,7 @@ import { useProducts } from "@/hooks/use-products";
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: Product, quantityToAdd?: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -109,9 +109,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
   }, [user, products, productsLoading]);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product, quantityToAdd: number = 1) => {
     const newState = { ...cartState };
-    newState[product.id] = (newState[product.id] || 0) + 1;
+    newState[product.id] = (newState[product.id] || 0) + quantityToAdd;
     updateCart(newState);
   };
 
