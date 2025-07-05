@@ -1,5 +1,6 @@
-import { products } from "@/lib/data";
-import { notFound } from "next/navigation";
+"use client";
+
+import { notFound, useParams } from "next/navigation";
 import Image from "next/image";
 import ProductDetailsClient from "./product-details-client";
 import { Star } from "lucide-react";
@@ -11,9 +12,41 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
+import { useProducts } from "@/hooks/use-products";
+import { useEffect, useState } from "react";
+import type { Product } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function ProductPage({ params: { id } }: { params: { id: string } }) {
-  const product = products.find((p) => p.id === id);
+export default function ProductPage() {
+  const { id } = useParams<{ id: string }>();
+  const { getProductById } = useProducts();
+  const [product, setProduct] = useState<Product | undefined | null>(undefined);
+
+  useEffect(() => {
+    if (id) {
+      const foundProduct = getProductById(id);
+      setProduct(foundProduct);
+    }
+  }, [id, getProductById]);
+
+
+  if (product === undefined) {
+    return (
+        <div className="container mx-auto px-4 py-12">
+            <div className="grid md:grid-cols-2 gap-12 items-start">
+                <Skeleton className="w-full aspect-[4/5] rounded-lg" />
+                <div className="space-y-6">
+                    <Skeleton className="h-6 w-1/4" />
+                    <Skeleton className="h-12 w-3/4" />
+                    <Skeleton className="h-6 w-1/2" />
+                    <Skeleton className="h-10 w-1/3" />
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                </div>
+            </div>
+        </div>
+    )
+  }
 
   if (!product) {
     notFound();
@@ -24,7 +57,7 @@ export default function ProductPage({ params: { id } }: { params: { id: string }
       <div className="grid md:grid-cols-2 gap-12 items-start">
         <Carousel className="w-full">
           <CarouselContent>
-            {product.images.map((img, index) => (
+            {(product.images && product.images.length > 0 ? product.images : [product.image]).map((img, index) => (
               <CarouselItem key={index}>
                 <Card className="overflow-hidden rounded-lg">
                   <CardContent className="p-0">

@@ -1,13 +1,19 @@
+"use client";
+
 import Image from 'next/image';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
-import { products } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import RecommendedProducts from '@/components/ai/recommended-products';
 import { ArrowRight } from 'lucide-react';
+import { useProducts } from '@/hooks/use-products';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function Home() {
+  const { products } = useProducts();
+  const { loading: authLoading } = useAuth();
   const featuredProducts = products.slice(0, 4);
 
   return (
@@ -46,7 +52,13 @@ export default function Home() {
       <section className="container mx-auto px-4">
         <h2 className="font-headline text-4xl font-bold text-center mb-12">Featured Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {featuredProducts.map((product) => (
+          {authLoading ? (
+             Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex flex-col space-y-3">
+                    <Skeleton className="h-[400px] w-full rounded-lg bg-black/20" />
+                </div>
+            ))
+          ) : featuredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
