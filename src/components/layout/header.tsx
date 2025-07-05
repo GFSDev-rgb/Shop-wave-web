@@ -17,6 +17,7 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
+  SheetTitle,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 
@@ -154,6 +155,7 @@ export function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="flex flex-col w-[300px] sm:w-[400px] bg-background/90 backdrop-blur-lg p-0 border-r border-white/10">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 {/* Header */}
                 <div className="p-6 border-b border-white/10">
                   {loading ? (
