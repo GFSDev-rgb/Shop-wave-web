@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useWishlist } from "@/hooks/use-wishlist";
@@ -18,6 +19,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleAddToCart = () => {
     // A little more complex logic to add specific quantity
@@ -28,6 +30,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
       title: "Added to cart",
       description: `${quantity} x ${product.name} added to your cart.`,
     });
+    router.push("/cart");
   };
 
   const handleWishlistToggle = () => {

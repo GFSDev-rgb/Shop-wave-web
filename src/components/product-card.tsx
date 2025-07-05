@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Heart, ShoppingCart, Pencil, Trash2 } from "lucide-react";
 import React, { useRef, useState, useEffect } from 'react';
+import { useRouter } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,6 +37,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   const { toast } = useToast();
   const { isAdmin } = useAuth();
   const { updateProduct, deleteProduct } = useProducts();
+  const router = useRouter();
 
   const [isEditSheetOpen, setEditSheetOpen] = useState(false);
 
@@ -95,6 +97,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
       title: "Added to cart",
       description: `${product.name} is now in your cart.`,
     });
+    router.push("/cart");
   };
 
   const handleWishlistToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
