@@ -5,17 +5,19 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { ReactNode } from 'react';
 
-const noHeaderFooterPaths = ['/login', '/signup'];
+const noHeaderPaths = ['/login', '/signup'];
+const noFooterPaths = ['/login', '/signup', '/profile'];
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const showHeaderFooter = !noHeaderFooterPaths.includes(pathname);
+  const showHeader = !noHeaderPaths.includes(pathname);
+  const showFooter = !noFooterPaths.includes(pathname);
 
   return (
     <div className="relative flex min-h-dvh flex-col">
-      {showHeaderFooter && <Header />}
+      {showHeader && <Header />}
       <main className="flex flex-1 flex-col">{children}</main>
-      {showHeaderFooter && <Footer />}
+      {showFooter && <Footer />}
     </div>
   );
 }
