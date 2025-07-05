@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -38,9 +39,9 @@ export default function Home() {
           </div>
           <div className="flex justify-center [perspective:1000px]">
             <Image
-              src="https://scontent.fjsr13-1.fna.fbcdn.net/v/t39.30808-6/515905510_122134625648805080_4405844629990309115_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=110&ccb=1-7&_nc_sid=127cfc&_nc_ohc=LAWGFzy8f40Q7kNvwEmaL1u&_nc_oc=Adnn9CkadTJnC2wcjkrDdNMCeyGVZc6JPcSZ-ra17LyKuPf3oDmyzFMs0ADFSQQWalc&_nc_zt=23&_nc_ht=scontent.fjsr13-1.fna&_nc_gid=g0-Hl-8BpGivOZ0QRzJ51Q&oh=00_AfNyQ7oy0XTN5GmGAvrllnvpeylPQtU18lUiWQJ_N6mbjQ&oe=686DFBAA"
-              alt="A stylish man holding shopping bags"
-              data-ai-hint="happy shopper"
+              src="https://placehold.co/600x400.png"
+              alt="An illustration of a person shopping online"
+              data-ai-hint="online shopping illustration"
               width={600}
               height={400}
               className="rounded-lg object-contain shadow-2xl transition-transform duration-700 ease-in-out hover:[transform:rotateY(10deg)_scale(1.05)]"

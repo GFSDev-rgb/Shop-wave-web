@@ -104,10 +104,9 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="flex items-center gap-2 text-sm font-medium text-foreground/80 transition-all hover:text-foreground hover:scale-105"
+              className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
             >
-              <link.icon className="h-4 w-4 transition-transform group-hover:rotate-[-5deg]" />
-              <span>{link.label}</span>
+              {link.label}
             </Link>
           ))}
         </nav>
