@@ -119,13 +119,18 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     }
     try {
       const productDoc = doc(db, "products", productId);
-      const { image1, image2, image3, ...rest } = productData;
-      const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
+      
+      // Explicitly construct the update object to prevent any invalid data
+      const images = [productData.image1, productData.image2, productData.image3].filter((img): img is string => !!img && img.trim() !== '');
       const updatedData = {
-        ...rest,
-        image: image1,
+        name: productData.name,
+        description: productData.description,
+        price: productData.price,
+        category: productData.category,
+        image: productData.image1,
         images: images,
       };
+
       await updateDoc(productDoc, updatedData);
       await fetchProducts(); // Refetch to update UI
     } catch (error) {
