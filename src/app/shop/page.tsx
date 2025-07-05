@@ -63,24 +63,9 @@ export default function ShopPage() {
     setSelectedCategories([]);
   };
 
-  const desktopFilters = (
-    <div className="p-6 rounded-lg bg-black/20 backdrop-blur-sm border border-white/10 sticky top-24">
-      <div className="flex justify-between items-center border-b pb-4 mb-4">
-        <h3 className="font-headline text-xl font-bold">Filters</h3>
-        <Button variant="ghost" size="sm" onClick={clearFilters}>Clear all</Button>
-      </div>
-      <Filters
-        priceRange={priceRange}
-        setPriceRange={setPriceRange}
-        selectedCategories={selectedCategories}
-        setSelectedCategories={setSelectedCategories}
-      />
-    </div>
-  );
-
-  const mobileFilters = (
+  const filtersContent = (
     <div className="p-6">
-      <div className="flex-row justify-between items-center border-b pb-4 mb-4 flex">
+      <div className="flex justify-between items-center border-b pb-4 mb-4">
         <h3 className="font-headline text-xl font-bold">Filters</h3>
         <Button variant="ghost" size="sm" onClick={clearFilters}>Clear all</Button>
       </div>
@@ -107,22 +92,18 @@ export default function ShopPage() {
       
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
-        <aside className="hidden lg:block lg:col-span-1">
-          {desktopFilters}
-        </aside>
-
-        <main className="lg:col-span-3">
+        <main className="lg:col-span-4">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-2">
                     <Sheet>
                         <SheetTrigger asChild>
-                            <Button variant="outline" className="flex items-center gap-2 lg:hidden">
+                            <Button variant="outline" className="flex items-center gap-2">
                                 <Filter className="h-4 w-4" />
                                 <span>Filters</span>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r border-white/10 p-0">
-                            {mobileFilters}
+                        <SheetContent side="left" className="bg-background/80 backdrop-blur-sm border-r border-white/10 p-0 w-[320px] sm:w-[400px]">
+                            {filtersContent}
                         </SheetContent>
                     </Sheet>
 
