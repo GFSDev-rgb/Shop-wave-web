@@ -9,17 +9,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, UserPlus } from 'lucide-react';
+import { Loader2, UserPlus, AlertTriangle } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signUp, loading } = useAuth();
+  const { signUp, loading, isFirebaseEnabled } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isFirebaseEnabled) return;
+    
     try {
       await signUp(email, password);
       toast({
@@ -46,6 +49,15 @@ export default function SignupPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignUp} className="grid gap-4">
+            {!isFirebaseEnabled && (
+                <Alert variant="destructive">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>Configuration Error</AlertTitle>
+                    <AlertDescription>
+                        Firebase is not configured. Please add your project credentials to the <strong>.env</strong> file to enable sign up.
+                    </AlertDescription>
+                </Alert>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -72,7 +84,7 @@ export default function SignupPage() {
             <Button
               type="submit"
               className="w-full mt-2 font-headline"
-              disabled={loading}
+              disabled={!isFirebaseEnabled || loading}
             >
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Create an account'}
             </Button>

@@ -15,6 +15,7 @@ const firebaseConfig = {
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let db: Firestore | null = null;
+let isFirebaseEnabled = false;
 
 // Initialize Firebase only if API key is provided
 if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined") {
@@ -22,6 +23,7 @@ if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined") {
         app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         auth = getAuth(app);
         db = getFirestore(app);
+        isFirebaseEnabled = true;
     } catch (e) {
         console.error("Error initializing Firebase", e);
     }
@@ -35,4 +37,4 @@ if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined") {
 }
 
 
-export { app, auth, db };
+export { app, auth, db, isFirebaseEnabled };
