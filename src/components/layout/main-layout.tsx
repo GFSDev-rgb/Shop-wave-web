@@ -14,7 +14,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
   return (
     <div id="app" className="relative flex min-h-dvh flex-col">
       {showHeaderFooter && <Header />}
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 flex">{children}</main>
       {showHeaderFooter && <Footer />}
     </div>
   );
