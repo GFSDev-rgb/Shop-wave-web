@@ -34,11 +34,10 @@ export default function ProductCard({ product, className }: ProductCardProps) {
   const { addToCart } = useCart();
   const { addToWishlist, isInWishlist, removeFromWishlist } = useWishlist();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { isAdmin } = useAuth();
   const { updateProduct, deleteProduct } = useProducts();
 
   const [isEditSheetOpen, setEditSheetOpen] = useState(false);
-  const isAdmin = user?.email === 'emammahadi822@gmail.com';
 
   const cardRef = useRef<HTMLDivElement>(null);
   const [mouse, setMouse] = useState({ x: 0, y: 0, active: false });

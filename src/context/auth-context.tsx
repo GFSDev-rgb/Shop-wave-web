@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useMemo } from 'react';
 import { onAuthStateChanged, User, signOut as firebaseSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isAdmin: boolean;
   signIn: (email: string, pass: string) => Promise<any>;
   signUp: (email: string, pass: string) => Promise<any>;
   signOut: () => Promise<void>;
@@ -27,6 +28,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
     return () => unsubscribe();
   }, []);
+
+  const isAdmin = useMemo(() => user?.email === 'emammahadi822@gmail.com', [user]);
 
   const signIn = async (email: string, pass: string) => {
     setLoading(true);
@@ -63,7 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );

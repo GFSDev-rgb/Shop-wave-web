@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { useProducts } from "@/hooks/use-products";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import type { Product } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/use-auth";
@@ -31,11 +31,9 @@ import ProductForm from "@/components/admin/product-form";
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const { products, loading: productsLoading, updateProduct } = useProducts();
-  const { user, loading: authLoading } = useAuth();
+  const { loading: authLoading, isAdmin } = useAuth();
   const [product, setProduct] = useState<Product | undefined | null>(undefined);
   const [isEditSheetOpen, setEditSheetOpen] = useState(false);
-
-  const isAdmin = useMemo(() => user?.email === 'emammahadi822@gmail.com', [user]);
 
   useEffect(() => {
     if (!productsLoading && id) {

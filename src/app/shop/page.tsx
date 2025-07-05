@@ -26,9 +26,8 @@ export default function ShopPage() {
   const [isAddSheetOpen, setAddSheetOpen] = useState(false);
 
   const { products, addProduct, loading: productsLoading } = useProducts();
-  const { user, loading: authLoading } = useAuth();
+  const { loading: authLoading, isAdmin } = useAuth();
 
-  const isAdmin = useMemo(() => user?.email === 'emammahadi822@gmail.com', [user]);
   const isLoading = authLoading || productsLoading;
 
   const sortedAndFilteredProducts = useMemo(() => {
