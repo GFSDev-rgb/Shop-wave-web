@@ -3,14 +3,41 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
 import { Button } from '@/components/ui/button';
 import ProductCard from '@/components/product-card';
-import RecommendedProducts from '@/components/ai/recommended-products';
 import { ArrowRight } from 'lucide-react';
 import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
+
+
+// Dynamically import the RecommendedProducts component to reduce initial chunk size
+const RecommendedProducts = dynamic(
+  () => import('@/components/ai/recommended-products'),
+  {
+    loading: () => (
+       <section className="container mx-auto px-4 py-16">
+        {/* Skeleton for the heading */}
+        <div className="flex items-center justify-center gap-4 mb-12">
+            <Skeleton className="h-8 w-8 rounded-full" />
+            <Skeleton className="h-10 w-72" />
+        </div>
+        {/* Skeleton for the product cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="flex flex-col space-y-3">
+              <Skeleton className="h-[400px] w-full rounded-lg" />
+            </div>
+          ))}
+        </div>
+      </section>
+    ),
+    ssr: false, // This component fetches data on the client, so we don't need SSR for it
+  }
+);
+
 
 export default function Home() {
   const { products, loading: productsLoading } = useProducts();
