@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import ProductDetailsClient from "./product-details-client";
-import { Star, Pencil, Heart } from "lucide-react";
+import { Star, Pencil, ThumbsUp } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -118,7 +118,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
               <span>({product.reviews} reviews)</span>
               <Separator orientation="vertical" className="h-4" />
               <div className="flex items-center gap-1.5">
-                  <Heart className="w-4 h-4" />
+                  <ThumbsUp className="w-4 h-4 text-primary" />
                   <span>{product.likeCount.toLocaleString()} likes</span>
               </div>
             </div>

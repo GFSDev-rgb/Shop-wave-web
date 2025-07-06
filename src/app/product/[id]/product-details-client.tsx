@@ -9,7 +9,7 @@ import { useWishlist } from "@/hooks/use-wishlist";
 import { useLikes } from "@/hooks/use-likes";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
-import { Heart, Minus, Plus, ShoppingCart, Loader2 } from "lucide-react";
+import { Heart, Minus, Plus, ShoppingCart, Loader2, ThumbsUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProductDetailsClientProps {
@@ -104,10 +104,10 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
         </Button>
         <Button size="icon" variant="outline" onClick={handleLikeToggle} disabled={likeLoading}>
             {likeLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 
-                <Heart
+                <ThumbsUp
                     className={cn(
                     "h-5 w-5",
-                    isLiked(product.id) && "text-red-500 fill-current"
+                    isLiked(product.id) && "text-primary fill-current"
                     )}
                 />
             }

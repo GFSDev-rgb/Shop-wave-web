@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, ShoppingCart, Pencil, Trash2 } from "lucide-react";
+import { Heart, ShoppingCart, Pencil, Trash2, ThumbsUp } from "lucide-react";
 import React, { useRef, useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 import {
@@ -225,7 +225,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
                   onClick={handleLikeToggle}
                   className="flex items-center gap-1.5 text-sm text-white/80 hover:text-white transition-colors"
                 >
-                    <Heart className={cn("h-5 w-5", isLiked(localProduct.id) && "text-red-500 fill-current")} />
+                    <ThumbsUp className={cn("h-5 w-5", isLiked(localProduct.id) && "text-primary fill-current")} />
                     <span>{localProduct.likeCount}</span>
                 </button>
               </div>
