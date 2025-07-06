@@ -7,12 +7,15 @@ import { ReactNode } from 'react';
 import { ScrollToTopButton } from '../scroll-to-top';
 
 const noHeaderPaths = ['/login', '/signup'];
+// The shop page was also added here in a previous request.
 const noFooterPaths = ['/login', '/signup', '/profile', '/shop'];
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const showHeader = !noHeaderPaths.includes(pathname);
-  const showFooter = !noFooterPaths.includes(pathname);
+  
+  const isProductPage = pathname.startsWith('/product/');
+  const showFooter = !noFooterPaths.includes(pathname) && !isProductPage;
 
   return (
     <div className="relative flex min-h-dvh flex-col">
