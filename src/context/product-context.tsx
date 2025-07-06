@@ -12,7 +12,7 @@ import {
   updateDoc, 
   deleteDoc, 
   doc,
-  DocumentReference
+  type DocumentSnapshot
 } from "firebase/firestore";
 
 // This is the shape of the data coming from the updated product form
@@ -38,6 +38,28 @@ interface ProductContextType {
 export const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
 /**
+ * Safely formats a Firestore document into a Product object,
+ * providing default values for any missing fields to ensure data integrity.
+ * @param doc The Firestore document snapshot.
+ * @returns A well-formed Product object.
+ */
+function formatProduct(doc: DocumentSnapshot): Product {
+    const data = doc.data() || {};
+    return {
+        id: doc.id,
+        name: data.name || 'Untitled Product',
+        description: data.description || '',
+        price: data.price || 0,
+        image: data.image || 'https://placehold.co/600x400.png',
+        images: data.images && Array.isArray(data.images) && data.images.length > 0 ? data.images : [data.image || 'https://placehold.co/600x400.png'],
+        category: data.category || 'Uncategorized',
+        rating: data.rating || 0,
+        reviews: data.reviews || 0,
+        likeCount: data.likeCount || 0,
+    };
+}
+
+/**
  * Provides product data to the application.
  * It fetches products from Firestore and handles CRUD operations.
  * If Firestore is empty, it will automatically seed the database with initial data.
@@ -46,6 +68,11 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Fetches all products from the 'products' collection in Firestore.
+   * If the collection is empty, it seeds the database with a predefined list of products.
+   * This function ensures that the product list is always available for the app.
+   */
   const fetchProducts = useCallback(async () => {
     setLoading(true);
 
@@ -64,18 +91,18 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       if (data.empty && initialProducts.length > 0) {
         console.log("Database is empty. Seeding with initial products...");
         const seededProducts: Product[] = [];
+        // By using Promise.all, we can perform all write operations in parallel.
         const seedPromises = initialProducts.map(async (product) => {
           const { id, ...productData } = product; // Firestore will generate its own ID
           const docRef = await addDoc(productsCollectionRef, productData);
+          // Construct the final product object in memory without needing another read.
           seededProducts.push({ ...productData, id: docRef.id });
         });
         await Promise.all(seedPromises);
         setProducts(seededProducts);
       } else {
-        const fetchedProducts = data.docs.map((doc) => ({
-          ...(doc.data() as Omit<Product, 'id'>),
-          id: doc.id,
-        }));
+        // Safely format each document to prevent errors from malformed data
+        const fetchedProducts = data.docs.map(formatProduct);
         setProducts(fetchedProducts);
       }
     } catch (error) {

@@ -1,9 +1,31 @@
 'use server';
 
 import { db } from "@/lib/firebase";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, type DocumentSnapshot } from "firebase/firestore";
 import type { Product } from "@/lib/types";
 import { products as initialProducts } from "@/lib/data";
+
+/**
+ * Safely formats a Firestore document into a Product object,
+ * providing default values for any missing fields to ensure data integrity.
+ * @param doc The Firestore document snapshot.
+ * @returns A well-formed Product object.
+ */
+function formatProduct(doc: DocumentSnapshot): Product {
+    const data = doc.data() || {};
+    return {
+        id: doc.id,
+        name: data.name || 'Untitled Product',
+        description: data.description || '',
+        price: data.price || 0,
+        image: data.image || 'https://placehold.co/600x400.png',
+        images: data.images && Array.isArray(data.images) && data.images.length > 0 ? data.images : [data.image || 'https://placehold.co/600x400.png'],
+        category: data.category || 'Uncategorized',
+        rating: data.rating || 0,
+        reviews: data.reviews || 0,
+        likeCount: data.likeCount || 0,
+    };
+}
 
 export async function getProductById(id: string): Promise<Product | null> {
     if (!db) {
@@ -19,7 +41,7 @@ export async function getProductById(id: string): Promise<Product | null> {
         const docSnap = await getDoc(productDocRef);
 
         if (docSnap.exists()) {
-            return { ...(docSnap.data() as Omit<Product, 'id'>), id: docSnap.id };
+            return formatProduct(docSnap);
         } else {
             console.warn(`Product with id ${id} not found in Firestore.`);
             return null;
@@ -38,7 +60,7 @@ export async function getAllProducts(): Promise<Product[]> {
     try {
       const productsCollectionRef = collection(db, "products");
       const data = await getDocs(productsCollectionRef);
-      return data.docs.map(doc => ({ ...(doc.data() as Omit<Product, 'id'>), id: doc.id }));
+      return data.docs.map(formatProduct);
     } catch (error) {
         console.error("Error fetching all products from Firestore:", error);
         return [];
