@@ -11,14 +11,14 @@
     --card-foreground: 275 10% 95%;
     --popover: 275 20% 5%;
     --popover-foreground: 275 10% 95%;
-    --primary: 271 76% 65%;
-    --primary-foreground: 275 20% 5%;
+    --primary: 275 100% 25%; /* #4B0082 */
+    --primary-foreground: 0 0% 98%;
     --secondary: 275 20% 15%;
     --secondary-foreground: 275 10% 95%;
     --muted: 275 20% 15%;
     --muted-foreground: 275 10% 60%;
-    --accent: 271 76% 53%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 271 76% 53%; /* #8A2BE2 */
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 275 20% 15%;
@@ -61,6 +61,9 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  html {
+    scroll-behavior: smooth;
   }
 }
 
@@ -243,41 +246,3 @@
   background-size: 200% 100%;
   animation: shimmer 1.5s linear infinite;
 }
-
-/* Custom Neumorphic Button Style */
-.btn-neumorphic {
-  border: none !important;
-  background-color: hsl(var(--card));
-  color: hsl(var(--foreground));
-  box-shadow: 6px 6px 12px hsl(var(--background)), -6px -6px 12px hsl(var(--border));
-  transition: all 0.2s ease-in-out;
-}
-.btn-neumorphic:hover {
-  background-color: hsl(var(--card));
-  color: hsl(var(--foreground));
-  box-shadow: 4px 4px 8px hsl(var(--background)), -4px -4px 8px hsl(var(--border));
-}
-.btn-neumorphic:active {
-  background-color: hsl(var(--card));
-  color: hsl(var(--primary));
-  box-shadow: inset 2px 2px 5px hsl(var(--background)), inset -2px -2px 5px hsl(var(--border)) !important;
-}
-
-.light .btn-neumorphic {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
-  box-shadow: 6px 6px 12px #d1d9e6, -6px -6px 12px #ffffff;
-}
-.light .btn-neumorphic:hover {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
-  box-shadow: 4px 4px 8px #d1d9e6, -4px -4px 8px #ffffff;
-}
-.light .btn-neumorphic:active {
-  background-color: hsl(var(--background));
-  color: hsl(var(--primary));
-  box-shadow: inset 2px 2px 5px #d1d9e6, inset -2px -2px 5px #ffffff !important;
-}
-    
-
-    
