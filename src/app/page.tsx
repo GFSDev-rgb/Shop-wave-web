@@ -25,7 +25,7 @@ const RecommendedProducts = dynamic(
             <Skeleton className="h-10 w-72" />
         </div>
         {/* Skeleton for the product cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex flex-col space-y-3">
               <Skeleton className="h-[400px] w-full rounded-lg" />
@@ -81,7 +81,7 @@ export default function Home() {
 
       <section className="container mx-auto px-4">
         <h2 className="font-headline text-4xl font-bold text-center mb-12">Featured Products</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {isLoading ? (
              Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex flex-col space-y-3">

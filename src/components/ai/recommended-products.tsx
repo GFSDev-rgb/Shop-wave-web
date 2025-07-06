@@ -29,7 +29,7 @@ export default function RecommendedProducts() {
             <Wand2 className="h-8 w-8 text-primary" />
             <h2 className="font-headline text-4xl font-bold text-center">Just For You</h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {loading ? (
             Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex flex-col space-y-3">

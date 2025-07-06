@@ -24,7 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Note: Metadata cannot be exported from client components. 
 // This would need to be a server component to have page-specific metadata.
 
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 12;
 
 export default function ShopPage() {
   const [sortOption, setSortOption] = useState("newest");
@@ -175,9 +175,9 @@ export default function ShopPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {isLoading ? (
-                    Array.from({ length: 6 }).map((_, i) => (
+                    Array.from({ length: 8 }).map((_, i) => (
                         <div key={i} className="flex flex-col space-y-3">
                             <Skeleton className="h-[400px] w-full rounded-lg" />
                         </div>
@@ -196,8 +196,8 @@ export default function ShopPage() {
             
             {/* Loading indicator for infinite scroll */}
             {!isLoading && visibleCount < sortedAndFilteredProducts.length && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 mt-8">
-                     {Array.from({ length: 3 }).map((_, i) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mt-8">
+                     {Array.from({ length: 4 }).map((_, i) => (
                         <div key={`placeholder-${i}`} className="flex flex-col space-y-3">
                             <Skeleton className="h-[400px] w-full rounded-lg" />
                         </div>
