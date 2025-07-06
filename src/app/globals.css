@@ -5,24 +5,32 @@
 
 @layer base {
   :root {
-    --background: 0 0% 12%;
-    --foreground: 30 10% 95%;
-    --card: 0 0% 16%;
-    --card-foreground: 30 10% 95%;
-    --popover: 0 0% 12%;
-    --popover-foreground: 30 10% 95%;
-    --primary: 23 25% 33%; /* Coffee */
+    --background: 260 20% 5%; /* Charcoal */
+    --foreground: 30 10% 80%; /* Ash Gray */
+
+    --card: 260 15% 9%;
+    --card-foreground: 30 10% 80%;
+
+    --popover: 260 20% 5%;
+    --popover-foreground: 30 10% 80%;
+
+    --primary: 22 28% 34%; /* Coffee */
     --primary-foreground: 30 10% 95%;
-    --secondary: 0 0% 20%;
+
+    --secondary: 260 15% 12%;
     --secondary-foreground: 30 10% 95%;
-    --muted: 0 0% 20%;
-    --muted-foreground: 28 9% 67%; /* Ash Gray */
+
+    --muted: 260 15% 12%;
+    --muted-foreground: 30 10% 60%; /* Lighter Ash Gray */
+    
     --accent: 31 100% 74%; /* Amber Glow */
-    --accent-foreground: 23 25% 33%; /* Coffee */
+    --accent-foreground: 22 28% 20%; /* Darker Coffee */
+    
     --destructive: 0 60% 45%;
     --destructive-foreground: 30 10% 95%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
+    
+    --border: 260 15% 12%;
+    --input: 260 15% 12%;
     --ring: 31 100% 74%;
     --radius: 0.8rem;
     --chart-1: 220 70% 50%;
@@ -36,7 +44,7 @@
     --background: 45 52% 91%; /* Cream: #f3ecda */
     --foreground: 18 25% 25%; /* Dark Brown */
 
-    --card: 30 24% 85%; /* Lighter Khaki for better softness */
+    --card: 38 35% 88%; /* Lighter Cream/Khaki for cards */
     --card-foreground: 18 25% 25%;
 
     --popover: 45 52% 93%; /* Lighter Cream */
@@ -45,10 +53,10 @@
     --primary: 18 42% 41%; /* Tan: #94553d */
     --primary-foreground: 45 52% 91%; /* Cream */
 
-    --secondary: 30 24% 68%; /* Khaki: #c4ac95 */
+    --secondary: 30 24% 80%; /* Khaki: #c4ac95 */
     --secondary-foreground: 18 25% 25%; /* Dark Brown */
 
-    --muted: 30 24% 90%; /* Even Lighter Khaki */
+    --muted: 30 24% 88%; /* Even Lighter Khaki */
     --muted-foreground: 18 25% 45%; /* Muted Brown */
 
     --accent: 30 100% 82%; /* Peach: #ffcba4 */
@@ -72,6 +80,9 @@
   }
   html {
     scroll-behavior: smooth;
+  }
+  h1,h2,h3,h4,h5,h6 {
+    @apply font-headline;
   }
 }
 
@@ -253,4 +264,46 @@
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s linear infinite;
+}
+
+/* Wave loading animation */
+@keyframes wave-animation {
+  0%, 40%, 100% {
+    transform: scaleY(0.4);
+  }
+  20% {
+    transform: scaleY(1);
+  }
+}
+
+.wave-loader {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 50px;
+  gap: 8px;
+}
+
+.wave-bar {
+  background-color: hsl(var(--primary));
+  width: 8px;
+  height: 100%;
+  border-radius: 4px;
+  animation: wave-animation 1.2s infinite ease-in-out;
+}
+
+.wave-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.wave-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.wave-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.wave-bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.wave-bar:nth-child(5) {
+  animation-delay: 0.4s;
 }
