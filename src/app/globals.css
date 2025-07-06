@@ -33,25 +33,33 @@
   }
 
   .light {
-    --background: 0 0% 94%; /* #F0F0F0 */
-    --foreground: 275 20% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 275 20% 10%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 275 20% 10%;
-    --primary: 275 100% 25%; /* #4B0082 */
-    --primary-foreground: 0 0% 98%;
-    --secondary: 275 10% 96%;
-    --secondary-foreground: 275 20% 10%;
-    --muted: 275 10% 96%;
-    --muted-foreground: 275 10% 45%;
-    --accent: 271 76% 53%; /* #8A2BE2 */
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 275 10% 90%;
-    --input: 275 10% 90%;
-    --ring: 275 100% 25%;
+    --background: 45 52% 91%; /* Cream: #f3ecda */
+    --foreground: 18 25% 25%; /* Dark Brown */
+
+    --card: 30 24% 85%; /* Lighter Khaki for better softness */
+    --card-foreground: 18 25% 25%;
+
+    --popover: 45 52% 93%; /* Lighter Cream */
+    --popover-foreground: 18 25% 25%;
+
+    --primary: 18 42% 41%; /* Tan: #94553d */
+    --primary-foreground: 45 52% 91%; /* Cream */
+
+    --secondary: 30 24% 68%; /* Khaki: #c4ac95 */
+    --secondary-foreground: 18 25% 25%; /* Dark Brown */
+
+    --muted: 30 24% 90%; /* Even Lighter Khaki */
+    --muted-foreground: 18 25% 45%; /* Muted Brown */
+
+    --accent: 30 100% 82%; /* Peach: #ffcba4 */
+    --accent-foreground: 18 42% 41%; /* Tan */
+    
+    --destructive: 2 68% 58%; /* Warm Red: #d9534f */
+    --destructive-foreground: 45 52% 91%;
+
+    --border: 30 24% 80%; /* Subtle Border */
+    --input: 30 24% 80%;
+    --ring: 18 42% 41%; /* Tan */
   }
 }
 
@@ -84,7 +92,7 @@
   overflow: hidden;
   border-radius: var(--radius);
   box-shadow:
-    rgba(0, 0, 0, 0.66) 0 30px 60px 0,
+    rgba(0, 0, 0, 0.2) 0 30px 60px 0,
     inset #333 0 0 0 5px,
     inset rgba(255, 255, 255, 0.5) 0 0 0 6px;
   transition: transform 1s cubic-bezier(0.445, 0.05, 0.55, 0.95), box-shadow 1s cubic-bezier(0.445, 0.05, 0.55, 0.95);
