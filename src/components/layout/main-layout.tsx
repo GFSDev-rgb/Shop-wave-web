@@ -7,7 +7,7 @@ import { ReactNode } from 'react';
 import { ScrollToTopButton } from '../scroll-to-top';
 
 const noHeaderPaths = ['/login', '/signup'];
-const noFooterPaths = ['/login', '/signup', '/profile'];
+const noFooterPaths = ['/login', '/signup', '/profile', '/shop'];
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
