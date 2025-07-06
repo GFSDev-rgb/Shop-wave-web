@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import type { Metadata } from "next";
 import { Product } from "@/lib/types";
 import ProductCard from "@/components/product-card";
@@ -24,15 +24,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Note: Metadata cannot be exported from client components. 
 // This would need to be a server component to have page-specific metadata.
 
+const ITEMS_PER_PAGE = 9;
+
 export default function ShopPage() {
   const [sortOption, setSortOption] = useState("newest");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isAddSheetOpen, setAddSheetOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   const { products, loading: productsLoading } = useProducts();
   const { loading: authLoading, isAdmin } = useAuth();
-
+  
   const isLoading = authLoading || productsLoading;
 
   const sortedAndFilteredProducts = useMemo(() => {
@@ -63,9 +66,32 @@ export default function ShopPage() {
     return result;
   }, [sortOption, priceRange, selectedCategories, products]);
 
+  // Reset visible count when filters change
+  useMemo(() => {
+    setVisibleCount(ITEMS_PER_PAGE);
+  }, [sortOption, priceRange, selectedCategories]);
+
+  const renderedProducts = useMemo(() => {
+    return sortedAndFilteredProducts.slice(0, visibleCount);
+  }, [sortedAndFilteredProducts, visibleCount]);
+
+  const observer = useRef<IntersectionObserver>();
+  const lastProductElementRef = useCallback((node: HTMLElement) => {
+    if (isLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && visibleCount < sortedAndFilteredProducts.length) {
+        setVisibleCount(prev => prev + ITEMS_PER_PAGE);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [isLoading, visibleCount, sortedAndFilteredProducts.length]);
+
+
   const clearFilters = () => {
     setPriceRange([0, 500]);
     setSelectedCategories([]);
+    setVisibleCount(ITEMS_PER_PAGE);
   };
 
   return (
@@ -156,10 +182,28 @@ export default function ShopPage() {
                             <Skeleton className="h-[400px] w-full rounded-lg" />
                         </div>
                     ))
-                ) : sortedAndFilteredProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                ))}
+                ) : renderedProducts.map((product, index) => {
+                     const isLastElement = index === renderedProducts.length - 1;
+                     return (
+                        <ProductCard 
+                            ref={isLastElement ? lastProductElementRef : null}
+                            key={product.id} 
+                            product={product} 
+                        />
+                     )
+                })}
             </div>
+            
+            {/* Loading indicator for infinite scroll */}
+            {!isLoading && visibleCount < sortedAndFilteredProducts.length && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 mt-8">
+                     {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={`placeholder-${i}`} className="flex flex-col space-y-3">
+                            <Skeleton className="h-[400px] w-full rounded-lg" />
+                        </div>
+                    ))}
+                </div>
+            )}
         </main>
       </div>
     </div>
