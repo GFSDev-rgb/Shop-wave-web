@@ -119,7 +119,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
               <Separator orientation="vertical" className="h-4" />
               <div className="flex items-center gap-1.5">
                   <ThumbsUp className="w-4 h-4 text-primary" />
-                  <span>{product.likeCount.toLocaleString()} likes</span>
+                  <span>{(product.likeCount || 0).toLocaleString()} likes</span>
               </div>
             </div>
           </div>

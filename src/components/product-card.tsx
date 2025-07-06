@@ -226,7 +226,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
                   className="flex items-center gap-1.5 text-sm text-white/80 hover:text-white transition-colors"
                 >
                     <ThumbsUp className={cn("h-5 w-5", isLiked(localProduct.id) && "text-primary fill-current")} />
-                    <span>{localProduct.likeCount}</span>
+                    <span>{(localProduct.likeCount || 0).toLocaleString()}</span>
                 </button>
               </div>
               <div className="card-buttons">

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useCallback } from 'react';
@@ -51,7 +52,7 @@ export const useLikes = () => {
         setProfile({ ...profile, likes: newLikesMap });
         setProducts(currentProducts =>
             currentProducts.map(p =>
-                p.id === productId ? { ...p, likeCount: p.likeCount + likeIncrement } : p
+                p.id === productId ? { ...p, likeCount: (p.likeCount || 0) + likeIncrement } : p
             )
         );
 
