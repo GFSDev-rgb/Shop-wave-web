@@ -12,6 +12,7 @@ export const products: Product[] = [
     category: 'Apparel',
     rating: 4.8,
     reviews: 120,
+    likeCount: 431,
   },
   {
     id: '2',
@@ -24,6 +25,7 @@ export const products: Product[] = [
     category: 'Accessories',
     rating: 4.9,
     reviews: 250,
+    likeCount: 789,
   },
   {
     id: '3',
@@ -36,6 +38,7 @@ export const products: Product[] = [
     category: 'Watches',
     rating: 4.7,
     reviews: 95,
+    likeCount: 652,
   },
   {
     id: '4',
@@ -48,6 +51,7 @@ export const products: Product[] = [
     category: 'Apparel',
     rating: 5.0,
     reviews: 310,
+    likeCount: 945,
   },
   {
     id: '5',
@@ -60,6 +64,7 @@ export const products: Product[] = [
     category: 'Electronics',
     rating: 4.6,
     reviews: 180,
+    likeCount: 234,
   },
   {
     id: '6',
@@ -72,6 +77,7 @@ export const products: Product[] = [
     category: 'Footwear',
     rating: 4.8,
     reviews: 215,
+    likeCount: 388,
   },
   {
     id: '7',
@@ -84,6 +90,7 @@ export const products: Product[] = [
     category: 'Home Goods',
     rating: 4.9,
     reviews: 500,
+    likeCount: 1102,
   },
   {
     id: '8',
@@ -96,6 +103,7 @@ export const products: Product[] = [
     category: 'Accessories',
     rating: 4.7,
     reviews: 140,
+    likeCount: 201,
   },
   {
     id: '9',
@@ -107,6 +115,7 @@ export const products: Product[] = [
     category: 'Accessories',
     rating: 4.5,
     reviews: 90,
+    likeCount: 350,
   },
   {
     id: '10',
@@ -118,5 +127,6 @@ export const products: Product[] = [
     category: 'Accessories',
     rating: 4.8,
     reviews: 150,
+    likeCount: 499,
   },
 ];

@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import ProductDetailsClient from "./product-details-client";
-import { Star, Pencil } from "lucide-react";
+import { Star, Pencil, Heart } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -26,6 +26,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import ProductForm from "@/components/admin/product-form";
+import { Separator } from "@/components/ui/separator";
 
 export default function ProductView({ initialProduct }: { initialProduct: Product }) {
   const { products } = useProducts();
@@ -103,7 +104,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
               )}
             </div>
 
-            <div className="flex items-center gap-2 mt-4">
+            <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
               <div className="flex items-center">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star
@@ -114,7 +115,12 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
                   />
                 ))}
               </div>
-              <span className="text-sm text-muted-foreground">({product.reviews} reviews)</span>
+              <span>({product.reviews} reviews)</span>
+              <Separator orientation="vertical" className="h-4" />
+              <div className="flex items-center gap-1.5">
+                  <Heart className="w-4 h-4" />
+                  <span>{product.likeCount.toLocaleString()} likes</span>
+              </div>
             </div>
           </div>
           <p className="text-3xl font-bold text-primary">${product.price.toFixed(2)}</p>

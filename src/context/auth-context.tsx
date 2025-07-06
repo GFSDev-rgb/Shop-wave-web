@@ -18,6 +18,7 @@ interface AuthContextType {
   signUp: (email: string, pass: string) => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
+  setProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,6 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             phoneNumber: user.phoneNumber || '',
             address: '',
             bio: '',
+            likes: {},
           };
           await setDoc(profileDocRef, newProfile);
           setProfile(newProfile);
@@ -142,7 +144,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [user, toast]);
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, isAdmin, isFirebaseEnabled, signIn, signUp, signOut, updateProfile }}>
+    <AuthContext.Provider value={{ user, profile, loading, isAdmin, isFirebaseEnabled, signIn, signUp, signOut, updateProfile, setProfile }}>
       {children}
     </AuthContext.Provider>
   );

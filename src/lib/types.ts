@@ -8,6 +8,7 @@ export type Product = {
   category: string;
   rating: number;
   reviews: number;
+  likeCount: number;
 };
 
 export type CartItem = {
@@ -42,4 +43,5 @@ export type UserProfile = {
   phoneNumber: string;
   address: string;
   bio: string;
+  likes?: Record<string, boolean>;
 };

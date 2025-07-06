@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useWishlist } from "@/hooks/use-wishlist";
+import { useLikes } from "@/hooks/use-likes";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
-import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
+import { Heart, Minus, Plus, ShoppingCart, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProductDetailsClientProps {
@@ -19,6 +20,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const [quantity, setQuantity] = useState(1);
   const { addToCart, cartItems } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { isLiked, toggleLike, loading: likeLoading } = useLikes();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -50,6 +52,10 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
       });
     }
   };
+
+  const handleLikeToggle = () => {
+    toggleLike(product.id);
+  }
 
   return (
     <div className="space-y-6">
@@ -89,12 +95,22 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
           <Heart
             className={cn(
               "mr-2 h-5 w-5",
-              isInWishlist(product.id) && "text-red-500 fill-current"
+              isInWishlist(product.id) && "text-yellow-400 fill-current"
             )}
           />
           {isInWishlist(product.id)
-            ? "Remove from Wishlist"
+            ? "In Wishlist"
             : "Add to Wishlist"}
+        </Button>
+        <Button size="icon" variant="outline" onClick={handleLikeToggle} disabled={likeLoading}>
+            {likeLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 
+                <Heart
+                    className={cn(
+                    "h-5 w-5",
+                    isLiked(product.id) && "text-red-500 fill-current"
+                    )}
+                />
+            }
         </Button>
       </div>
     </div>

@@ -28,6 +28,7 @@ interface ProductFormData {
 
 interface ProductContextType {
   products: Product[];
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   loading: boolean;
   addProduct: (productData: ProductFormData) => Promise<void>;
   updateProduct: (productId: string, productData: ProductFormData) => Promise<void>;
@@ -104,6 +105,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
         reviews: 0,
         image: image1,
         images: images,
+        likeCount: 0,
       };
 
       const docRef = await addDoc(productsCollectionRef, newProductData);
@@ -176,7 +178,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ProductContext.Provider
-      value={{ products, loading, addProduct, updateProduct, deleteProduct }}
+      value={{ products, setProducts, loading, addProduct, updateProduct, deleteProduct }}
     >
       {children}
     </ProductContext.Provider>

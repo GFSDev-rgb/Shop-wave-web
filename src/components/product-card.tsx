@@ -22,6 +22,7 @@ import type { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useWishlist } from "@/hooks/use-wishlist";
+import { useLikes } from "@/hooks/use-likes";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useProducts } from "@/hooks/use-products";
@@ -36,6 +37,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
   ({ product, className }, ref) => {
     const { addToCart, cartItems } = useCart();
     const { addToWishlist, isInWishlist, removeFromWishlist } = useWishlist();
+    const { isLiked, toggleLike } = useLikes();
     const { toast } = useToast();
     const { isAdmin } = useAuth();
     const { deleteProduct } = useProducts();
@@ -114,7 +116,12 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
       }
     };
 
-    const handleWishlistToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleLikeToggle = (e: React.MouseEvent) => {
+        handleAdminAction(e);
+        toggleLike(localProduct.id);
+    }
+
+    const handleWishlistToggle = (e: React.MouseEvent) => {
       handleAdminAction(e);
       if (isInWishlist(localProduct.id)) {
         removeFromWishlist(localProduct.id);
@@ -212,7 +219,16 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
             <div className="card-info">
               <p className="card-category text-sm text-muted-foreground mb-1">{localProduct.category}</p>
               <h3 className="card-title">{localProduct.name}</h3>
-              <p className="card-price">${localProduct.price.toFixed(2)}</p>
+              <div className="flex justify-between items-center mt-2 mb-4">
+                <p className="card-price">${localProduct.price.toFixed(2)}</p>
+                <button 
+                  onClick={handleLikeToggle}
+                  className="flex items-center gap-1.5 text-sm text-white/80 hover:text-white transition-colors"
+                >
+                    <Heart className={cn("h-5 w-5", isLiked(localProduct.id) && "text-red-500 fill-current")} />
+                    <span>{localProduct.likeCount}</span>
+                </button>
+              </div>
               <div className="card-buttons">
                   <Button onClick={handleCartAction} variant="secondary" className="w-full">
                     {isInCart ? 'View Cart' : (
