@@ -37,6 +37,11 @@ interface ProductContextType {
 
 export const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
+/**
+ * Provides product data to the application.
+ * It fetches products from Firestore and handles CRUD operations.
+ * If Firestore is empty, it will automatically seed the database with initial data.
+ */
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,18 +60,16 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       const productsCollectionRef = collection(db, "products");
       const data = await getDocs(productsCollectionRef);
 
-      // Seed database if it's empty
+      // Seed database if it's empty, performing only one read operation.
       if (data.empty && initialProducts.length > 0) {
-        for (const product of initialProducts) {
+        console.log("Database is empty. Seeding with initial products...");
+        const seededProducts: Product[] = [];
+        const seedPromises = initialProducts.map(async (product) => {
           const { id, ...productData } = product; // Firestore will generate its own ID
-          await addDoc(productsCollectionRef, productData);
-        }
-        // Refetch after seeding
-        const seededData = await getDocs(productsCollectionRef);
-        const seededProducts = seededData.docs.map((doc) => ({
-            ...(doc.data() as Omit<Product, 'id'>),
-            id: doc.id,
-        }));
+          const docRef = await addDoc(productsCollectionRef, productData);
+          seededProducts.push({ ...productData, id: docRef.id });
+        });
+        await Promise.all(seedPromises);
         setProducts(seededProducts);
       } else {
         const fetchedProducts = data.docs.map((doc) => ({
