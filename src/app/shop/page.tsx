@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useCallback } from "react";
+import { useDebounce } from "use-debounce";
 import type { Metadata } from "next";
 import { Product } from "@/lib/types";
 import ProductCard from "@/components/product-card";
@@ -33,6 +34,10 @@ export default function ShopPage() {
   const [isAddSheetOpen, setAddSheetOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
+  // Debounce filter values to prevent excessive re-renders while user is interacting with controls
+  const [debouncedPriceRange] = useDebounce(priceRange, 300);
+  const [debouncedSelectedCategories] = useDebounce(selectedCategories, 300);
+
   const { products, loading: productsLoading } = useProducts();
   const { loading: authLoading, isAdmin } = useAuth();
   
@@ -42,9 +47,9 @@ export default function ShopPage() {
     let result = products
       .filter((product) => {
         const inCategory =
-          selectedCategories.length === 0 || selectedCategories.includes(product.category);
+          debouncedSelectedCategories.length === 0 || debouncedSelectedCategories.includes(product.category);
         const inPriceRange =
-          product.price >= priceRange[0] && product.price <= priceRange[1];
+          product.price >= debouncedPriceRange[0] && product.price <= debouncedPriceRange[1];
         return inCategory && inPriceRange;
       });
 
@@ -64,12 +69,12 @@ export default function ShopPage() {
         break;
     }
     return result;
-  }, [sortOption, priceRange, selectedCategories, products]);
+  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, products]);
 
   // Reset visible count when filters change
   useMemo(() => {
     setVisibleCount(ITEMS_PER_PAGE);
-  }, [sortOption, priceRange, selectedCategories]);
+  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories]);
 
   const renderedProducts = useMemo(() => {
     return sortedAndFilteredProducts.slice(0, visibleCount);
@@ -175,7 +180,7 @@ export default function ShopPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
                 {isLoading ? (
                     Array.from({ length: 8 }).map((_, i) => (
                         <div key={i} className="flex flex-col space-y-3">
@@ -196,7 +201,7 @@ export default function ShopPage() {
             
             {/* Loading indicator for infinite scroll */}
             {!isLoading && visibleCount < sortedAndFilteredProducts.length && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mt-8">
                      {Array.from({ length: 4 }).map((_, i) => (
                         <div key={`placeholder-${i}`} className="flex flex-col space-y-3">
                             <Skeleton className="h-[400px] w-full rounded-lg" />

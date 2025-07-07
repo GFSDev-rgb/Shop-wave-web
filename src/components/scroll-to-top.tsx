@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLenis } from '@studio-freight/react-lenis';
 import { ArrowUp } from 'lucide-react';
-
+import { throttle } from 'lodash';
 import { Button } from '@/components/ui/button';
 
 export function ScrollToTopButton() {
@@ -20,9 +20,14 @@ export function ScrollToTopButton() {
       }
     };
 
-    window.addEventListener('scroll', toggleVisibility);
+    const throttledToggleVisibility = throttle(toggleVisibility, 200);
 
-    return () => window.removeEventListener('scroll', toggleVisibility);
+    window.addEventListener('scroll', throttledToggleVisibility);
+
+    return () => {
+        window.removeEventListener('scroll', throttledToggleVisibility);
+        throttledToggleVisibility.cancel();
+    }
   }, []);
 
   const scrollToTop = () => {

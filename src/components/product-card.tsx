@@ -3,8 +3,9 @@
 
 import Link from "next/link";
 import { Heart, ShoppingCart, Pencil, Trash2, ThumbsUp } from "lucide-react";
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { useRouter } from "next/navigation";
+import { throttle } from "lodash";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,20 +59,25 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
     
     const isInCart = cartItems.some(item => item.product.id === localProduct.id);
 
+    const throttledSetMouse = useMemo(() => throttle(
+      (newMouseState: { x: number, y: number, active: boolean }) => setMouse(newMouseState), 16 // ~60fps
+    ), []);
+
     useEffect(() => {
       return () => {
+        throttledSetMouse.cancel();
         if (mouseLeaveDelay.current) {
           clearTimeout(mouseLeaveDelay.current);
         }
       };
-    }, []);
+    }, [throttledSetMouse]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
       if (!cardRef.current || isAdmin) return;
       const { left, top, width, height } = cardRef.current.getBoundingClientRect();
       const x = e.clientX - left - width / 2;
       const y = e.clientY - top - height / 2;
-      setMouse({ x, y, active: true });
+      throttledSetMouse({ x, y, active: true });
     };
 
     const handleMouseEnter = () => {
