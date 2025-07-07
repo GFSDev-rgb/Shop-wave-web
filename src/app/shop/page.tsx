@@ -4,6 +4,7 @@
 import { useState, useMemo, useRef, useCallback } from "react";
 import { useDebounce } from "use-debounce";
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Product } from "@/lib/types";
 import ProductCard from "@/components/product-card";
 import { Filters } from "./filters";
@@ -19,11 +20,35 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescri
 import { Filter, ArrowUpDown, PlusCircle } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
 import { useAuth } from "@/hooks/use-auth";
-import ProductForm from "@/components/admin/product-form";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Note: Metadata cannot be exported from client components. 
 // This would need to be a server component to have page-specific metadata.
+
+const ProductForm = dynamic(() => import('@/components/admin/product-form'), {
+  loading: () => (
+    <div className="space-y-8 p-1 mt-6">
+      <div className="space-y-4">
+        <Skeleton className="h-5 w-32" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-5 w-32 mt-4" />
+        <Skeleton className="h-20 w-full" />
+      </div>
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Skeleton className="h-5 w-24" />
+            <Skeleton className="h-10 w-full mt-2" />
+          </div>
+          <div>
+            <Skeleton className="h-5 w-24" />
+            <Skeleton className="h-10 w-full mt-2" />
+          </div>
+        </div>
+      </div>
+    </div>
+  ),
+});
 
 const ITEMS_PER_PAGE = 12;
 

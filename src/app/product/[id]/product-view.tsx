@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import ProductDetailsClient from "./product-details-client";
 import { Star, Pencil, ThumbsUp } from "lucide-react";
 import {
@@ -25,8 +26,33 @@ import {
   SheetDescription,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import ProductForm from "@/components/admin/product-form";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const ProductForm = dynamic(() => import('@/components/admin/product-form'), {
+  loading: () => (
+    <div className="space-y-8 p-1 mt-6">
+      <div className="space-y-4">
+        <Skeleton className="h-5 w-32" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-5 w-32 mt-4" />
+        <Skeleton className="h-20 w-full" />
+      </div>
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Skeleton className="h-5 w-24" />
+            <Skeleton className="h-10 w-full mt-2" />
+          </div>
+          <div>
+            <Skeleton className="h-5 w-24" />
+            <Skeleton className="h-10 w-full mt-2" />
+          </div>
+        </div>
+      </div>
+    </div>
+  ),
+});
 
 export default function ProductView({ initialProduct }: { initialProduct: Product }) {
   const { products } = useProducts();
