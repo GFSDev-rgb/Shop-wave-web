@@ -30,8 +30,7 @@ export function CommandSearch() {
   }, [debouncedQuery, products]);
 
   return (
-    <div className="search-container">
-      <div className="bg"></div>
+    <div className="search-component-container">
       <div className="input-wrapper">
         <div className="input">
           <div className="glow left"></div>
