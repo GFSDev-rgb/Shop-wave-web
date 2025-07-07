@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -14,25 +15,17 @@ const categories = ["Apparel", "Accessories", "Footwear", "Home Goods", "Electro
 
 interface FiltersProps {
   priceRange: [number, number];
-  setPriceRange: (value: [number, number]) => void;
+  onPriceChange: (value: [number, number]) => void;
   selectedCategories: string[];
-  setSelectedCategories: (categories: string[]) => void;
+  onCategoryToggle: (category: string) => void;
 }
 
 export function Filters({ 
   priceRange, 
-  setPriceRange,
+  onPriceChange,
   selectedCategories,
-  setSelectedCategories,
+  onCategoryToggle,
 }: FiltersProps) {
-  
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategories(
-      selectedCategories.includes(category)
-        ? selectedCategories.filter((c) => c !== category)
-        : [...selectedCategories, category]
-    );
-  };
 
   return (
     <Accordion type="multiple" defaultValue={["category", "price"]} className="w-full">
@@ -45,7 +38,7 @@ export function Filters({
                 <Checkbox 
                   id={`filter-${category}`}
                   checked={selectedCategories.includes(category)}
-                  onCheckedChange={() => handleCategoryChange(category)}
+                  onCheckedChange={() => onCategoryToggle(category)}
                 />
                 <Label htmlFor={`filter-${category}`} className="font-normal text-sm cursor-pointer">
                   {category}
@@ -64,7 +57,7 @@ export function Filters({
                     max={500}
                     step={10}
                     value={priceRange}
-                    onValueChange={(value: [number, number]) => setPriceRange(value)}
+                    onValueChange={onPriceChange}
                 />
                 <div className="flex justify-between text-sm text-muted-foreground mt-2">
                     <span>${priceRange[0]}</span>

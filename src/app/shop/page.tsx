@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect, useTransition } from "react";
 import { useDebounce } from "use-debounce";
 import dynamic from "next/dynamic";
 import { Product } from "@/lib/types";
@@ -16,10 +16,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { Filter, ArrowUpDown, PlusCircle } from "lucide-react";
+import { Filter, ArrowUpDown, PlusCircle, Loader2 } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
 import { useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 // Note: Metadata cannot be exported from client components. 
 // This would need to be a server component to have page-specific metadata.
@@ -57,6 +58,7 @@ export default function ShopPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isAddSheetOpen, setAddSheetOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
+  const [isPending, startTransition] = useTransition();
 
   // Debounce filter values to prevent excessive re-renders while user is interacting with controls
   const [debouncedPriceRange] = useDebounce(priceRange, 300);
@@ -69,6 +71,7 @@ export default function ShopPage() {
   const [sortedAndFilteredProducts, setSortedAndFilteredProducts] = useState<Product[]>([]);
   
   const isLoading = authLoading || productsLoading;
+  const isFiltering = isPending;
 
   // Effect to initialize the Web Worker
   useEffect(() => {
@@ -156,10 +159,33 @@ export default function ShopPage() {
     if (node) observer.current.observe(node);
   }, [isLoading, visibleCount, sortedAndFilteredProducts.length]);
 
+  const handleSortChange = (value: string) => {
+    startTransition(() => {
+      setSortOption(value);
+    });
+  };
+
+  const handlePriceChange = (value: [number, number]) => {
+    startTransition(() => {
+      setPriceRange(value);
+    });
+  };
+
+  const handleCategoryToggle = (category: string) => {
+    startTransition(() => {
+      setSelectedCategories((prev) =>
+        prev.includes(category)
+          ? prev.filter((c) => c !== category)
+          : [...prev, category]
+      );
+    });
+  };
 
   const clearFilters = () => {
-    setPriceRange([0, 500]);
-    setSelectedCategories([]);
+    startTransition(() => {
+      setPriceRange([0, 500]);
+      setSelectedCategories([]);
+    });
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
@@ -197,9 +223,9 @@ export default function ShopPage() {
                             <div className="p-6 flex-1 overflow-y-auto">
                                 <Filters
                                     priceRange={priceRange}
-                                    setPriceRange={setPriceRange}
+                                    onPriceChange={handlePriceChange}
                                     selectedCategories={selectedCategories}
-                                    setSelectedCategories={setSelectedCategories}
+                                    onCategoryToggle={handleCategoryToggle}
                                 />
                             </div>
                             <div className="p-6 border-t">
@@ -229,7 +255,8 @@ export default function ShopPage() {
                 
                 <div className="flex items-center gap-4">
                     <p className="hidden sm:block text-sm text-muted-foreground">{sortedAndFilteredProducts.length} Products</p>
-                    <Select value={sortOption} onValueChange={setSortOption}>
+                    {isFiltering && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
+                    <Select value={sortOption} onValueChange={handleSortChange}>
                         <SelectTrigger className="w-[180px] bg-background">
                             <ArrowUpDown className="h-4 w-4 mr-2" />
                             <SelectValue placeholder="Sort by" />
@@ -244,7 +271,10 @@ export default function ShopPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className={cn(
+                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 transition-opacity duration-300",
+                isFiltering && "opacity-70"
+            )}>
                 {isLoading ? (
                     Array.from({ length: 8 }).map((_, i) => (
                         <div key={i} className="flex flex-col space-y-3">
