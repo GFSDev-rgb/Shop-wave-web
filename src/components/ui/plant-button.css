@@ -1,5 +1,5 @@
 
-button {
+.plant-button {
   position: relative;
   padding: 13px 35px;
   cursor: pointer;
@@ -70,7 +70,7 @@ button {
   z-index: -2;
 }
 
-button:hover {
+.plant-button:hover {
   padding: 13px 25px;
   border-radius: 8px 8px 24px 24px;
   color: #abaaa9;
@@ -80,7 +80,7 @@ button:hover {
     inset 2px 2px 10px #5b3c11;
 }
 
-button:hover .icon-1 {
+.plant-button:hover .icon-1 {
   top: -250%;
   left: 50%;
   transform: translate(-50%, 0);
@@ -116,7 +116,7 @@ button:hover .icon-1 {
   }
 }
 
-button:hover .icon-2 {
+.plant-button:hover .icon-2 {
   position: absolute;
   top: -200%;
   left: 90%;
@@ -153,7 +153,7 @@ button:hover .icon-2 {
   }
 }
 
-button:hover .icon-3 {
+.plant-button:hover .icon-3 {
   position: absolute;
   top: -130%;
   left: 20%;
@@ -180,7 +180,7 @@ button:hover .icon-3 {
   }
 }
 
-button:hover .icon-4 {
+.plant-button:hover .icon-4 {
   position: absolute;
   top: -300%;
   left: 10%;
@@ -207,7 +207,7 @@ button:hover .icon-4 {
   }
 }
 
-button:hover .icon-5 {
+.plant-button:hover .icon-5 {
   position: absolute;
   top: -350%;
   left: 90%;

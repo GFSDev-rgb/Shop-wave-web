@@ -13,7 +13,7 @@ interface PlantButtonProps {
 
 export function PlantButton({ onClick, isLiked, disabled, className }: PlantButtonProps) {
   return (
-    <button onClick={onClick} disabled={disabled} className={cn(className)} data-liked={isLiked}>
+    <button onClick={onClick} disabled={disabled} className={cn('plant-button', className)} data-liked={isLiked}>
       {isLiked ? 'Liked' : 'Like'}
       <div className="icon-1">
         <svg
@@ -101,5 +101,3 @@ export function PlantButton({ onClick, isLiked, disabled, className }: PlantButt
         </svg>
       </div>
     </button>
-  );
-}
