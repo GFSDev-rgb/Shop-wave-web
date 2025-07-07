@@ -11,7 +11,6 @@ import { ArrowRight } from 'lucide-react';
 import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
-import { CommandSearch } from '@/components/search/command-search';
 
 
 // Dynamically import the RecommendedProducts component to reduce initial chunk size
@@ -78,12 +77,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* New Search Section */}
-      <section className="container mx-auto px-4 -mt-12 mb-8 z-10 relative">
-        <CommandSearch />
-      </section>
-
 
       <section className="container mx-auto px-4">
         <h2 className="font-headline text-4xl font-bold text-center mb-12">Featured Products</h2>
