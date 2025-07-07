@@ -1,9 +1,8 @@
 
 "use client";
 
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { useDebounce } from "use-debounce";
-import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Product } from "@/lib/types";
 import ProductCard from "@/components/product-card";
@@ -66,38 +65,78 @@ export default function ShopPage() {
   const { products, loading: productsLoading } = useProducts();
   const { loading: authLoading, isAdmin } = useAuth();
   
+  const workerRef = useRef<Worker>();
+  const [sortedAndFilteredProducts, setSortedAndFilteredProducts] = useState<Product[]>([]);
+  
   const isLoading = authLoading || productsLoading;
 
-  const sortedAndFilteredProducts = useMemo(() => {
-    let result = products
-      .filter((product) => {
-        const inCategory =
-          debouncedSelectedCategories.length === 0 || debouncedSelectedCategories.includes(product.category);
-        const inPriceRange =
-          product.price >= debouncedPriceRange[0] && product.price <= debouncedPriceRange[1];
-        return inCategory && inPriceRange;
-      });
+  // Effect to initialize the Web Worker
+  useEffect(() => {
+    // Ensure this runs only on the client where window.Worker is available
+    if (typeof window !== 'undefined' && window.Worker) {
+      workerRef.current = new Worker(new URL('../../workers/product-filter.worker.ts', import.meta.url));
+      
+      // Listen for messages from the worker
+      workerRef.current.onmessage = (event: MessageEvent<Product[]>) => {
+        setSortedAndFilteredProducts(event.data);
+      };
 
-    switch (sortOption) {
-      case "price-asc":
-        result.sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        result.sort((a, b) => b.price - a.price);
-        break;
-      case "rating-desc":
-        result.sort((a, b) => b.rating - a.rating);
-        break;
-      case "newest":
-      default:
-        // Assuming products are already somewhat sorted by newness or just use default order
-        break;
+      // Cleanup on component unmount
+      return () => {
+        workerRef.current?.terminate();
+      };
     }
-    return result;
-  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, products]);
+  }, []);
+
+  // Effect to process filtering and sorting
+  useEffect(() => {
+    // Wait until products have been loaded
+    if (productsLoading) {
+      // While loading, keep the list empty to allow skeletons to show
+      setSortedAndFilteredProducts([]);
+      return;
+    }
+
+    // Use the Web Worker if it's available
+    if (workerRef.current) {
+      workerRef.current.postMessage({
+        products,
+        priceRange: debouncedPriceRange,
+        selectedCategories: debouncedSelectedCategories,
+        sortOption,
+      });
+    } else {
+      // Fallback for browsers without Web Worker support or before worker is initialized
+      let result = products
+        .filter((product) => {
+          const inCategory =
+            debouncedSelectedCategories.length === 0 || debouncedSelectedCategories.includes(product.category);
+          const inPriceRange =
+            product.price >= debouncedPriceRange[0] && product.price <= debouncedPriceRange[1];
+          return inCategory && inPriceRange;
+        });
+
+      switch (sortOption) {
+        case "price-asc":
+          result.sort((a, b) => a.price - b.price);
+          break;
+        case "price-desc":
+          result.sort((a, b) => b.price - a.price);
+          break;
+        case "rating-desc":
+          result.sort((a, b) => b.rating - a.rating);
+          break;
+        case "newest":
+        default:
+          break;
+      }
+      setSortedAndFilteredProducts(result);
+    }
+  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, products, productsLoading]);
+
 
   // Reset visible count when filters change
-  useMemo(() => {
+  useEffect(() => {
     setVisibleCount(ITEMS_PER_PAGE);
   }, [sortOption, debouncedPriceRange, debouncedSelectedCategories]);
 
