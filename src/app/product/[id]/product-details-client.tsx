@@ -9,8 +9,9 @@ import { useWishlist } from "@/hooks/use-wishlist";
 import { useLikes } from "@/hooks/use-likes";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
-import { Heart, Minus, Plus, ShoppingCart, Loader2, ThumbsUp } from "lucide-react";
+import { Heart, Minus, Plus, ShoppingCart, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PlantButton } from "@/components/ui/plant-button";
 
 interface ProductDetailsClientProps {
   product: Product;
@@ -53,7 +54,9 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
     }
   };
 
-  const handleLikeToggle = () => {
+  const handleLikeToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
     toggleLike(product.id);
   }
 
@@ -81,7 +84,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
           </div>
         </div>
       )}
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <Button size="lg" onClick={handleAddToCart} className="flex-1 min-w-[200px]">
           <ShoppingCart className="mr-2 h-5 w-5" />
           {isInCart ? "View in Cart" : "Add to Cart"}
@@ -102,16 +105,11 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
             ? "In Wishlist"
             : "Add to Wishlist"}
         </Button>
-        <Button size="icon" variant="outline" onClick={handleLikeToggle} disabled={likeLoading}>
-            {likeLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 
-                <ThumbsUp
-                    className={cn(
-                    "h-5 w-5",
-                    isLiked(product.id) && "text-primary fill-current"
-                    )}
-                />
-            }
-        </Button>
+        <PlantButton
+          onClick={handleLikeToggle}
+          isLiked={isLiked(product.id)}
+          disabled={likeLoading}
+        />
       </div>
     </div>
   );
