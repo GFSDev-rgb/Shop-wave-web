@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,23 +53,25 @@ export default function ContactPage() {
           </CardContent>
         </Card>
 
-        <div className="space-y-8">
-            <h2 className="font-headline text-3xl font-bold text-primary">Contact Information</h2>
-            <div className="space-y-6 text-lg">
-                <div className="flex items-center gap-4">
-                    <Mail className="h-6 w-6 text-accent" />
-                    <a href="mailto:support@shopwave.com" className="hover:underline">support@shopwave.com</a>
-                </div>
-                 <div className="flex items-center gap-4">
-                    <Phone className="h-6 w-6 text-accent" />
-                    <span>+1 (555) 123-4567</span>
-                </div>
-                 <div className="flex items-center gap-4">
-                    <MapPin className="h-6 w-6 text-accent" />
-                    <span>123 Wave Street, Ocean View, 90210</span>
-                </div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-headline text-3xl">Contact Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-lg">
+            <div className="flex items-center gap-4">
+                <Mail className="h-6 w-6 text-accent" />
+                <a href="mailto:support@shopwave.com" className="hover:underline">support@shopwave.com</a>
             </div>
-        </div>
+              <div className="flex items-center gap-4">
+                <Phone className="h-6 w-6 text-accent" />
+                <span>+1 (555) 123-4567</span>
+            </div>
+              <div className="flex items-center gap-4">
+                <MapPin className="h-6 w-6 text-accent" />
+                <span>123 Wave Street, Ocean View, 90210</span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
