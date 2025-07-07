@@ -16,7 +16,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { Filter, ArrowUpDown, PlusCircle, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Filter, ArrowUpDown, PlusCircle, Loader2, Search } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
 import { useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -50,12 +51,13 @@ const ProductForm = dynamic(() => import('@/components/admin/product-form'), {
   ),
 });
 
-const ITEMS_PER_PAGE = 12;
+const ITEMS_PER_PAGE = 8;
 
 export default function ShopPage() {
   const [sortOption, setSortOption] = useState("newest");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isAddSheetOpen, setAddSheetOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [isPending, startTransition] = useTransition();
@@ -63,6 +65,7 @@ export default function ShopPage() {
   // Debounce filter values to prevent excessive re-renders while user is interacting with controls
   const [debouncedPriceRange] = useDebounce(priceRange, 300);
   const [debouncedSelectedCategories] = useDebounce(selectedCategories, 300);
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
 
   const { products, loading: productsLoading } = useProducts();
   const { loading: authLoading, isAdmin } = useAuth();
@@ -107,16 +110,18 @@ export default function ShopPage() {
         priceRange: debouncedPriceRange,
         selectedCategories: debouncedSelectedCategories,
         sortOption,
+        searchQuery: debouncedSearchQuery,
       });
     } else {
       // Fallback for browsers without Web Worker support or before worker is initialized
       let result = products
         .filter((product) => {
+          const inSearch = debouncedSearchQuery === '' || product.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
           const inCategory =
             debouncedSelectedCategories.length === 0 || debouncedSelectedCategories.includes(product.category);
           const inPriceRange =
             product.price >= debouncedPriceRange[0] && product.price <= debouncedPriceRange[1];
-          return inCategory && inPriceRange;
+          return inSearch && inCategory && inPriceRange;
         });
 
       switch (sortOption) {
@@ -135,13 +140,13 @@ export default function ShopPage() {
       }
       setSortedAndFilteredProducts(result);
     }
-  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, products, productsLoading]);
+  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, debouncedSearchQuery, products, productsLoading]);
 
 
   // Reset visible count when filters change
   useEffect(() => {
     setVisibleCount(ITEMS_PER_PAGE);
-  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories]);
+  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, debouncedSearchQuery]);
 
   const renderedProducts = useMemo(() => {
     return sortedAndFilteredProducts.slice(0, visibleCount);
@@ -180,11 +185,18 @@ export default function ShopPage() {
       );
     });
   };
+  
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    startTransition(() => {
+      setSearchQuery(event.target.value);
+    });
+  };
 
   const clearFilters = () => {
     startTransition(() => {
       setPriceRange([0, 500]);
       setSelectedCategories([]);
+      setSearchQuery("");
     });
     setVisibleCount(ITEMS_PER_PAGE);
   };
@@ -204,8 +216,8 @@ export default function ShopPage() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
         <main className="lg:col-span-4">
-            <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button variant="outline" className="flex items-center gap-2">
@@ -252,12 +264,23 @@ export default function ShopPage() {
                         </Sheet>
                     )}
                 </div>
+
+                <div className="relative w-full sm:flex-1 sm:max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        type="search"
+                        placeholder="Search products..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="pl-9 bg-background w-full"
+                    />
+                </div>
                 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 w-full sm:w-auto sm:justify-end">
                     <p className="hidden sm:block text-sm text-muted-foreground">{sortedAndFilteredProducts.length} Products</p>
                     {isFiltering && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
                     <Select value={sortOption} onValueChange={handleSortChange}>
-                        <SelectTrigger className="w-[180px] bg-background">
+                        <SelectTrigger className="w-full sm:w-[180px] bg-background">
                             <ArrowUpDown className="h-4 w-4 mr-2" />
                             <SelectValue placeholder="Sort by" />
                         </SelectTrigger>
@@ -292,6 +315,17 @@ export default function ShopPage() {
                      )
                 })}
             </div>
+
+            {!isLoading && renderedProducts.length === 0 && (
+                <div className="text-center py-16 border-2 border-dashed rounded-lg col-span-full">
+                    <Search className="mx-auto h-16 w-16 text-muted-foreground" />
+                    <h2 className="mt-6 text-2xl font-semibold">No Products Found</h2>
+                    <p className="mt-2 text-muted-foreground">Try adjusting your search or filters.</p>
+                    <Button className="mt-6" variant="outline" onClick={clearFilters}>
+                        Clear Filters
+                    </Button>
+                </div>
+            )}
             
             {/* Loading indicator for infinite scroll */}
             {!isLoading && visibleCount < sortedAndFilteredProducts.length && (

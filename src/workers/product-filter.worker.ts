@@ -10,14 +10,16 @@ const filterAndSortProducts = (
   products: Product[],
   priceRange: [number, number],
   selectedCategories: string[],
-  sortOption: string
+  sortOption: string,
+  searchQuery: string
 ): Product[] => {
   let result = products.filter((product) => {
+    const inSearch = searchQuery.trim() === '' || product.name.toLowerCase().includes(searchQuery.toLowerCase().trim());
     const inCategory =
       selectedCategories.length === 0 || selectedCategories.includes(product.category);
     const inPriceRange =
       product.price >= priceRange[0] && product.price <= priceRange[1];
-    return inCategory && inPriceRange;
+    return inSearch && inCategory && inPriceRange;
   });
 
   switch (sortOption) {
@@ -48,10 +50,11 @@ self.onmessage = (
         priceRange: [number, number]; 
         selectedCategories: string[]; 
         sortOption: string; 
+        searchQuery: string;
     }>
 ) => {
-  const { products, priceRange, selectedCategories, sortOption } = event.data;
-  const filteredResult = filterAndSortProducts(products, priceRange, selectedCategories, sortOption);
+  const { products, priceRange, selectedCategories, sortOption, searchQuery } = event.data;
+  const filteredResult = filterAndSortProducts(products, priceRange, selectedCategories, sortOption, searchQuery);
   self.postMessage(filteredResult);
 };
 
