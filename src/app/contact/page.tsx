@@ -15,13 +15,6 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="container mx-auto px-4 py-16 flex-1">
-      <header className="text-center mb-16">
-        <h1 className="font-headline text-5xl md:text-6xl font-bold">Get In Touch</h1>
-        <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-          We're here to help. Whether you have a question about our products, an order, or just want to say hello, we'd love to hear from you.
-        </p>
-      </header>
-
       <div className="grid md:grid-cols-2 gap-12">
         <Card>
           <CardHeader>
