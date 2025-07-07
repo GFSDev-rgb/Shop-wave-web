@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -18,6 +19,11 @@ import {
   SheetClose,
   SheetTitle,
 } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 
 import { useCart } from "@/hooks/use-cart";
@@ -30,6 +36,7 @@ import { ThemeToggle } from "../theme-toggle";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { CommandSearch } from "../search/command-search";
 
 const allNavLinks = [
   { href: "/", label: "Home", icon: Home },
@@ -126,10 +133,17 @@ export function Header() {
           ))}
         </nav>
         <div className="flex items-center gap-1 md:gap-2">
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-            <Search className="h-5 w-5" />
-            <span className="sr-only">Search</span>
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="icon" className="hidden md:inline-flex">
+                <Search className="h-5 w-5" />
+                <span className="sr-only">Search</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-transparent border-none shadow-none p-0 w-auto h-auto max-w-none">
+              <CommandSearch />
+            </DialogContent>
+          </Dialog>
 
           <Button variant="ghost" size="icon" asChild>
             <Link href="/wishlist" className="relative">
