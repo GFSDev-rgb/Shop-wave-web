@@ -75,8 +75,8 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="grid md:grid-cols-2 gap-12 items-start">
+    <div className="container mx-auto px-4 py-8 md:py-12">
+      <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
         <Carousel className="w-full">
           <CarouselContent>
             {(product.images && product.images.length > 0 ? product.images : [product.image]).map((img, index) => (
@@ -106,7 +106,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
             <div className="flex justify-between items-start gap-4">
               <div>
                 <p className="text-sm text-muted-foreground">{product.category}</p>
-                <h1 className="font-headline text-4xl md:text-5xl font-bold mt-1">{product.name}</h1>
+                <h1 className="font-headline text-3xl sm:text-4xl lg:text-5xl font-bold mt-1">{product.name}</h1>
               </div>
               {isAdmin && (
                 <Sheet open={isEditSheetOpen} onOpenChange={setEditSheetOpen}>

@@ -108,32 +108,39 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
           </div>
         </div>
       )}
-      <div className="flex flex-wrap items-center gap-4">
-        <Button size="lg" onClick={handleAddToCart} className="flex-1 min-w-[200px]">
-          <ShoppingCart className="mr-2 h-5 w-5" />
-          {isInCart ? "View in Cart" : "Add to Cart"}
-        </Button>
-        <Button
-          size="lg"
-          variant="outline"
-          onClick={handleWishlistToggle}
-          className="flex-1 min-w-[200px]"
-        >
-          <Heart
-            className={cn(
-              "mr-2 h-5 w-5",
-              isInWishlist(product.id) && "text-yellow-400 fill-current"
-            )}
-          />
-          {isInWishlist(product.id)
-            ? "In Wishlist"
-            : "Add to Wishlist"}
-        </Button>
-        <PlantButton
-          onClick={handleLikeToggle}
-          isLiked={isLiked(product.id)}
-          disabled={likeLoading}
-        />
+      <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Button size="lg" onClick={handleAddToCart} className="w-full">
+            <ShoppingCart className="mr-2 h-5 w-5" />
+            {isInCart ? "View in Cart" : "Add to Cart"}
+            </Button>
+            <Button
+            size="lg"
+            variant="outline"
+            onClick={handleWishlistToggle}
+            className="w-full"
+            >
+            <Heart
+                className={cn(
+                "mr-2 h-5 w-5",
+                isInWishlist(product.id) && "text-yellow-400 fill-current"
+                )}
+            />
+            {isInWishlist(product.id)
+                ? "In Wishlist"
+                : "Add to Wishlist"}
+            </Button>
+        </div>
+        <div className="flex items-center justify-start gap-4 pt-2">
+            <PlantButton
+                onClick={handleLikeToggle}
+                isLiked={isLiked(product.id)}
+                disabled={likeLoading}
+                size="lg"
+                className="border rounded-full"
+            />
+            <span className="text-sm text-muted-foreground">Like this product</span>
+        </div>
       </div>
     </div>
   );
