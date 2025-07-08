@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
+import { ToastAction } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -48,8 +49,6 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
     const [localProduct, setLocalProduct] = useState<Product>(product);
     const [isEditSheetOpen, setEditSheetOpen] = useState(false);
 
-    // This effect ensures the card's local state is in sync with the global state
-    // that is passed down via props.
     useEffect(() => {
       setLocalProduct(product);
     }, [product]);
@@ -61,7 +60,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
     const isInCart = cartItems.some(item => item.product.id === localProduct.id);
 
     const throttledSetMouse = useMemo(() => throttle(
-      (newMouseState: { x: number, y: number, active: boolean }) => setMouse(newMouseState), 16 // ~60fps
+      (newMouseState: { x: number, y: number, active: boolean }) => setMouse(newMouseState), 16
     ), []);
 
     useEffect(() => {
@@ -105,6 +104,15 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
       transform: mouse.active && !isAdmin ? `translateX(${mousePX * -20}px) translateY(${mousePY * -20}px)` : 'translateX(0px) translateY(0px)',
     };
 
+    const showLoginToast = () => {
+        toast({
+            variant: 'destructive',
+            title: "Login Required",
+            description: "You need to be logged in to perform this action.",
+            action: <ToastAction altText="Login" onClick={() => router.push('/login')}>Login</ToastAction>,
+        });
+    };
+
     const handleAdminAction = (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
@@ -113,7 +121,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
     const handleCartAction = async (e: React.MouseEvent<HTMLButtonElement>) => {
       handleAdminAction(e);
       if (!user) {
-        router.push('/login');
+        showLoginToast();
         return;
       }
       if (isInCart) {
@@ -130,7 +138,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
     const handleLikeToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
         handleAdminAction(e);
         if (!user) {
-          router.push('/login');
+          showLoginToast();
           return;
         }
         toggleLike(localProduct.id);
@@ -139,7 +147,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
     const handleWishlistToggle = (e: React.MouseEvent) => {
       handleAdminAction(e);
       if (!user) {
-        router.push('/login');
+        showLoginToast();
         return;
       }
       if (isInWishlist(localProduct.id)) {

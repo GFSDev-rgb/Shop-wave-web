@@ -1,9 +1,10 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CreditCard, Lock, Loader2 } from 'lucide-react';
+import { CreditCard, Lock, Loader2, User } from 'lucide-react';
+import Link from 'next/link';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useAuth } from '@/hooks/use-auth';
 import { useCart } from '@/hooks/use-cart';
@@ -21,12 +22,6 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace('/login');
-    }
-  }, [user, authLoading, router]);
 
   const handlePlaceOrder = async () => {
     if (!isFirebaseEnabled || !db || !user) {
@@ -58,8 +53,6 @@ export default function CheckoutPage() {
         image: product.image,
       }));
 
-      // A top-level 'orders' collection is simple and effective.
-      // Each order document will have a 'userId' field to isolate data.
       const ordersCollectionRef = collection(db, 'orders');
 
       await addDoc(ordersCollectionRef, {
@@ -111,7 +104,22 @@ export default function CheckoutPage() {
   }
 
   if (!user) {
-    return null; // Prevent flashing content before redirect
+    return (
+      <div className="container mx-auto px-4 py-12 flex-1 flex items-center justify-center">
+        <Card className="w-full max-w-md text-center">
+            <CardHeader>
+                <User className="mx-auto h-12 w-12 text-primary mb-4" />
+                <CardTitle>Login Required</CardTitle>
+                <CardDescription>Please log in to proceed to checkout.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Button asChild>
+                    <Link href="/login">Go to Login</Link>
+                </Button>
+            </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (

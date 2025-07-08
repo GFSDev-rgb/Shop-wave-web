@@ -26,12 +26,6 @@ export default function OrdersPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace('/login');
-    }
-  }, [user, authLoading, router]);
-
-  useEffect(() => {
     const fetchOrders = async () => {
       if (!user || !db) {
         setLoading(false);
@@ -40,8 +34,6 @@ export default function OrdersPage() {
       
       try {
         const ordersCollectionRef = collection(db, 'orders');
-        // Query for orders where the userId matches the current user's UID.
-        // Sorting is done client-side to avoid needing a composite index.
         const q = query(
           ordersCollectionRef, 
           where('userId', '==', user.uid)
@@ -50,7 +42,6 @@ export default function OrdersPage() {
         const querySnapshot = await getDocs(q);
         const fetchedOrders: OrderWithDate[] = querySnapshot.docs.map(doc => {
             const data = doc.data() as Order;
-            // Firestore timestamps need to be converted to JS Dates for display
             const createdAt = (data.createdAt as unknown as Timestamp)?.toDate() || new Date();
             return {
               ...data,
@@ -59,7 +50,6 @@ export default function OrdersPage() {
             }
         });
         
-        // Sort orders by date client-side, newest first
         fetchedOrders.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
         setOrders(fetchedOrders);
@@ -70,8 +60,10 @@ export default function OrdersPage() {
       }
     };
 
-    if (!authLoading) {
+    if (user && !authLoading) {
       fetchOrders();
+    } else if (!user && !authLoading) {
+      setLoading(false);
     }
   }, [user, authLoading]);
 
@@ -90,10 +82,6 @@ export default function OrdersPage() {
     );
   }
 
-  if (!user) {
-      return null; // Avoid flashing page content before redirect
-  }
-
   return (
     <div className="container mx-auto px-4 py-12 flex-1">
       <header className="mb-12">
@@ -103,13 +91,15 @@ export default function OrdersPage() {
         </p>
       </header>
       
-      {orders.length === 0 ? (
+      {!user || orders.length === 0 ? (
         <div className="text-center py-16 border-2 border-dashed rounded-lg">
           <ShoppingBag className="mx-auto h-16 w-16 text-muted-foreground" />
           <h2 className="mt-6 text-2xl font-semibold">No orders yet</h2>
-          <p className="mt-2 text-muted-foreground">You haven't placed any orders with us yet.</p>
+          <p className="mt-2 text-muted-foreground">
+            {user ? "You haven't placed any orders with us yet." : "Log in to see your order history."}
+          </p>
           <Button asChild className="mt-6">
-            <Link href="/shop">Start Shopping</Link>
+            <Link href={user ? "/shop" : "/login"}>{user ? "Start Shopping" : "Login"}</Link>
           </Button>
         </div>
       ) : (

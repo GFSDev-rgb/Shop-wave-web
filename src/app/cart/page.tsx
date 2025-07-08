@@ -11,18 +11,11 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { useEffect } from "react";
 
 export default function CartPage() {
   const { user, loading: authLoading } = useAuth();
   const { cartItems, updateQuantity, removeFromCart, cartTotal, cartCount, loading: cartLoading } = useCart();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace('/login');
-    }
-  }, [user, authLoading, router]);
 
   const isLoading = authLoading || cartLoading;
 
@@ -44,10 +37,6 @@ export default function CartPage() {
         </div>
       </div>
     )
-  }
-  
-  if (!user) {
-    return null; // Avoid flashing the page before redirect
   }
 
   return (

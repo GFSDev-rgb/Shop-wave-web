@@ -4,6 +4,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -42,9 +43,6 @@ export default function ProfilePage() {
   const { isSubmitting } = form.formState;
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-    }
     if (profile) {
       form.reset({
         fullName: profile.fullName || '',
@@ -56,7 +54,7 @@ export default function ProfilePage() {
       });
       setImagePreview(profile.photoURL || null);
     }
-  }, [loading, user, profile, router, form]);
+  }, [profile, form]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -84,7 +82,7 @@ export default function ProfilePage() {
     setIsEditing(false);
   };
   
-  if (loading || !user || !profile) {
+  if (loading) {
     return (
       <div className="container mx-auto max-w-4xl py-12 px-4">
         <Card className="p-8">
@@ -100,6 +98,24 @@ export default function ProfilePage() {
       </div>
     );
   }
+
+  if (!user || !profile) {
+    return (
+        <div className="container mx-auto max-w-4xl py-12 px-4 flex-1 flex items-center justify-center">
+            <Card className="w-full max-w-md text-center p-6">
+                <CardHeader>
+                    <User className="mx-auto h-12 w-12 text-primary mb-4" />
+                    <CardTitle className="font-headline text-3xl">Profile Page</CardTitle>
+                    <CardDescription>Please log in to view and manage your profile.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Button asChild><Link href="/login">Go to Login</Link></Button>
+                </CardContent>
+            </Card>
+        </div>
+    );
+  }
+
 
   return (
     <div className="container mx-auto max-w-4xl py-12 px-4">

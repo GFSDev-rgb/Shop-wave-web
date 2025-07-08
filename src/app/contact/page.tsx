@@ -2,17 +2,43 @@
 'use client';
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Phone, MapPin, LogIn } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Mail, Phone, MapPin } from "lucide-react";
+import { ToastAction } from "@/components/ui/toast";
 
 export default function ContactPage() {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      toast({
+        variant: 'destructive',
+        title: "Login Required",
+        description: "You must be logged in to send a message.",
+        action: <ToastAction altText="Login" onClick={() => router.push('/login')}>Login</ToastAction>,
+      });
+      return;
+    }
+    
+    // In a real app, form submission logic would go here.
+    toast({
+        title: "Message Sent!",
+        description: "We've received your message and will get back to you shortly.",
+    });
+    // Optionally reset the form
+    (e.target as HTMLFormElement).reset();
+  };
+
 
   return (
     <div className="container mx-auto px-4 py-16 flex-1">
@@ -23,35 +49,26 @@ export default function ContactPage() {
             <CardDescription>Fill out the form and our team will get back to you within 24 hours.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-6">
-              {!user && (
-                <Alert>
-                  <LogIn className="h-4 w-4" />
-                  <AlertTitle>Login Required</AlertTitle>
-                  <AlertDescription>
-                    You must be <Link href="/login" className="font-bold underline">logged in</Link> to send a message.
-                  </AlertDescription>
-                </Alert>
-              )}
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>
-                  <Input id="name" placeholder="Your name" disabled={!user} />
+                  <Input id="name" placeholder="Your name" required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="Your email" disabled={!user} />
+                  <Input id="email" type="email" placeholder="Your email" required />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="subject">Subject</Label>
-                <Input id="subject" placeholder="What's this about?" disabled={!user} />
+                <Input id="subject" placeholder="What's this about?" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="message">Message</Label>
-                <Textarea id="message" placeholder="Your message..." rows={5} disabled={!user} />
+                <Textarea id="message" placeholder="Your message..." rows={5} required />
               </div>
-              <Button type="submit" size="lg" className="w-full" disabled={!user}>Send Message</Button>
+              <Button type="submit" size="lg" className="w-full">Send Message</Button>
             </form>
           </CardContent>
         </Card>

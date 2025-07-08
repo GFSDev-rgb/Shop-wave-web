@@ -9,19 +9,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Heart } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 
 export default function WishlistPage() {
   const { user, loading: authLoading } = useAuth();
   const { wishlistItems, loading: wishlistLoading } = useWishlist();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace('/login');
-    }
-  }, [user, authLoading, router]);
 
   const loading = authLoading || wishlistLoading;
 
@@ -43,10 +36,6 @@ export default function WishlistPage() {
       )
   }
 
-  if (!user) {
-    return null; // Avoid flashing page content before redirect
-  }
-
   return (
     <div className="container mx-auto px-4 py-12 flex-1">
       <header className="text-center mb-12">
@@ -60,9 +49,11 @@ export default function WishlistPage() {
         <div className="text-center py-16 border-2 border-dashed rounded-lg">
           <Heart className="mx-auto h-16 w-16 text-muted-foreground" />
           <h2 className="mt-6 text-2xl font-semibold">Your wishlist is empty</h2>
-          <p className="mt-2 text-muted-foreground">Explore our collections and save your favorites.</p>
+          <p className="mt-2 text-muted-foreground">
+            {user ? "Explore our collections and save your favorites." : "Log in to see your wishlist."}
+          </p>
           <Button asChild className="mt-6">
-            <Link href="/shop">Discover Products</Link>
+            <Link href={user ? "/shop" : "/login"}>{user ? "Discover Products" : "Login"}</Link>
           </Button>
         </div>
       ) : (

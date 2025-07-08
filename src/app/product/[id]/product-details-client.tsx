@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
 import { Heart, Minus, Plus, ShoppingCart, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ToastAction } from "@/components/ui/toast";
 import { PlantButton } from "@/components/ui/plant-button";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -29,9 +30,18 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
   const isInCart = cartItems.some((item) => item.product.id === product.id);
 
+  const showLoginToast = () => {
+    toast({
+        variant: 'destructive',
+        title: "Login Required",
+        description: "You need to be logged in to perform this action.",
+        action: <ToastAction altText="Login" onClick={() => router.push('/login')}>Login</ToastAction>,
+    });
+  };
+
   const handleAddToCart = async () => {
     if (!user) {
-      router.push("/login");
+      showLoginToast();
       return;
     }
     if (isInCart) {
@@ -48,7 +58,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
   const handleWishlistToggle = () => {
     if (!user) {
-      router.push("/login");
+      showLoginToast();
       return;
     }
     if (isInWishlist(product.id)) {
@@ -68,7 +78,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
     e.stopPropagation();
     e.preventDefault();
     if (!user) {
-      router.push('/login');
+      showLoginToast();
       return;
     }
     toggleLike(product.id);
