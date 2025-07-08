@@ -9,27 +9,28 @@ import { db, isFirebaseEnabled } from '@/lib/firebase';
 import { doc, writeBatch, increment } from 'firebase/firestore';
 
 export const useLikes = () => {
-    const { user, profile, setProfile } = useAuth();
+    const { user, profile, setProfile, loading: authLoading } = useAuth();
     const { products, setProducts } = useProducts();
     const { toast } = useToast();
-    const [loading, setLoading] = useState(false);
+    const [operationLoading, setOperationLoading] = useState(false);
 
     const isLiked = useCallback((productId: string): boolean => {
-        return !!profile?.likes?.[productId];
+        if (!profile) return false;
+        return !!profile.likes?.[productId];
     }, [profile]);
 
     const toggleLike = useCallback(async (productId: string) => {
         if (!isFirebaseEnabled || !db || !user || !profile) {
             toast({
                 variant: 'destructive',
-                title: 'Error',
-                description: 'Could not update like status. Please try again.',
+                title: 'Authentication Error',
+                description: 'You must be logged in to like a product.',
             });
-            console.error("Like toggled without user or with DB not configured.");
+            console.error("Like toggled without user/profile or with DB not configured.");
             return;
         }
 
-        setLoading(true);
+        setOperationLoading(true);
 
         const currentlyLiked = isLiked(productId);
         const likeIncrement = currentlyLiked ? -1 : 1;
@@ -48,7 +49,7 @@ export const useLikes = () => {
         setProfile({ ...profile, likes: newLikesMap });
         setProducts(currentProducts =>
             currentProducts.map(p =>
-                p.id === productId ? { ...p, likeCount: (p.likeCount || 0) + likeIncrement } : p
+                p.id === productId ? { ...p, likeCount: Math.max(0, (p.likeCount || 0) + likeIncrement) } : p
             )
         );
 
@@ -75,10 +76,12 @@ export const useLikes = () => {
             setProfile(originalProfileState);
             setProducts(originalProductsState);
         } finally {
-            setLoading(false);
+            setOperationLoading(false);
         }
 
     }, [user, profile, products, setProducts, setProfile, isLiked, toast]);
+
+    const loading = authLoading || operationLoading;
 
     return { isLiked, toggleLike, loading };
 };
