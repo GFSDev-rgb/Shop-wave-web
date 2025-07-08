@@ -3,6 +3,7 @@
 import './plant-button.css';
 import { cn } from '@/lib/utils';
 import React from 'react';
+import { ThumbsUp } from 'lucide-react';
 
 interface PlantButtonProps {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -14,7 +15,7 @@ interface PlantButtonProps {
 export function PlantButton({ onClick, isLiked, disabled, className }: PlantButtonProps) {
   return (
     <button onClick={onClick} disabled={disabled} className={cn('plant-button', className)} data-liked={isLiked}>
-      {isLiked ? 'Liked' : 'Like'}
+      <ThumbsUp className={cn("h-5 w-5 transition-all", isLiked && "fill-current")} />
       <div className="icon-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"

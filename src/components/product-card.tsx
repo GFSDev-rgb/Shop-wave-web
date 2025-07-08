@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, ShoppingCart, Pencil, Trash2 } from "lucide-react";
+import { Heart, ShoppingCart, Pencil, Trash2, ThumbsUp } from "lucide-react";
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { useRouter } from "next/navigation";
 import { throttle } from "lodash";
@@ -233,7 +233,6 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
                         onClick={handleLikeToggle}
                         isLiked={isLiked(localProduct.id)}
                         disabled={likeLoading}
-                        className="scale-[0.6] -mr-4 -my-4"
                     />
                     <span className="text-sm text-white/80">
                         {(localProduct.likeCount || 0).toLocaleString()}
