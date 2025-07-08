@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useWishlist } from "@/hooks/use-wishlist";
@@ -6,12 +7,45 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Heart } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-// Note: Metadata cannot be exported from client components. 
-// This would need to be a server component to have page-specific metadata.
 
 export default function WishlistPage() {
-  const { wishlistItems, loading } = useWishlist();
+  const { user, loading: authLoading } = useAuth();
+  const { wishlistItems, loading: wishlistLoading } = useWishlist();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login');
+    }
+  }, [user, authLoading, router]);
+
+  const loading = authLoading || wishlistLoading;
+
+  if (loading) {
+      return (
+          <div className="container mx-auto px-4 py-12">
+            <header className="text-center mb-12">
+              <Skeleton className="h-12 w-1/3 mx-auto" />
+              <Skeleton className="h-6 w-1/2 mx-auto mt-4" />
+            </header>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex flex-col space-y-3">
+                      <Skeleton className="h-[400px] w-full rounded-lg" />
+                  </div>
+              ))}
+            </div>
+          </div>
+      )
+  }
+
+  if (!user) {
+    return null; // Avoid flashing page content before redirect
+  }
 
   return (
     <div className="container mx-auto px-4 py-12 flex-1">
@@ -21,16 +55,8 @@ export default function WishlistPage() {
           Your collection of favorite items.
         </p>
       </header>
-
-      {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex flex-col space-y-3">
-                    <Skeleton className="h-[400px] w-full rounded-lg" />
-                </div>
-            ))}
-          </div>
-      ) : wishlistItems.length === 0 ? (
+      
+      {wishlistItems.length === 0 ? (
         <div className="text-center py-16 border-2 border-dashed rounded-lg">
           <Heart className="mx-auto h-16 w-16 text-muted-foreground" />
           <h2 className="mt-6 text-2xl font-semibold">Your wishlist is empty</h2>

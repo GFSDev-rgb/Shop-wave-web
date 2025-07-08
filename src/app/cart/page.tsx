@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -9,16 +10,23 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
-import type { Metadata } from "next";
-
-// Note: Metadata cannot be exported from client components. 
-// This would need to be a server component to have page-specific metadata.
+import { useAuth } from "@/hooks/use-auth";
+import { useEffect } from "react";
 
 export default function CartPage() {
-  const { cartItems, updateQuantity, removeFromCart, cartTotal, cartCount, loading } = useCart();
+  const { user, loading: authLoading } = useAuth();
+  const { cartItems, updateQuantity, removeFromCart, cartTotal, cartCount, loading: cartLoading } = useCart();
   const router = useRouter();
 
-  if (loading) {
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login');
+    }
+  }, [user, authLoading, router]);
+
+  const isLoading = authLoading || cartLoading;
+
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-12 flex-1">
         <header className="text-center mb-12">
@@ -36,6 +44,10 @@ export default function CartPage() {
         </div>
       </div>
     )
+  }
+  
+  if (!user) {
+    return null; // Avoid flashing the page before redirect
   }
 
   return (

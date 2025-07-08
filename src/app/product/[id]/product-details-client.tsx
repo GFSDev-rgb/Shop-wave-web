@@ -12,6 +12,7 @@ import type { Product } from "@/lib/types";
 import { Heart, Minus, Plus, ShoppingCart, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PlantButton } from "@/components/ui/plant-button";
+import { useAuth } from "@/hooks/use-auth";
 
 interface ProductDetailsClientProps {
   product: Product;
@@ -24,10 +25,15 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const { isLiked, toggleLike, loading: likeLoading } = useLikes();
   const { toast } = useToast();
   const router = useRouter();
+  const { user } = useAuth();
 
   const isInCart = cartItems.some((item) => item.product.id === product.id);
 
   const handleAddToCart = async () => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     if (isInCart) {
       router.push("/cart");
       return;
@@ -41,6 +47,10 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   };
 
   const handleWishlistToggle = () => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     if (isInWishlist(product.id)) {
       removeFromWishlist(product.id);
       toast({

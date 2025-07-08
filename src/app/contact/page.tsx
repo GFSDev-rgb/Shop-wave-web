@@ -1,18 +1,19 @@
 
-import type { Metadata } from "next";
+'use client';
+
+import Link from "next/link";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Phone, MapPin } from "lucide-react";
-
-export const metadata: Metadata = {
-  title: 'Contact Us',
-  description: 'Have a question? We\'d love to hear from you. Contact the ShopWave team via our form, email, or phone.',
-};
+import { Mail, Phone, MapPin, LogIn } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function ContactPage() {
+  const { user } = useAuth();
+
   return (
     <div className="container mx-auto px-4 py-16 flex-1">
       <div className="grid md:grid-cols-2 gap-12">
@@ -23,25 +24,34 @@ export default function ContactPage() {
           </CardHeader>
           <CardContent>
             <form className="space-y-6">
+              {!user && (
+                <Alert>
+                  <LogIn className="h-4 w-4" />
+                  <AlertTitle>Login Required</AlertTitle>
+                  <AlertDescription>
+                    You must be <Link href="/login" className="font-bold underline">logged in</Link> to send a message.
+                  </AlertDescription>
+                </Alert>
+              )}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>
-                  <Input id="name" placeholder="Your name" />
+                  <Input id="name" placeholder="Your name" disabled={!user} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="Your email" />
+                  <Input id="email" type="email" placeholder="Your email" disabled={!user} />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="subject">Subject</Label>
-                <Input id="subject" placeholder="What's this about?" />
+                <Input id="subject" placeholder="What's this about?" disabled={!user} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="message">Message</Label>
-                <Textarea id="message" placeholder="Your message..." rows={5} />
+                <Textarea id="message" placeholder="Your message..." rows={5} disabled={!user} />
               </div>
-              <Button type="submit" size="lg" className="w-full">Send Message</Button>
+              <Button type="submit" size="lg" className="w-full" disabled={!user}>Send Message</Button>
             </form>
           </CardContent>
         </Card>

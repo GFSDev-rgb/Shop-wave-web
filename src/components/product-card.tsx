@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, ShoppingCart, Pencil, Trash2, ThumbsUp } from "lucide-react";
+import { Heart, ShoppingCart, Pencil, Trash2 } from "lucide-react";
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { useRouter } from "next/navigation";
 import { throttle } from "lodash";
@@ -41,7 +41,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
     const { addToWishlist, isInWishlist, removeFromWishlist } = useWishlist();
     const { isLiked, toggleLike, loading: likeLoading } = useLikes();
     const { toast } = useToast();
-    const { isAdmin } = useAuth();
+    const { isAdmin, user } = useAuth();
     const { deleteProduct } = useProducts();
     const router = useRouter();
 
@@ -112,6 +112,10 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
 
     const handleCartAction = async (e: React.MouseEvent<HTMLButtonElement>) => {
       handleAdminAction(e);
+      if (!user) {
+        router.push('/login');
+        return;
+      }
       if (isInCart) {
         router.push('/cart');
       } else {
@@ -130,6 +134,10 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
 
     const handleWishlistToggle = (e: React.MouseEvent) => {
       handleAdminAction(e);
+      if (!user) {
+        router.push('/login');
+        return;
+      }
       if (isInWishlist(localProduct.id)) {
         removeFromWishlist(localProduct.id);
         toast({ title: "Removed from wishlist" });
@@ -233,6 +241,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
                         onClick={handleLikeToggle}
                         isLiked={isLiked(localProduct.id)}
                         disabled={likeLoading}
+                        className="scale-[0.6] -mr-4 -my-4"
                     />
                     <span className="text-sm text-white/80">
                         {(localProduct.likeCount || 0).toLocaleString()}
