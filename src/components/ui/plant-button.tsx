@@ -10,12 +10,23 @@ interface PlantButtonProps {
   isLiked: boolean;
   disabled?: boolean;
   className?: string;
+  size?: 'sm' | 'default' | 'lg';
 }
 
-export function PlantButton({ onClick, isLiked, disabled, className }: PlantButtonProps) {
+export function PlantButton({ onClick, isLiked, disabled, className, size = 'default' }: PlantButtonProps) {
+  const buttonSizeClass = 
+    size === 'sm' ? 'h-8 w-8' :
+    size === 'lg' ? 'h-11 w-11' :
+    'h-10 w-10';
+
+  const iconSizeClass =
+    size === 'sm' ? 'h-4 w-4' :
+    size === 'lg' ? 'h-6 w-6' :
+    'h-5 w-5';
+
   return (
-    <button onClick={onClick} disabled={disabled} className={cn('plant-button', className)} data-liked={isLiked}>
-      <ThumbsUp className={cn("h-5 w-5 transition-all", isLiked && "fill-current")} />
+    <button onClick={onClick} disabled={disabled} className={cn('plant-button', buttonSizeClass, className)} data-liked={isLiked}>
+      <ThumbsUp className={cn(iconSizeClass, "transition-all", isLiked && "fill-current")} />
       <div className="icon-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
