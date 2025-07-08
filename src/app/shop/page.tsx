@@ -203,11 +203,11 @@ export default function ShopPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 flex-1">
-      <header className="mb-12 text-center relative overflow-hidden rounded-lg p-8 bg-card/50 backdrop-blur-sm border">
+      <header className="mb-12 text-center relative overflow-hidden rounded-lg p-4 md:p-8 bg-card/50 backdrop-blur-sm border">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
         <div className="relative">
-          <h1 className="font-headline text-5xl font-bold">Our Collection</h1>
-          <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
+          <h1 className="font-headline text-4xl md:text-5xl font-bold">Our Collection</h1>
+          <p className="mt-2 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
             Browse our curated selection of high-quality products, crafted with passion and precision.
           </p>
         </div>
@@ -295,7 +295,7 @@ export default function ShopPage() {
             </div>
 
             <div className={cn(
-                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 transition-opacity duration-300",
+                "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 transition-opacity duration-300",
                 isFiltering && "opacity-70"
             )}>
                 {isLoading ? (
@@ -329,7 +329,7 @@ export default function ShopPage() {
             
             {/* Loading indicator for infinite scroll */}
             {!isLoading && visibleCount < sortedAndFilteredProducts.length && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-8">
                      {Array.from({ length: 4 }).map((_, i) => (
                         <div key={`placeholder-${i}`} className="flex flex-col space-y-3">
                             <Skeleton className="h-[400px] w-full rounded-lg" />
