@@ -1,4 +1,3 @@
-
 "use client"
 import './plant-button.css';
 import { cn } from '@/lib/utils';
@@ -15,14 +14,14 @@ interface PlantButtonProps {
 
 export function PlantButton({ onClick, isLiked, disabled, className, size = 'default' }: PlantButtonProps) {
   const buttonSizeClass = 
-    size === 'sm' ? 'h-8 w-8' :
-    size === 'lg' ? 'h-11 w-11' :
-    'h-10 w-10';
+    size === 'sm' ? 'h-9 w-9' :
+    size === 'lg' ? 'h-14 w-14' :
+    'h-11 w-11';
 
   const iconSizeClass =
-    size === 'sm' ? 'h-4 w-4' :
-    size === 'lg' ? 'h-6 w-6' :
-    'h-5 w-5';
+    size === 'sm' ? 'h-5 w-5' :
+    size === 'lg' ? 'h-8 w-8' :
+    'h-6 w-6';
 
   return (
     <button onClick={onClick} disabled={disabled} className={cn('plant-button', buttonSizeClass, className)} data-liked={isLiked}>
@@ -113,5 +112,5 @@ export function PlantButton({ onClick, isLiked, disabled, className, size = 'def
         </svg>
       </div>
     </button>
-  );
+  )
 }
