@@ -67,6 +67,10 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const handleLikeToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
+    if (!user) {
+      router.push('/login');
+      return;
+    }
     toggleLike(product.id);
   }
 

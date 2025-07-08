@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreditCard, Lock, Loader2 } from 'lucide-react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
@@ -12,13 +13,20 @@ import type { OrderItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CheckoutPage() {
-  const { user, isFirebaseEnabled } = useAuth();
+  const { user, isFirebaseEnabled, loading: authLoading } = useAuth();
   const { cartItems, cartTotal, clearCart } = useCart();
   const router = useRouter();
   const { toast } = useToast();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login');
+    }
+  }, [user, authLoading, router]);
 
   const handlePlaceOrder = async () => {
     if (!isFirebaseEnabled || !db || !user) {
@@ -80,6 +88,31 @@ export default function CheckoutPage() {
       setIsPlacingOrder(false);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="container mx-auto px-4 py-12 max-w-2xl">
+        <Card className="shadow-lg">
+          <CardHeader className="text-center">
+              <Skeleton className="h-12 w-12 mx-auto mb-4" />
+              <Skeleton className="h-10 w-48 mx-auto" />
+              <Skeleton className="h-6 w-72 mx-auto mt-2" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-20 w-full" />
+          </CardContent>
+          <CardFooter>
+            <Skeleton className="h-12 w-full" />
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Prevent flashing content before redirect
+  }
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-2xl">

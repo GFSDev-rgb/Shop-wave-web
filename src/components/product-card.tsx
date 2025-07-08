@@ -129,6 +129,10 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
 
     const handleLikeToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
         handleAdminAction(e);
+        if (!user) {
+          router.push('/login');
+          return;
+        }
         toggleLike(localProduct.id);
     }
 

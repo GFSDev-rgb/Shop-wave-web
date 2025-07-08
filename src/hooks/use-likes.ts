@@ -19,17 +19,13 @@ export const useLikes = () => {
     }, [profile]);
 
     const toggleLike = useCallback(async (productId: string) => {
-        if (!isFirebaseEnabled || !db) {
-            toast({ variant: 'destructive', title: 'Error', description: 'Database not configured.' });
-            return;
-        }
-
-        if (!user || !profile) {
+        if (!isFirebaseEnabled || !db || !user || !profile) {
             toast({
                 variant: 'destructive',
-                title: 'Login Required',
-                description: 'You must be logged in to like products.',
+                title: 'Error',
+                description: 'Could not update like status. Please try again.',
             });
+            console.error("Like toggled without user or with DB not configured.");
             return;
         }
 

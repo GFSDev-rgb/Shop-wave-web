@@ -1,8 +1,10 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
@@ -21,6 +23,13 @@ export default function OrdersPage() {
   const { user, loading: authLoading } = useAuth();
   const [orders, setOrders] = useState<OrderWithDate[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login');
+    }
+  }, [user, authLoading, router]);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -82,12 +91,7 @@ export default function OrdersPage() {
   }
 
   if (!user) {
-      return (
-          <div className="container mx-auto text-center py-20">
-              <p>Please log in to view your orders.</p>
-              <Button asChild className="mt-4"><Link href="/login">Log In</Link></Button>
-          </div>
-      )
+      return null; // Avoid flashing page content before redirect
   }
 
   return (
