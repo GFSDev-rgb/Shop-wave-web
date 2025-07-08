@@ -101,3 +101,5 @@ export function PlantButton({ onClick, isLiked, disabled, className }: PlantButt
         </svg>
       </div>
     </button>
+  );
+}
