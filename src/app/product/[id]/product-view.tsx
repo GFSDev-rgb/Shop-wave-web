@@ -84,7 +84,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
       <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,_2fr)_minmax(0,_1fr)] gap-8 xl:gap-12">
         
         {/* Main Product Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.2fr,1fr] gap-8 md:gap-12 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-8 md:gap-12 items-start">
           <div className="flex flex-col-reverse md:flex-row gap-4 lg:gap-6 items-start">
               <div className="flex flex-row md:flex-col gap-3 mx-auto md:mx-0 overflow-x-auto md:overflow-x-hidden md:overflow-y-auto py-2">
                 {(product.images.length > 1 ? product.images : []).map((img, index) => (
