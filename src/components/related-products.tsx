@@ -27,12 +27,12 @@ export default function RelatedProducts({ currentProductId }: RelatedProductsPro
 
   if (loading) {
     return (
-        <section className="mt-16 xl:mt-0">
-            <h2 className="font-headline text-2xl xl:text-3xl font-bold mb-6 xl:mb-8 text-left xl:text-center">
-                <Skeleton className="h-8 w-48 xl:mx-auto" />
+        <section>
+            <h2 className="font-headline text-2xl xl:text-3xl font-bold mb-6 xl:mb-8">
+                <Skeleton className="h-8 w-48" />
             </h2>
             {/* Desktop Skeleton */}
-            <div className="hidden xl:flex flex-col space-y-6">
+            <div className="hidden lg:flex flex-col space-y-6">
                  {Array.from({ length: 4 }).map((_, i) => (
                     <div key={i} className="flex gap-4 items-center">
                         <Skeleton className="h-24 w-24 rounded-md flex-shrink-0" />
@@ -44,12 +44,10 @@ export default function RelatedProducts({ currentProductId }: RelatedProductsPro
                 ))}
             </div>
             {/* Mobile/Tablet Skeleton */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 xl:hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:hidden">
                 {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="w-full flex-shrink-0">
-                        <div className="flex flex-col space-y-3">
-                            <Skeleton className="h-[400px] w-full rounded-lg" />
-                        </div>
+                    <div key={i} className="flex flex-col space-y-3">
+                        <Skeleton className="h-[400px] w-full rounded-lg" />
                     </div>
                 ))}
             </div>
@@ -62,11 +60,11 @@ export default function RelatedProducts({ currentProductId }: RelatedProductsPro
   }
 
   return (
-    <section className="mt-16 xl:mt-0">
-      <h2 className="font-headline text-2xl xl:text-3xl font-bold mb-6 xl:mb-8 text-left xl:text-center">You Might Also Like</h2>
+    <section>
+      <h2 className="font-headline text-2xl xl:text-3xl font-bold mb-6 xl:mb-8">You Might Also Like</h2>
       
-      {/* Desktop sidebar layout (xl and up) */}
-      <div className="hidden xl:flex flex-col space-y-4">
+      {/* Desktop sidebar layout (lg and up) */}
+      <div className="hidden lg:flex flex-col space-y-4">
         {relatedProducts.map(product => (
           <Link href={`/product/${product.id}`} key={product.id} className="flex items-center gap-4 group p-2 rounded-lg hover:bg-muted transition-colors">
             <Image 
@@ -85,8 +83,8 @@ export default function RelatedProducts({ currentProductId }: RelatedProductsPro
         ))}
       </div>
 
-      {/* Mobile/Tablet grid layout (below xl) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 xl:hidden">
+      {/* Mobile/Tablet grid layout (below lg) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:hidden">
         {relatedProducts.map(product => (
           <ProductCard key={product.id} product={product} />
         ))}
