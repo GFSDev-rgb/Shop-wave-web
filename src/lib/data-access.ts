@@ -11,7 +11,7 @@ import { products as initialProducts } from "@/lib/data";
  * @param doc The Firestore document snapshot.
  * @returns A well-formed Product object.
  */
-function formatProduct(doc: DocumentSnapshot): Product {
+export function formatProduct(doc: DocumentSnapshot): Product {
     const data = doc.data() || {};
     return {
         id: doc.id,
