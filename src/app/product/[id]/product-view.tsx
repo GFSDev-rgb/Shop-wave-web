@@ -52,16 +52,30 @@ const ProductForm = dynamic(() => import('@/components/admin/product-form'), {
 
 function ProductPageSkeleton() {
     return (
-        <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
-            <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
-                <Skeleton className="w-full aspect-[4/5] rounded-lg" />
-                <div className="space-y-6">
-                    <Skeleton className="h-6 w-1/4" />
-                    <Skeleton className="h-12 w-3/4" />
-                    <Skeleton className="h-6 w-1/2" />
-                    <Skeleton className="h-10 w-1/3" />
-                    <Skeleton className="h-20 w-full" />
-                    <Skeleton className="h-12 w-full" />
+        <div className="container mx-auto px-4 py-8 md:py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,_3fr)_minmax(0,_1fr)] gap-8 lg:gap-12">
+                <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
+                    <Skeleton className="w-full aspect-[4/5] rounded-lg" />
+                    <div className="space-y-6">
+                        <Skeleton className="h-6 w-1/4" />
+                        <Skeleton className="h-12 w-3/4" />
+                        <Skeleton className="h-6 w-1/2" />
+                        <Skeleton className="h-10 w-1/3" />
+                        <Skeleton className="h-20 w-full" />
+                        <Skeleton className="h-12 w-full" />
+                    </div>
+                </div>
+                <div className="hidden lg:flex flex-col space-y-6">
+                    <Skeleton className="h-8 w-3/4 mb-2" />
+                    {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="flex gap-4 items-center">
+                            <Skeleton className="h-24 w-24 rounded-md flex-shrink-0" />
+                            <div className="space-y-2 flex-1">
+                                <Skeleton className="h-5 w-full" />
+                                <Skeleton className="h-5 w-1/3" />
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
@@ -97,104 +111,109 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
   }
 
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
-      <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
-        <div className="flex flex-col-reverse md:flex-row gap-4 lg:gap-6 items-start">
-            <div className="flex flex-row md:flex-col gap-3 mx-auto md:mx-0 overflow-x-auto md:overflow-x-hidden md:overflow-y-auto py-2">
-              {(product.images.length > 1 ? product.images : []).map((img, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveImage(img)}
-                  className={cn(
-                    "rounded-lg overflow-hidden border-2 transition-colors flex-shrink-0",
-                    activeImage === img ? 'border-primary' : 'border-transparent hover:border-primary/50'
-                  )}
-                >
-                  <Image
-                    src={img}
-                    alt={`${product.name} thumbnail ${index + 1}`}
-                    data-ai-hint="product photo"
-                    width={80}
-                    height={100}
-                    className="object-cover w-16 h-20 md:w-20 md:h-24"
-                  />
-                </button>
-              ))}
-            </div>
-            
-            <div className="flex-1 relative">
-              <Card className="overflow-hidden rounded-lg">
-                <CardContent className="p-0">
-                  <Image
-                    src={activeImage}
-                    alt={product.name}
-                    data-ai-hint="product photo"
-                    width={800}
-                    height={1000}
-                    priority
-                    className="w-full h-auto aspect-[4/5] object-cover transition-all duration-300"
-                  />
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-        <div className="space-y-6">
-          <div>
-            <div className="flex justify-between items-start gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">{product.category}</p>
-                <h1 className="font-headline text-3xl sm:text-4xl lg:text-5xl font-bold mt-1">{product.name}</h1>
-              </div>
-              {isAdmin && (
-                <Sheet open={isEditSheetOpen} onOpenChange={setEditSheetOpen}>
-                    <SheetTrigger asChild>
-                        <Button variant="outline">
-                            <Pencil className="mr-2 h-4 w-4"/>
-                            Edit
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l p-6 w-full max-w-md overflow-y-auto">
-                        <SheetHeader>
-                            <SheetTitle>Edit Product</SheetTitle>
-                            <SheetDescription>Update the details for "{product.name}".</SheetDescription>
-                        </SheetHeader>
-                        <ProductForm 
-                            product={product} 
-                            onFinished={() => setEditSheetOpen(false)} 
-                        />
-                    </SheetContent>
-                </Sheet>
-              )}
-            </div>
-
-            <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
-              <div className="flex items-center">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-5 h-5 ${
-                      i < Math.round(product.rating) ? "text-yellow-400 fill-current" : "text-gray-300"
-                    }`}
-                  />
+    <div className="container mx-auto px-4 py-8 md:py-12">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,_3fr)_minmax(0,_1fr)] gap-8 lg:gap-12">
+        
+        {/* Main Product Content */}
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
+          <div className="flex flex-col-reverse md:flex-row gap-4 lg:gap-6 items-start">
+              <div className="flex flex-row md:flex-col gap-3 mx-auto md:mx-0 overflow-x-auto md:overflow-x-hidden md:overflow-y-auto py-2">
+                {(product.images.length > 1 ? product.images : []).map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveImage(img)}
+                    className={cn(
+                      "rounded-lg overflow-hidden border-2 transition-colors flex-shrink-0",
+                      activeImage === img ? 'border-primary' : 'border-transparent hover:border-primary/50'
+                    )}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${product.name} thumbnail ${index + 1}`}
+                      data-ai-hint="product photo"
+                      width={80}
+                      height={100}
+                      className="object-cover w-16 h-20 md:w-20 md:h-24"
+                    />
+                  </button>
                 ))}
               </div>
-              <span>({product.reviews} reviews)</span>
-              <Separator orientation="vertical" className="h-4" />
-              <div className="flex items-center gap-1.5">
-                  <ThumbsUp className="w-4 h-4 text-primary" />
-                  <span>{(product.likeCount || 0).toLocaleString()} likes</span>
+              
+              <div className="flex-1 relative">
+                <Card className="overflow-hidden rounded-lg">
+                  <CardContent className="p-0">
+                    <Image
+                      src={activeImage}
+                      alt={product.name}
+                      data-ai-hint="product photo"
+                      width={800}
+                      height={1000}
+                      priority
+                      className="w-full h-auto aspect-[4/5] object-cover transition-all duration-300"
+                    />
+                  </CardContent>
+                </Card>
               </div>
             </div>
+
+          <div className="space-y-6">
+            <div>
+              <div className="flex justify-between items-start gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">{product.category}</p>
+                  <h1 className="font-headline text-3xl sm:text-4xl lg:text-5xl font-bold mt-1">{product.name}</h1>
+                </div>
+                {isAdmin && (
+                  <Sheet open={isEditSheetOpen} onOpenChange={setEditSheetOpen}>
+                      <SheetTrigger asChild>
+                          <Button variant="outline">
+                              <Pencil className="mr-2 h-4 w-4"/>
+                              Edit
+                          </Button>
+                      </SheetTrigger>
+                      <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l p-6 w-full max-w-md overflow-y-auto">
+                          <SheetHeader>
+                              <SheetTitle>Edit Product</SheetTitle>
+                              <SheetDescription>Update the details for "{product.name}".</SheetDescription>
+                          </SheetHeader>
+                          <ProductForm 
+                              product={product} 
+                              onFinished={() => setEditSheetOpen(false)} 
+                          />
+                      </SheetContent>
+                  </Sheet>
+                )}
+              </div>
+
+              <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
+                <div className="flex items-center">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-5 h-5 ${
+                        i < Math.round(product.rating) ? "text-yellow-400 fill-current" : "text-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span>({product.reviews} reviews)</span>
+                <Separator orientation="vertical" className="h-4" />
+                <div className="flex items-center gap-1.5">
+                    <ThumbsUp className="w-4 h-4 text-primary" />
+                    <span>{(product.likeCount || 0).toLocaleString()} likes</span>
+                </div>
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-primary">${product.price.toFixed(2)}</p>
+            <div className="prose dark:prose-invert text-foreground/80">
+              <p>{product.description}</p>
+            </div>
+            <ProductDetailsClient product={product} />
           </div>
-          <p className="text-3xl font-bold text-primary">${product.price.toFixed(2)}</p>
-          <div className="prose dark:prose-invert text-foreground/80">
-            <p>{product.description}</p>
-          </div>
-          <ProductDetailsClient product={product} />
         </div>
+        
+        <RelatedProducts currentProductId={product.id} />
       </div>
-      <RelatedProducts currentProductId={product.id} />
     </div>
   );
 }
