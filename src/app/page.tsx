@@ -5,15 +5,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import ProductCard from '@/components/product-card';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, User } from 'lucide-react';
 import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
 import RecommendedProducts from '@/components/ai/recommended-products';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Home() {
   const { products, loading: productsLoading } = useProducts();
-  const { loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const featuredProducts = products.slice(0, 4);
 
   const isLoading = authLoading || productsLoading;
@@ -59,13 +60,30 @@ export default function Home() {
                     <Skeleton className="h-[400px] w-full rounded-lg" />
                 </div>
             ))
-          ) : featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          ) : user ? (
+            featuredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          ) : (
+            <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4 flex justify-center">
+              <Card className="w-full max-w-md text-center">
+                  <CardHeader>
+                      <User className="mx-auto h-12 w-12 text-primary mb-4" />
+                      <CardTitle>View Our Collection</CardTitle>
+                      <CardDescription>Please log in to browse our featured products.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                      <Button asChild>
+                          <Link href="/login">Go to Login</Link>
+                      </Button>
+                  </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </section>
 
-      <RecommendedProducts />
+      {user && <RecommendedProducts />}
 
     </div>
   );

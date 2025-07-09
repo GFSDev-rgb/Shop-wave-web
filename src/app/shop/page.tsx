@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useCallback, useEffect, useTransition } from "react";
+import Link from 'next/link';
 import { useDebounce } from "use-debounce";
 import dynamic from "next/dynamic";
 import { Product } from "@/lib/types";
@@ -17,11 +18,12 @@ import {
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import { Filter, ArrowUpDown, PlusCircle, Loader2, Search } from "lucide-react";
+import { Filter, ArrowUpDown, PlusCircle, Loader2, Search, User } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
 import { useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 // Note: Metadata cannot be exported from client components. 
 // This would need to be a server component to have page-specific metadata.
@@ -68,7 +70,7 @@ export default function ShopPage() {
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
 
   const { products, loading: productsLoading } = useProducts();
-  const { loading: authLoading, isAdmin } = useAuth();
+  const { user, loading: authLoading, isAdmin } = useAuth();
   
   const workerRef = useRef<Worker>();
   const [sortedAndFilteredProducts, setSortedAndFilteredProducts] = useState<Product[]>([]);
@@ -97,7 +99,7 @@ export default function ShopPage() {
   // Effect to process filtering and sorting
   useEffect(() => {
     // Wait until products have been loaded
-    if (productsLoading) {
+    if (productsLoading || !user) {
       // While loading, keep the list empty to allow skeletons to show
       setSortedAndFilteredProducts([]);
       return;
@@ -140,7 +142,7 @@ export default function ShopPage() {
       }
       setSortedAndFilteredProducts(result);
     }
-  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, debouncedSearchQuery, products, productsLoading]);
+  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, debouncedSearchQuery, products, productsLoading, user]);
 
 
   // Reset visible count when filters change
@@ -201,20 +203,39 @@ export default function ShopPage() {
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
-  return (
-    <div className="container mx-auto px-4 py-8 flex-1">
-      <header className="mb-12 text-center relative overflow-hidden rounded-lg p-4 md:p-8 bg-card/50 backdrop-blur-sm border">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
-        <div className="relative">
-          <h1 className="font-headline text-4xl md:text-5xl font-bold">Our Collection</h1>
-          <p className="mt-2 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Browse our curated selection of high-quality products, crafted with passion and precision.
-          </p>
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 lg:col-span-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="flex flex-col space-y-3">
+                    <Skeleton className="h-[400px] w-full rounded-lg" />
+                </div>
+            ))}
         </div>
-      </header>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        
+      )
+    }
+
+    if (!user) {
+      return (
+        <div className="lg:col-span-4 flex items-center justify-center py-16">
+            <Card className="w-full max-w-md text-center">
+                <CardHeader>
+                    <User className="mx-auto h-12 w-12 text-primary mb-4" />
+                    <CardTitle>Login to Shop</CardTitle>
+                    <CardDescription>Please log in to browse our collection of products.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Button asChild>
+                        <Link href="/login">Go to Login</Link>
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
+      );
+    }
+    
+    return (
         <main className="lg:col-span-4">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -295,16 +316,10 @@ export default function ShopPage() {
             </div>
 
             <div className={cn(
-                "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 transition-opacity duration-300",
+                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 transition-opacity duration-300",
                 isFiltering && "opacity-70"
             )}>
-                {isLoading ? (
-                    Array.from({ length: 8 }).map((_, i) => (
-                        <div key={i} className="flex flex-col space-y-3">
-                            <Skeleton className="h-[400px] w-full rounded-lg" />
-                        </div>
-                    ))
-                ) : renderedProducts.map((product, index) => {
+                 {renderedProducts.map((product, index) => {
                      const isLastElement = index === renderedProducts.length - 1;
                      return (
                         <ProductCard 
@@ -316,7 +331,7 @@ export default function ShopPage() {
                 })}
             </div>
 
-            {!isLoading && renderedProducts.length === 0 && (
+            {renderedProducts.length === 0 && (
                 <div className="text-center py-16 border-2 border-dashed rounded-lg col-span-full">
                     <Search className="mx-auto h-16 w-16 text-muted-foreground" />
                     <h2 className="mt-6 text-2xl font-semibold">No Products Found</h2>
@@ -328,8 +343,8 @@ export default function ShopPage() {
             )}
             
             {/* Loading indicator for infinite scroll */}
-            {!isLoading && visibleCount < sortedAndFilteredProducts.length && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-8">
+            {visibleCount < sortedAndFilteredProducts.length && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-8">
                      {Array.from({ length: 4 }).map((_, i) => (
                         <div key={`placeholder-${i}`} className="flex flex-col space-y-3">
                             <Skeleton className="h-[400px] w-full rounded-lg" />
@@ -338,7 +353,26 @@ export default function ShopPage() {
                 </div>
             )}
         </main>
+    );
+  }
+
+
+  return (
+    <div className="container mx-auto px-4 py-8 flex-1">
+      <header className="mb-12 text-center relative overflow-hidden rounded-lg p-4 md:p-8 bg-card/50 backdrop-blur-sm border">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
+        <div className="relative">
+          <h1 className="font-headline text-4xl md:text-5xl font-bold">Our Collection</h1>
+          <p className="mt-2 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            Browse our curated selection of high-quality products, crafted with passion and precision.
+          </p>
+        </div>
+      </header>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {renderContent()}
       </div>
     </div>
   );
 }
+

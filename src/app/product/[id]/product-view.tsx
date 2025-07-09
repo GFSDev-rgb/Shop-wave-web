@@ -3,9 +3,10 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from 'next/link';
 import dynamic from "next/dynamic";
 import ProductDetailsClient from "./product-details-client";
-import { Star, Pencil, ThumbsUp } from "lucide-react";
+import { Star, Pencil, ThumbsUp, User } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -13,7 +14,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useProducts } from "@/hooks/use-products";
 import type { Product } from "@/lib/types";
 import { useAuth } from "@/hooks/use-auth";
@@ -54,10 +55,27 @@ const ProductForm = dynamic(() => import('@/components/admin/product-form'), {
   ),
 });
 
+function ProductPageSkeleton() {
+    return (
+        <div className="container mx-auto px-4 py-8 md:py-12">
+            <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
+                <Skeleton className="w-full aspect-[4/5] rounded-lg" />
+                <div className="space-y-6">
+                    <Skeleton className="h-6 w-1/4" />
+                    <Skeleton className="h-12 w-3/4" />
+                    <Skeleton className="h-6 w-1/2" />
+                    <Skeleton className="h-10 w-1/3" />
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                </div>
+            </div>
+        </div>
+    )
+}
+
 export default function ProductView({ initialProduct }: { initialProduct: Product }) {
   const { products } = useProducts();
-  const { isAdmin } = useAuth();
-  // Use state to allow for optimistic updates by admins
+  const { user, isAdmin, loading: authLoading } = useAuth();
   const [product, setProduct] = useState<Product>(initialProduct);
   const [isEditSheetOpen, setEditSheetOpen] = useState(false);
 
@@ -69,6 +87,29 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
       setProduct(updatedProductFromContext);
     }
   }, [products, initialProduct.id]);
+
+  if (authLoading) {
+      return <ProductPageSkeleton />;
+  }
+
+  if (!user) {
+      return (
+        <div className="container mx-auto px-4 py-12 flex-1 flex items-center justify-center">
+            <Card className="w-full max-w-md text-center">
+                <CardHeader>
+                    <User className="mx-auto h-12 w-12 text-primary mb-4" />
+                    <CardTitle>Login Required</CardTitle>
+                    <CardDescription>Please log in to view product details.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Button asChild>
+                        <Link href="/login">Go to Login</Link>
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
+      );
+  }
 
   if (!product) {
       return null;
