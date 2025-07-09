@@ -60,25 +60,10 @@ export default function Home() {
                     <Skeleton className="h-[400px] w-full rounded-lg" />
                 </div>
             ))
-          ) : user ? (
+          ) : (
             featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))
-          ) : (
-            <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4 flex justify-center">
-              <Card className="w-full max-w-md text-center">
-                  <CardHeader>
-                      <User className="mx-auto h-12 w-12 text-primary mb-4" />
-                      <CardTitle>View Our Collection</CardTitle>
-                      <CardDescription>Please log in to browse our featured products.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                      <Button asChild>
-                          <Link href="/login">Go to Login</Link>
-                      </Button>
-                  </CardContent>
-              </Card>
-            </div>
           )}
         </div>
       </section>

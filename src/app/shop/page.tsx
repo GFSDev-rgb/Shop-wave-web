@@ -99,7 +99,7 @@ export default function ShopPage() {
   // Effect to process filtering and sorting
   useEffect(() => {
     // Wait until products have been loaded
-    if (productsLoading || !user) {
+    if (productsLoading) {
       // While loading, keep the list empty to allow skeletons to show
       setSortedAndFilteredProducts([]);
       return;
@@ -142,7 +142,7 @@ export default function ShopPage() {
       }
       setSortedAndFilteredProducts(result);
     }
-  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, debouncedSearchQuery, products, productsLoading, user]);
+  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, debouncedSearchQuery, products, productsLoading]);
 
 
   // Reset visible count when filters change
@@ -214,25 +214,6 @@ export default function ShopPage() {
             ))}
         </div>
       )
-    }
-
-    if (!user) {
-      return (
-        <div className="lg:col-span-4 flex items-center justify-center py-16">
-            <Card className="w-full max-w-md text-center">
-                <CardHeader>
-                    <User className="mx-auto h-12 w-12 text-primary mb-4" />
-                    <CardTitle>Login to Shop</CardTitle>
-                    <CardDescription>Please log in to browse our collection of products.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Button asChild>
-                        <Link href="/login">Go to Login</Link>
-                    </Button>
-                </CardContent>
-            </Card>
-        </div>
-      );
     }
     
     return (
@@ -375,4 +356,3 @@ export default function ShopPage() {
     </div>
   );
 }
-

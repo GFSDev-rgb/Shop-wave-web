@@ -92,25 +92,6 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
       return <ProductPageSkeleton />;
   }
 
-  if (!user) {
-      return (
-        <div className="container mx-auto px-4 py-12 flex-1 flex items-center justify-center">
-            <Card className="w-full max-w-md text-center">
-                <CardHeader>
-                    <User className="mx-auto h-12 w-12 text-primary mb-4" />
-                    <CardTitle>Login Required</CardTitle>
-                    <CardDescription>Please log in to view product details.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Button asChild>
-                        <Link href="/login">Go to Login</Link>
-                    </Button>
-                </CardContent>
-            </Card>
-        </div>
-      );
-  }
-
   if (!product) {
       return null;
   }
