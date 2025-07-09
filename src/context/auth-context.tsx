@@ -1,9 +1,9 @@
+
 'use client';
 
 import React, { createContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
 import { onAuthStateChanged, User, signOut as firebaseSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile as updateFirebaseProfile } from 'firebase/auth';
 import { auth, db, isFirebaseEnabled } from '@/lib/firebase';
-import { useRouter } from 'next/navigation';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import type { UserProfile } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
@@ -27,7 +27,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -98,7 +97,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await firebaseSignOut(auth);
     localStorage.removeItem('cart');
     localStorage.removeItem('wishlist');
-    router.push('/login');
   };
 
   const updateProfile = useCallback(async (data: Partial<UserProfile>) => {
