@@ -52,8 +52,8 @@ const ProductForm = dynamic(() => import('@/components/admin/product-form'), {
 
 function ProductPageSkeleton() {
     return (
-        <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
-            <div className="grid grid-cols-1 md:grid-cols-[minmax(0,_2fr)_minmax(0,_1fr)] gap-8 md:gap-12">
+        <div className="container mx-auto max-w-7xl px-4 py-8 lg:py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,_2fr)_minmax(0,_1fr)] gap-8 lg:gap-12">
                 {/* Main Content Skeleton */}
                 <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
                     <Skeleton className="w-full aspect-[4/5] rounded-lg" />
@@ -67,12 +67,12 @@ function ProductPageSkeleton() {
                     </div>
                 </div>
                 {/* Related Products Skeleton */}
-                <div className="mt-16 md:mt-0">
-                    <h2 className="font-headline text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-left md:text-center">
-                        <Skeleton className="h-8 w-48 md:mx-auto" />
+                <div className="mt-16 lg:mt-0">
+                    <h2 className="font-headline text-2xl lg:text-3xl font-bold mb-6 lg:mb-8 text-left lg:text-center">
+                        <Skeleton className="h-8 w-48 lg:mx-auto" />
                     </h2>
                     {/* Desktop Skeleton */}
-                    <div className="hidden md:flex flex-col space-y-6">
+                    <div className="hidden lg:flex flex-col space-y-6">
                         {Array.from({ length: 4 }).map((_, i) => (
                             <div key={i} className="flex gap-4 items-center">
                                 <Skeleton className="h-24 w-24 rounded-md flex-shrink-0" />
@@ -83,8 +83,8 @@ function ProductPageSkeleton() {
                             </div>
                         ))}
                     </div>
-                    {/* Mobile Skeleton */}
-                    <div className="md:hidden flex overflow-x-auto space-x-6 -mx-4 px-4 pb-4">
+                    {/* Mobile/Tablet Skeleton */}
+                    <div className="lg:hidden flex overflow-x-auto space-x-6 -mx-4 px-4 pb-4">
                         {Array.from({ length: 2 }).map((_, i) => (
                             <div key={i} className="w-72 flex-shrink-0">
                                 <div className="flex flex-col space-y-3">
@@ -128,8 +128,8 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
   }
 
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
-      <div className="grid grid-cols-1 md:grid-cols-[minmax(0,_2fr)_minmax(0,_1fr)] gap-8 md:gap-12">
+    <div className="container mx-auto max-w-7xl px-4 py-8 lg:py-12">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,_2fr)_minmax(0,_1fr)] gap-8 lg:gap-12">
         
         {/* Main Product Content */}
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
