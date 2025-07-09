@@ -44,9 +44,9 @@ export default function RelatedProducts({ currentProductId }: RelatedProductsPro
                 ))}
             </div>
             {/* Mobile/Tablet Skeleton */}
-            <div className="lg:hidden flex overflow-x-auto space-x-6 -mx-4 px-4 pb-4">
-                {Array.from({ length: 2 }).map((_, i) => (
-                    <div key={i} className="w-72 flex-shrink-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:hidden">
+                {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="w-full flex-shrink-0">
                         <div className="flex flex-col space-y-3">
                             <Skeleton className="h-[400px] w-full rounded-lg" />
                         </div>
@@ -65,7 +65,7 @@ export default function RelatedProducts({ currentProductId }: RelatedProductsPro
     <section className="mt-16 lg:mt-0">
       <h2 className="font-headline text-2xl lg:text-3xl font-bold mb-6 lg:mb-8 text-left lg:text-center">You Might Also Like</h2>
       
-      {/* Desktop sidebar layout */}
+      {/* Desktop sidebar layout (lg and up) */}
       <div className="hidden lg:flex flex-col space-y-4">
         {relatedProducts.map(product => (
           <Link href={`/product/${product.id}`} key={product.id} className="flex items-center gap-4 group p-2 rounded-lg hover:bg-muted transition-colors">
@@ -85,12 +85,10 @@ export default function RelatedProducts({ currentProductId }: RelatedProductsPro
         ))}
       </div>
 
-      {/* Mobile/Tablet horizontal scroll layout */}
-      <div className="lg:hidden flex overflow-x-auto space-x-6 -mx-4 px-4 pb-4">
+      {/* Mobile/Tablet grid layout (below lg) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:hidden">
         {relatedProducts.map(product => (
-          <div key={product.id} className="w-72 flex-shrink-0">
-             <ProductCard product={product} />
-          </div>
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </section>

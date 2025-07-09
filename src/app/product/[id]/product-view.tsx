@@ -84,9 +84,9 @@ function ProductPageSkeleton() {
                         ))}
                     </div>
                     {/* Mobile/Tablet Skeleton */}
-                    <div className="lg:hidden flex overflow-x-auto space-x-6 -mx-4 px-4 pb-4">
-                        {Array.from({ length: 2 }).map((_, i) => (
-                            <div key={i} className="w-72 flex-shrink-0">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:hidden">
+                        {Array.from({ length: 4 }).map((_, i) => (
+                            <div key={i} className="w-full flex-shrink-0">
                                 <div className="flex flex-col space-y-3">
                                     <Skeleton className="h-[400px] w-full rounded-lg" />
                                 </div>
