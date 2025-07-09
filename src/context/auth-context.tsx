@@ -95,8 +95,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = async () => {
     if (!auth) return;
     await firebaseSignOut(auth);
+    // Clear local storage for guest data and force a reload
     localStorage.removeItem('cart');
     localStorage.removeItem('wishlist');
+    window.location.reload();
   };
 
   const updateProfile = useCallback(async (data: Partial<UserProfile>) => {
