@@ -57,7 +57,7 @@ const ProductForm = dynamic(() => import('@/components/admin/product-form'), {
 
 function ProductPageSkeleton() {
     return (
-        <div className="container mx-auto px-4 py-8 md:py-12">
+        <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
                 <Skeleton className="w-full aspect-[4/5] rounded-lg" />
                 <div className="space-y-6">
@@ -97,7 +97,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12">
+    <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
         <Carousel className="w-full">
           <CarouselContent>
