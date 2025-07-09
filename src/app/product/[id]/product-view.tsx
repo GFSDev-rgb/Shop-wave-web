@@ -7,13 +7,6 @@ import Link from 'next/link';
 import dynamic from "next/dynamic";
 import ProductDetailsClient from "./product-details-client";
 import { Star, Pencil, ThumbsUp, User } from "lucide-react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useProducts } from "@/hooks/use-products";
 import type { Product } from "@/lib/types";
@@ -29,6 +22,8 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import RelatedProducts from "@/components/related-products";
 
 const ProductForm = dynamic(() => import('@/components/admin/product-form'), {
   loading: () => (
@@ -78,6 +73,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
   const { user, isAdmin, loading: authLoading } = useAuth();
   const [product, setProduct] = useState<Product>(initialProduct);
   const [isEditSheetOpen, setEditSheetOpen] = useState(false);
+  const [activeImage, setActiveImage] = useState(initialProduct.image);
 
   // This effect ensures the product data on this page is always in sync 
   // with the global state from the context.
@@ -87,6 +83,10 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
       setProduct(updatedProductFromContext);
     }
   }, [products, initialProduct.id]);
+
+  useEffect(() => {
+    setActiveImage(initialProduct.image);
+  }, [initialProduct]);
 
   if (authLoading) {
       return <ProductPageSkeleton />;
@@ -99,29 +99,45 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
-        <Carousel className="w-full">
-          <CarouselContent>
-            {(product.images && product.images.length > 0 ? product.images : [product.image]).map((img, index) => (
-              <CarouselItem key={index}>
-                <Card className="overflow-hidden rounded-lg">
-                  <CardContent className="p-0">
-                    <Image
-                      src={img}
-                      alt={`${product.name} image ${index + 1}`}
-                      data-ai-hint="product photo"
-                      width={800}
-                      height={1000}
-                      priority={index === 0}
-                      className="w-full h-auto aspect-[4/5] object-cover"
-                    />
-                  </CardContent>
-                </Card>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="left-4" />
-          <CarouselNext className="right-4" />
-        </Carousel>
+        <div className="flex flex-col-reverse md:flex-row gap-4 lg:gap-6 items-start">
+            <div className="flex flex-row md:flex-col gap-3 mx-auto md:mx-0 overflow-x-auto md:overflow-x-hidden md:overflow-y-auto py-2">
+              {(product.images.length > 1 ? product.images : []).map((img, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveImage(img)}
+                  className={cn(
+                    "rounded-lg overflow-hidden border-2 transition-colors flex-shrink-0",
+                    activeImage === img ? 'border-primary' : 'border-transparent hover:border-primary/50'
+                  )}
+                >
+                  <Image
+                    src={img}
+                    alt={`${product.name} thumbnail ${index + 1}`}
+                    data-ai-hint="product photo"
+                    width={80}
+                    height={100}
+                    className="object-cover w-16 h-20 md:w-20 md:h-24"
+                  />
+                </button>
+              ))}
+            </div>
+            
+            <div className="flex-1 relative">
+              <Card className="overflow-hidden rounded-lg">
+                <CardContent className="p-0">
+                  <Image
+                    src={activeImage}
+                    alt={product.name}
+                    data-ai-hint="product photo"
+                    width={800}
+                    height={1000}
+                    priority
+                    className="w-full h-auto aspect-[4/5] object-cover transition-all duration-300"
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
 
         <div className="space-y-6">
           <div>
@@ -178,6 +194,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
           <ProductDetailsClient product={product} />
         </div>
       </div>
+      <RelatedProducts currentProductId={product.id} />
     </div>
   );
 }
