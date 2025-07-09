@@ -13,7 +13,7 @@ import {
   deleteDoc, 
   doc,
 } from "firebase/firestore";
-import { formatProduct } from "@/lib/data-access";
+import { formatProduct } from "@/lib/utils";
 
 // This is the shape of the data coming from the updated product form
 interface ProductFormData {
