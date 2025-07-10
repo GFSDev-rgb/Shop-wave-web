@@ -1,10 +1,10 @@
-import type {NextConfig} from 'next';
+/** @type {import('next').NextConfig} */
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,
@@ -42,4 +42,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withBundleAnalyzer(nextConfig);
+module.exports = withBundleAnalyzer(nextConfig);
