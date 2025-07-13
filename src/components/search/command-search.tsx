@@ -123,7 +123,7 @@ export function CommandSearch() {
                     >
                       <div>{product.name}</div>
                       <div>{product.category}</div>
-                      <div>${product.price.toFixed(2)}</div>
+                      <div>Tk {product.price.toFixed(2)}</div>
                     </Link>
                   </DialogClose>
                 ))

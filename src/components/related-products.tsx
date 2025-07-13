@@ -77,7 +77,7 @@ export default function RelatedProducts({ currentProductId }: RelatedProductsPro
             />
             <div className="flex-1">
               <p className="font-semibold leading-tight group-hover:underline">{product.name}</p>
-              <p className="text-primary font-bold mt-1">${product.price.toFixed(2)}</p>
+              <p className="text-primary font-bold mt-1">Tk {product.price.toFixed(2)}</p>
             </div>
           </Link>
         ))}

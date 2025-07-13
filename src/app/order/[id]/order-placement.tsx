@@ -118,7 +118,7 @@ export default function OrderPlacement({ productId }: { productId: string }) {
                                 <div>
                                     <h3 className="font-semibold text-lg">{product.name}</h3>
                                     <p className="text-muted-foreground">Quantity: {quantity}</p>
-                                    <p className="font-bold text-xl text-primary mt-2">${(product.price * quantity).toFixed(2)}</p>
+                                    <p className="font-bold text-xl text-primary mt-2">Tk {(product.price * quantity).toFixed(2)}</p>
                                 </div>
                             </div>
                              <div className="mt-6">

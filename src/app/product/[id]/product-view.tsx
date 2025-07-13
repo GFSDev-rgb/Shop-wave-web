@@ -173,7 +173,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
                 </div>
               </div>
             </div>
-            <p className="text-3xl font-bold text-primary">${product.price.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-primary">Tk {product.price.toFixed(2)}</p>
             <div className="prose dark:prose-invert text-foreground/80">
               <p>{product.description}</p>
             </div>

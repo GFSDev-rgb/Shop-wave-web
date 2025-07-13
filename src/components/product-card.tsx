@@ -247,7 +247,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
               <p className="card-category text-sm text-muted-foreground mb-1">{localProduct.category}</p>
               <h3 className="card-title">{localProduct.name}</h3>
               <div className="flex justify-between items-center mt-2 mb-4">
-                <p className="card-price">${localProduct.price.toFixed(2)}</p>
+                <p className="card-price">Tk {localProduct.price.toFixed(2)}</p>
                 <div className="flex items-center gap-2">
                     <PlantButton
                         onClick={handleLikeToggle}

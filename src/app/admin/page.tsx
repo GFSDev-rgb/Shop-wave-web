@@ -130,7 +130,7 @@ export default function AdminDashboard() {
                                              <div>
                                                 <p className="font-semibold">{order.productName}</p>
                                                 <p className="text-sm">Qty: {order.quantity}</p>
-                                                <p className="text-sm font-bold">${(order.price * order.quantity).toFixed(2)}</p>
+                                                <p className="text-sm font-bold">Tk {(order.price * order.quantity).toFixed(2)}</p>
                                              </div>
                                         </div>
                                         <div className="md:col-span-1">

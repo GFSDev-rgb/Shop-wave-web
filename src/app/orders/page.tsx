@@ -114,7 +114,7 @@ export default function OrdersPage() {
                             </span>
                         </CardTitle>
                         <CardDescription>
-                            Total: <span className="font-bold text-primary">${order.total.toFixed(2)}</span>
+                            Total: <span className="font-bold text-primary">Tk {order.total.toFixed(2)}</span>
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -126,7 +126,7 @@ export default function OrdersPage() {
                                     <div>
                                         <p className="font-semibold">{item.name}</p>
                                         <p className="text-sm text-muted-foreground">
-                                            {item.quantity} x ${item.price.toFixed(2)}
+                                            {item.quantity} x Tk {item.price.toFixed(2)}
                                         </p>
                                     </div>
                                 </div>
