@@ -6,7 +6,7 @@
 @layer base {
   :root {
     --background: 0 0% 0%; /* Solid Black */
-    --foreground: 0 0% 95%; /* Light Cream - F3ECDA */
+    --foreground: 41 55% 96%; /* Light Cream - F3ECDA */
 
     --card: 0 0% 8%;
     --card-foreground: 0 0% 95%;
@@ -23,7 +23,7 @@
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 65%;
     
-    --accent: 21 44% 51%; /* Slightly lighter brown for accents */
+    --accent: 262 64% 58%; /* Muted Violet - #8A2BE2 */
     --accent-foreground: 0 0% 100%;
     
     --destructive: 0 60% 45%;
@@ -54,7 +54,7 @@
     --secondary-foreground: 0 0% 8%;
     --muted: 0 0% 94%;
     --muted-foreground: 0 0% 45%;
-    --accent: 21 44% 51%;
+    --accent: 262 64% 58%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
