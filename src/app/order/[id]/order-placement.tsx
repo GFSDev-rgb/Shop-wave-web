@@ -106,7 +106,7 @@ export default function OrderPlacement({ productId }: { productId: string }) {
 
     return (
         <div className="container mx-auto px-4 py-12 max-w-4xl">
-            <div className="grid md:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                 <div>
                      <Card>
                         <CardHeader>
@@ -144,7 +144,7 @@ export default function OrderPlacement({ productId }: { productId: string }) {
                                     <Label htmlFor="phoneNumber">Phone Number</Label>
                                     <Input id="phoneNumber" type="tel" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} required />
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="city">City</Label>
                                         <Input id="city" value={city} onChange={e => setCity(e.target.value)} required />
