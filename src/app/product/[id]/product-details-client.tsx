@@ -9,7 +9,7 @@ import { useWishlist } from "@/hooks/use-wishlist";
 import { useLikes } from "@/hooks/use-likes";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
-import { Heart, Minus, Plus, ShoppingCart, Loader2 } from "lucide-react";
+import { Heart, Minus, Plus, ShoppingCart, Loader2, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ToastAction } from "@/components/ui/toast";
 import { PlantButton } from "@/components/ui/plant-button";
@@ -55,6 +55,14 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
       description: `${quantity} x ${product.name} added to your cart.`,
     });
   };
+
+  const handleOrderNow = () => {
+      if (!user) {
+          showLoginToast();
+          return;
+      }
+      router.push(`/order/${product.id}?quantity=${quantity}`);
+  }
 
   const handleWishlistToggle = () => {
     if (!user) {
@@ -115,31 +123,42 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
             {isInCart ? "View in Cart" : "Add to Cart"}
             </Button>
             <Button
-            size="lg"
-            variant="outline"
-            onClick={handleWishlistToggle}
-            className="w-full"
+              size="lg"
+              variant="secondary"
+              onClick={handleOrderNow}
+              className="w-full"
             >
-            <Heart
-                className={cn(
-                "mr-2 h-5 w-5",
-                isInWishlist(product.id) && "text-yellow-400 fill-current"
-                )}
-            />
-            {isInWishlist(product.id)
-                ? "In Wishlist"
-                : "Add to Wishlist"}
+                <ShoppingBag className="mr-2 h-5 w-5" />
+                Order Now
             </Button>
         </div>
-        <div className="flex items-center justify-start gap-4 pt-2">
-            <PlantButton
-                onClick={handleLikeToggle}
-                isLiked={isLiked(product.id)}
-                disabled={likeLoading}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Button
                 size="lg"
-                className="border rounded-full"
-            />
-            <span className="text-sm text-muted-foreground">Like this product</span>
+                variant="outline"
+                onClick={handleWishlistToggle}
+                className="w-full"
+            >
+                <Heart
+                    className={cn(
+                    "mr-2 h-5 w-5",
+                    isInWishlist(product.id) && "text-yellow-400 fill-current"
+                    )}
+                />
+                {isInWishlist(product.id)
+                    ? "In Wishlist"
+                    : "Add to Wishlist"}
+            </Button>
+            <div className="flex items-center justify-start gap-4 pt-2">
+                <PlantButton
+                    onClick={handleLikeToggle}
+                    isLiked={isLiked(product.id)}
+                    disabled={likeLoading}
+                    size="lg"
+                    className="border rounded-full"
+                />
+                <span className="text-sm text-muted-foreground">Like this product</span>
+            </div>
         </div>
       </div>
     </div>

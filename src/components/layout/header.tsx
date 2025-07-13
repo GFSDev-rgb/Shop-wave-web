@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, Menu, ShoppingBag, UserPlus, LogIn, LogOut, Home, Store, Users, Mail, Package, Settings, User } from "lucide-react";
+import { Heart, Menu, ShoppingBag, UserPlus, LogIn, LogOut, Home, Store, Users, Mail, Package, Settings, User, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -42,7 +42,7 @@ const allNavLinks = [
 export function Header() {
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlist();
-  const { user, signOut, loading } = useAuth();
+  const { user, signOut, loading, isAdmin } = useAuth();
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
 
@@ -73,6 +73,14 @@ export function Header() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            {isAdmin && (
+                <DropdownMenuItem asChild>
+                    <Link href="/admin" className="cursor-pointer flex items-center">
+                        <ShieldCheck className="mr-2 h-4 w-4" />
+                        <span>Admin Dashboard</span>
+                    </Link>
+                </DropdownMenuItem>
+            )}
             <DropdownMenuItem asChild>
               <Link href="/profile" className="cursor-pointer flex items-center">
                 <User className="mr-2 h-4 w-4" />

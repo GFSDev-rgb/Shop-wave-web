@@ -1,3 +1,6 @@
+
+import type { Timestamp } from "firebase/firestore";
+
 export type Product = {
   id: string;
   name: string;
@@ -29,11 +32,25 @@ export type OrderItem = {
 };
 
 export type Order = {
-  id:string;
+  id: string;
   userId: string;
   createdAt: number; // Using number for JS Date timestamp
   items: OrderItem[];
   total: number;
+  // New fields from the order form
+  productId: string;
+  productName: string;
+  productImage: string;
+  price: number;
+  quantity: number;
+  deliveryMethod: 'Cash on Delivery';
+  fullName: string;
+  phoneNumber: string;
+  city: string;
+  village: string;
+  fullAddress: string;
+  orderTime: Timestamp;
+  orderStatus: 'Pending' | 'Delivered';
 };
 
 export type UserProfile = {
