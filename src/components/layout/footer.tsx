@@ -5,7 +5,7 @@ import { NewsletterForm } from "./newsletter-form";
 
 export function Footer() {
   return (
-    <footer className="bg-black/20 backdrop-blur-sm text-muted-foreground border-t border-white/10">
+    <footer className="bg-secondary text-muted-foreground border-t border-border">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
@@ -47,7 +47,7 @@ export function Footer() {
             <NewsletterForm />
           </div>
         </div>
-        <div className="mt-12 border-t border-white/10 pt-8 text-center text-sm">
+        <div className="mt-12 border-t border-border pt-8 text-center text-sm">
           <p>&copy; {new Date().getFullYear()} ShopWave. All Rights Reserved.</p>
         </div>
       </div>

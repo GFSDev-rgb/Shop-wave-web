@@ -3,9 +3,8 @@
 
 import Link from "next/link";
 import { Heart, ShoppingCart, Pencil, Trash2 } from "lucide-react";
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
-import { throttle } from "lodash";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -53,56 +52,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
       setLocalProduct(product);
     }, [product]);
 
-    const cardRef = useRef<HTMLDivElement>(null);
-    const [mouse, setMouse] = useState({ x: 0, y: 0, active: false });
-    const mouseLeaveDelay = useRef<NodeJS.Timeout | null>(null);
-    
     const isInCart = cartItems.some(item => item.product.id === localProduct.id);
-
-    const throttledSetMouse = useMemo(() => throttle(
-      (newMouseState: { x: number, y: number, active: boolean }) => setMouse(newMouseState), 16
-    ), []);
-
-    useEffect(() => {
-      return () => {
-        throttledSetMouse.cancel();
-        if (mouseLeaveDelay.current) {
-          clearTimeout(mouseLeaveDelay.current);
-        }
-      };
-    }, [throttledSetMouse]);
-
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!cardRef.current || isAdmin) return;
-      const { left, top, width, height } = cardRef.current.getBoundingClientRect();
-      const x = e.clientX - left - width / 2;
-      const y = e.clientY - top - height / 2;
-      throttledSetMouse({ x, y, active: true });
-    };
-
-    const handleMouseEnter = () => {
-      if (mouseLeaveDelay.current) clearTimeout(mouseLeaveDelay.current);
-      if(isAdmin) return;
-      setMouse(prev => ({ ...prev, active: true }));
-    };
-
-    const handleMouseLeave = () => {
-      if(isAdmin) return;
-      mouseLeaveDelay.current = setTimeout(() => {
-        setMouse({ x: 0, y: 0, active: false });
-      }, 1000);
-    };
-    
-    const mousePX = mouse.x / (cardRef.current?.offsetWidth || 1);
-    const mousePY = mouse.y / (cardRef.current?.offsetHeight || 1);
-
-    const cardStyle = {
-      transform: mouse.active && !isAdmin ? `rotateY(${mousePX * 20}deg) rotateX(${-mousePY * 20}deg)` : 'rotateY(0deg) rotateX(0deg)',
-    };
-
-    const cardBgTransform = {
-      transform: mouse.active && !isAdmin ? `translateX(${mousePX * -20}px) translateY(${mousePY * -20}px)` : 'translateX(0px) translateY(0px)',
-    };
 
     const showLoginToast = () => {
         toast({
@@ -178,15 +128,9 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
     }
 
     return (
-      <Link href={`/product/${localProduct.id}`} className="block" ref={ref}>
-        <div
-          className={cn("card-wrap", className)}
-          onMouseMove={handleMouseMove}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          ref={cardRef}
-        >
-          <div className="card" style={cardStyle}>
+      <Link href={`/product/${localProduct.id}`} className="block group/card" ref={ref}>
+        <div className={cn("card-wrap", className)}>
+          <div className="card">
             {isAdmin ? (
               <div className="absolute top-2 right-2 z-20 flex gap-2" onClick={handleAdminAction}>
                 <Sheet open={isEditSheetOpen} onOpenChange={setEditSheetOpen}>
@@ -195,7 +139,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
                             <Pencil className="h-4 w-4" />
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l border-white/10 p-6 w-full max-w-md overflow-y-auto">
+                    <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l p-6 w-full max-w-md overflow-y-auto">
                         <SheetHeader>
                             <SheetTitle>Edit Product</SheetTitle>
                             <SheetDescription>Update the details for "{localProduct.name}".</SheetDescription>
@@ -231,7 +175,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
               <Button
                 size="icon"
                 variant="secondary"
-                className="absolute top-3 right-3 rounded-full h-9 w-9 bg-background/50 hover:bg-background z-20 transition-opacity duration-300 card-heart"
+                className="absolute top-3 right-3 rounded-full h-9 w-9 bg-black/30 backdrop-blur-sm hover:bg-black/50 z-20 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"
                 onClick={handleWishlistToggle}
               >
                 <Heart className={cn("h-5 w-5", isInWishlist(localProduct.id) ? "text-red-500 fill-current" : "text-foreground/80")} />
@@ -241,7 +185,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
             <div
               className="card-bg"
               data-ai-hint="product photo"
-              style={{ ...cardBgTransform, backgroundImage: `url(${localProduct.image})` }}
+              style={{ backgroundImage: `url(${localProduct.image})` }}
             />
             <div className="card-info">
               <p className="card-category text-sm text-muted-foreground mb-1">{localProduct.category}</p>
@@ -261,7 +205,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
                 </div>
               </div>
               <div className="card-buttons">
-                  <Button onClick={handleCartAction} variant="secondary" className="w-full">
+                  <Button onClick={handleCartAction} className="w-full">
                     {isInCart ? 'View Cart' : (
                       <>
                         <ShoppingCart className="mr-2 h-4 w-4" />

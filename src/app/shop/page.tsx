@@ -275,7 +275,7 @@ export default function ShopPage() {
                         placeholder="Search products..."
                         value={searchQuery}
                         onChange={handleSearchChange}
-                        className="pl-9 bg-background w-full"
+                        className="pl-9 bg-secondary w-full"
                     />
                 </div>
                 
@@ -283,7 +283,7 @@ export default function ShopPage() {
                     <p className="hidden sm:block text-sm text-muted-foreground">{sortedAndFilteredProducts.length} Products</p>
                     {isFiltering && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
                     <Select value={sortOption} onValueChange={handleSortChange}>
-                        <SelectTrigger className="w-full sm:w-[180px] bg-background">
+                        <SelectTrigger className="w-full sm:w-[180px] bg-secondary">
                             <ArrowUpDown className="h-4 w-4 mr-2" />
                             <SelectValue placeholder="Sort by" />
                         </SelectTrigger>
@@ -341,14 +341,11 @@ export default function ShopPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 flex-1">
-      <header className="mb-12 text-center relative overflow-hidden rounded-lg p-4 md:p-8 bg-card/50 backdrop-blur-sm border">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
-        <div className="relative">
-          <h1 className="font-headline text-4xl md:text-5xl font-bold">Our Collection</h1>
-          <p className="mt-2 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Browse our curated selection of high-quality products, crafted with passion and precision.
-          </p>
-        </div>
+      <header className="mb-12 text-center p-4 md:p-8">
+        <h1 className="font-headline text-4xl md:text-5xl font-bold">Our Collection</h1>
+        <p className="mt-2 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+          Browse our curated selection of high-quality products, crafted with passion and precision.
+        </p>
       </header>
       
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -357,5 +354,3 @@ export default function ShopPage() {
     </div>
   );
 }
-
-    

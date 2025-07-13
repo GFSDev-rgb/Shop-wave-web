@@ -49,7 +49,7 @@ export function NewsletterForm() {
         type="email"
         name="email"
         placeholder="Your email"
-        className="bg-black/20 border-white/20 placeholder:text-muted-foreground"
+        className="bg-background/50 border-border placeholder:text-muted-foreground"
         required
       />
       <SubmitButton />

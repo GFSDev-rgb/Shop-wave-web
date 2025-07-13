@@ -120,7 +120,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/10 backdrop-blur supports-[backdrop-filter]:bg-background/10">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container mx-auto flex h-20 items-center justify-between px-4">
         <Logo />
         <nav className="hidden md:flex gap-8 items-center">
@@ -173,10 +173,10 @@ export function Header() {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="flex flex-col w-[300px] sm:w-[400px] bg-background/90 backdrop-blur-lg p-0 border-r border-white/10">
+              <SheetContent side="left" className="flex flex-col w-[300px] sm:w-[400px] bg-background/90 backdrop-blur-lg p-0 border-r">
                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 {/* Header */}
-                <div className="p-6 border-b border-white/10">
+                <div className="p-6 border-b">
                   {loading ? (
                     <div className="flex items-center gap-4">
                       <Skeleton className="h-10 w-10 rounded-full" />
@@ -220,7 +220,7 @@ export function Header() {
 
                   {user && (
                     <>
-                      <Separator className="my-4 bg-white/10" />
+                      <Separator className="my-4" />
                        <SheetClose asChild>
                         <Link
                           href="/profile"
@@ -274,7 +274,7 @@ export function Header() {
                 </nav>
 
                 {/* Footer */}
-                <div className="p-4 mt-auto border-t border-white/10">
+                <div className="p-4 mt-auto border-t">
                   <div className="flex items-center justify-between">
                     <div>
                       {loading ? (

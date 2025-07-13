@@ -3,7 +3,6 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { AppProviders } from '@/components/providers';
 import { MainLayout } from '@/components/layout/main-layout';
-import StyledComponentsRegistry from '@/lib/styled-components-registry';
 
 export const metadata: Metadata = {
   title: {
@@ -29,11 +28,9 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('min-h-screen font-body antialiased')}>
-        <StyledComponentsRegistry>
-            <AppProviders>
-              <MainLayout>{children}</MainLayout>
-            </AppProviders>
-        </StyledComponentsRegistry>
+        <AppProviders>
+          <MainLayout>{children}</MainLayout>
+        </AppProviders>
       </body>
     </html>
   );

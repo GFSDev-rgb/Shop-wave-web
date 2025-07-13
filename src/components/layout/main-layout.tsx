@@ -4,32 +4,15 @@
 import { usePathname } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { ReactNode, useState, useEffect, useRef } from 'react';
+import { ReactNode } from 'react';
 import { ScrollToTopButton } from '../scroll-to-top';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useTheme } from 'next-themes';
-import Loader from '@/components/capybara-loader';
-import { AuroraBackground } from '../ui/aurora-background';
 
 const noHeaderPaths = ['/login', '/signup'];
 const noFooterPaths = ['/login', '/signup', '/profile', '/admin'];
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { resolvedTheme } = useTheme();
-  const [isLoading, setIsLoading] = useState(false);
-  const prevPathname = useRef(pathname);
-
-  useEffect(() => {
-    if (prevPathname.current !== pathname) {
-        setIsLoading(true);
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1500); // Animation duration
-        prevPathname.current = pathname;
-        return () => clearTimeout(timer);
-    }
-  }, [pathname]);
 
   const showHeader = !noHeaderPaths.includes(pathname);
   
@@ -37,13 +20,8 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const isOrderPage = pathname.startsWith('/order/');
   const showFooter = !noFooterPaths.includes(pathname) && !isProductPage && !isOrderPage;
 
-  const showLoader = isLoading && resolvedTheme === 'light';
-
   return (
     <div className="relative flex min-h-dvh flex-col bg-background">
-      <AuroraBackground />
-      {showLoader && <Loader />}
-      
       <div className="relative z-10 flex flex-1 flex-col">
         {showHeader && <Header />}
         <AnimatePresence mode="wait">
