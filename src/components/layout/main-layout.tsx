@@ -32,7 +32,8 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const showHeader = !noHeaderPaths.includes(pathname);
   
   const isProductPage = pathname.startsWith('/product/');
-  const showFooter = !noFooterPaths.includes(pathname) && !isProductPage;
+  const isOrderPage = pathname.startsWith('/order/');
+  const showFooter = !noFooterPaths.includes(pathname) && !isProductPage && !isOrderPage;
 
   const showLoader = isLoading && resolvedTheme === 'light';
 
