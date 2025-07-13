@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%; /* Dark Gray */
+    --background: 0 0% 10%; /* Black */
     --foreground: 30 25% 95%; /* Light Cream */
 
     --card: 240 10% 3.9%;
@@ -14,7 +14,7 @@
     --popover: 240 10% 3.9%;
     --popover-foreground: 30 25% 95%;
 
-    --primary: 25 45% 40%; /* Rich Brown */
+    --primary: 274 82% 50%; /* Deep Indigo */
     --primary-foreground: 38 65% 88%; /* Light Cream/Brown */
 
     --secondary: 240 4% 16%;
@@ -23,7 +23,7 @@
     --muted: 240 4% 16%;
     --muted-foreground: 240 5% 65%;
     
-    --accent: 25 45% 45%; /* Slightly lighter brown for accent */
+    --accent: 262 77% 66%; /* Muted Violet */
     --accent-foreground: 38 65% 90%;
     
     --destructive: 0 60% 45%;
@@ -48,7 +48,7 @@
   }
 
   .light {
-    --background: 41 55% 96%; /* Very light cream for light mode */
+    --background: 220 20% 97%; /* Very light gray */
     --foreground: 16 41% 25%; /* Dark brown for light mode text */
 
     --card: 0 0% 100%; /* White cards */
@@ -57,7 +57,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 16 41% 25%;
 
-    --primary: 16 41% 41%; /* Brown for light mode primary */
+    --primary: 274 82% 41%; /* Deep Indigo */
     --primary-foreground: 41 55% 96%;
 
     --secondary: 41 20% 94%;
@@ -66,7 +66,7 @@
     --muted: 41 20% 94%;
     --muted-foreground: 16 20% 45%;
 
-    --accent: 16 41% 50%; /* Lighter brown for accent */
+    --accent: 262 77% 66%; /* Muted Violet */
     --accent-foreground: 0 0% 100%; /* White */
     
     --destructive: 0 84.2% 60.2%;

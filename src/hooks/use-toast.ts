@@ -3,19 +3,24 @@
 // Inspired by react-hot-toast library
 import * as React from "react"
 
-import type {
-  ToastActionElement,
-  ToastProps,
-} from "@/components/ui/toast"
-
-const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
-
 type ToasterToast = ToastProps & {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
-  action?: ToastActionElement
+  action?: React.ReactNode
+}
+
+const TOAST_LIMIT = 1
+const TOAST_REMOVE_DELAY = 1000000
+
+type ToasterProps = {
+  toasts: ToasterToast[]
+  dismiss: (toastId?: string) => void
+  add: (toast: Omit<ToasterToast, "id">) => {
+    id: string
+    dismiss: () => void
+    update: (props: ToasterToast) => void
+  }
 }
 
 const actionTypes = {
@@ -142,7 +147,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-function toast({ ...props }: Toast) {
+function toast(props: Toast) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -190,5 +195,9 @@ function useToast() {
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
+
+type ToastProps = React.ComponentPropsWithoutRef<typeof
+  import("@/components/ui/toast").Toast>
+
 
 export { useToast, toast }
