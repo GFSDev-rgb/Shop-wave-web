@@ -10,7 +10,7 @@ import { useTheme } from 'next-themes';
 import Loader from '@/components/capybara-loader';
 
 const noHeaderPaths = ['/login', '/signup'];
-const noFooterPaths = ['/login', '/signup', '/profile', '/shop'];
+const noFooterPaths = ['/login', '/signup', '/profile', '/shop', '/admin'];
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
