@@ -5,33 +5,33 @@
 
 @layer base {
   :root {
-    --background: 16 41% 41%; /* Brown Tone */
-    --foreground: 41 55% 94%; /* Light Cream */
+    --background: 240 10% 3.9%; /* Dark Gray */
+    --foreground: 30 25% 95%; /* Light Cream */
 
-    --card: 16 41% 35%;
-    --card-foreground: 41 55% 94%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 30 25% 95%;
 
-    --popover: 16 41% 41%;
-    --popover-foreground: 41 55% 94%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 30 25% 95%;
 
-    --primary: 41 55% 80%; /* Lighter Cream for Primary */
-    --primary-foreground: 16 41% 20%;
+    --primary: 25 45% 40%; /* Rich Brown */
+    --primary-foreground: 38 65% 88%; /* Light Cream/Brown */
 
-    --secondary: 16 41% 45%;
-    --secondary-foreground: 41 55% 94%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 30 25% 95%;
 
-    --muted: 16 41% 45%;
-    --muted-foreground: 41 55% 85%; /* Slightly darker cream */
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
     
-    --accent: 41 55% 85%; /* Accent color */
-    --accent-foreground: 16 41% 20%;
+    --accent: 25 45% 45%; /* Slightly lighter brown for accent */
+    --accent-foreground: 38 65% 90%;
     
     --destructive: 0 60% 45%;
     --destructive-foreground: 30 10% 95%;
     
-    --border: 16 41% 45%;
-    --input: 16 41% 45%;
-    --ring: 41 55% 85%;
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 25 45% 50%;
     --radius: 0.8rem;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
