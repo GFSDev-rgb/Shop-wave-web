@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -31,7 +32,15 @@ export function ScrollToTopButton() {
   }, []);
 
   const scrollToTop = () => {
-    lenis?.scrollTo(0);
+    // Prioritize lenis for smooth scrolling, but fall back to native scroll for robustness.
+    if (lenis) {
+      lenis.scrollTo(0);
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
   };
 
   return (
