@@ -24,7 +24,7 @@ export default function WelcomeStartPage() {
                 Create an account or sign in to unlock a personalized shopping experience, save your favorite items, and track your orders seamlessly.
             </CardDescription>
             <div className="mt-8">
-              <Button asChild size="lg" className="w-full sm:w-auto">
+              <Button asChild size="lg" className="w-full sm:w-auto" style={{ width: '100px' }}>
                 <Link href="/auth">
                   Get Started <ArrowRight className="ml-2" />
                 </Link>
