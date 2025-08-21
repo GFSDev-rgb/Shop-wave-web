@@ -110,7 +110,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
               
               <div className="flex-1 relative">
                 <Card className="overflow-hidden rounded-lg">
-                  <CardContent className="p-0">
+                  <CardContent className="p-0 bg-secondary aspect-[4/5] flex items-center justify-center">
                     <Image
                       src={activeImage}
                       alt={product.name}
@@ -118,7 +118,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
                       width={800}
                       height={1000}
                       priority
-                      className="w-full h-auto aspect-[4/5] object-cover transition-all duration-300"
+                      className="w-full h-auto object-contain transition-all duration-300 max-h-full"
                     />
                   </CardContent>
                 </Card>
