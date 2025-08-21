@@ -38,7 +38,7 @@ export default function Home() {
           </div>
           <div className="flex justify-center">
             <Image
-              src="https://placehold.co/600x400.png"
+              src="https://scontent.fjsr13-1.fna.fbcdn.net/v/t39.30808-6/514417589_122134632728805080_1173047015335082163_n.jpg?stp=dst-jpg_p843x403_tt6&_nc_cat=107&ccb=1-7&_nc_sid=127cfc&_nc_ohc=CTLL4g4TTMEQ7kNvwHZrVXu&_nc_oc=AdmOXo7Q5x7H-RXcdoUhdSaE0xmoq-0E8z4ic2FomQzp43TwGUqmslLCjpUBN86V1rY&_nc_zt=23&_nc_ht=scontent.fjsr13-1.fna&_nc_gid=NbGz6uIhzU8JTJVV90E0Zg&oh=00_AfORFghBAWjanPcMzX5LcC7zXueEC92WAoFozbnhtJJwqA&oe=686DFAF5"
               alt="A stylish arrangement of fashion products"
               data-ai-hint="fashion layout"
               width={600}
