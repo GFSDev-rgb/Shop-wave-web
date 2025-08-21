@@ -81,10 +81,10 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
 
   return (
     <div className="container mx-auto px-4 py-8 lg:py-12">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-12">
         
         {/* Main Product Content */}
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
+        <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
           <div className="flex flex-col-reverse md:flex-row gap-4 lg:gap-6 items-start justify-center">
               <div className="flex flex-row md:flex-col gap-3 mx-auto md:mx-0 overflow-x-auto md:overflow-x-hidden md:overflow-y-auto py-2">
                 {(product.images || [product.image]).map((img, index) => (
