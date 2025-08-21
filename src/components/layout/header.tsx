@@ -275,38 +275,36 @@ export function Header() {
 
                 {/* Footer */}
                 <div className="p-4 mt-auto border-t">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      {loading ? (
-                        <Skeleton className="h-10 w-24 rounded-lg" />
-                      ) : user ? (
+                  <div className="flex items-center justify-between gap-2">
+                    {loading ? (
+                      <Skeleton className="h-10 w-24 rounded-lg" />
+                    ) : user ? (
+                      <SheetClose asChild>
+                        <Button variant="outline" onClick={signOut} className="flex-1">
+                          <LogOut className="mr-2 h-4 w-4" />
+                          Logout
+                        </Button>
+                      </SheetClose>
+                    ) : (
+                      <div className="flex items-center gap-2 flex-1">
                         <SheetClose asChild>
-                          <Button variant="outline" onClick={signOut}>
-                            <LogOut className="mr-2 h-4 w-4" />
-                            Logout
+                          <Button asChild className="flex-1">
+                            <Link href="/login">
+                              <LogIn className="mr-2 h-4 w-4" />
+                              Log In
+                            </Link>
                           </Button>
                         </SheetClose>
-                      ) : (
-                        <>
-                          <SheetClose asChild>
-                            <Button asChild>
-                              <Link href="/login">
-                                <LogIn className="mr-2 h-4 w-4" />
-                                Log In
-                              </Link>
-                            </Button>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Button asChild variant="secondary">
-                              <Link href="/signup">
-                                <UserPlus className="mr-2 h-4 w-4" />
-                                Sign Up
-                              </Link>
-                            </Button>
-                          </SheetClose>
-                        </>
-                      )}
-                    </div>
+                        <SheetClose asChild>
+                          <Button asChild variant="secondary" className="flex-1">
+                            <Link href="/signup">
+                              <UserPlus className="mr-2 h-4 w-4" />
+                              Sign Up
+                            </Link>
+                          </Button>
+                        </SheetClose>
+                      </div>
+                    )}
                     <ThemeToggle />
                   </div>
                 </div>
