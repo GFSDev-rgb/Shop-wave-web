@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -80,9 +81,8 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 lg:py-12">
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-12">
-        
+    <div className="grid grid-cols-1 place-items-center">
+      <div className="container grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-12 px-4 py-8 lg:py-12">
         {/* Main Product Content */}
         <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
           <div className="flex flex-col-reverse md:flex-row gap-4 lg:gap-6 items-start justify-center">
