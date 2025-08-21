@@ -17,18 +17,18 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CheckoutPage() {
-  const { user, isFirebaseEnabled, loading: authLoading } = useAuth();
+  const { user, profile, isFirebaseEnabled, loading: authLoading } = useAuth();
   const { cartItems, cartTotal, clearCart } = useCart();
   const router = useRouter();
   const { toast } = useToast();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   const handlePlaceOrder = async () => {
-    if (!isFirebaseEnabled || !db || !user) {
+    if (!isFirebaseEnabled || !db || !user || !profile) {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'You must be logged in to place an order.',
+        description: 'You must be logged in and have a complete profile to place an order.',
       });
       return;
     }
@@ -55,11 +55,28 @@ export default function CheckoutPage() {
 
       const ordersCollectionRef = collection(db, 'orders');
 
+      // Assuming a single product checkout for simplicity, can be extended for multi-product
+      const firstProduct = cartItems[0]?.product;
+
       await addDoc(ordersCollectionRef, {
         userId: user.uid,
         items: orderItems,
         total: cartTotal,
         createdAt: serverTimestamp(),
+        // Add required fields that were missing
+        productId: firstProduct?.id || '',
+        productName: firstProduct?.name || 'Multiple Items',
+        productImage: firstProduct?.image || '',
+        price: cartTotal, // Or handle pricing differently
+        quantity: cartItems.reduce((sum, item) => sum + item.quantity, 0),
+        deliveryMethod: 'Cash on Delivery',
+        fullName: profile.fullName,
+        phoneNumber: profile.phoneNumber,
+        city: profile.address, // Assuming city is part of address
+        village: '', // Village may need a separate profile field
+        fullAddress: profile.address,
+        orderTime: serverTimestamp(),
+        orderStatus: 'Pending',
       });
       
       await clearCart();

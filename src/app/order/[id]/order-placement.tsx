@@ -35,9 +35,9 @@ export default function OrderPlacement({ productId }: { productId: string }) {
     
     useEffect(() => {
         if (!authLoading && !user) {
-            router.push('/login');
+            router.push(`/login?redirect=/order/${productId}?quantity=${quantity}`);
         }
-    }, [user, authLoading, router]);
+    }, [user, authLoading, router, productId, quantity]);
 
     const handlePlaceOrder = async (e: React.FormEvent) => {
         e.preventDefault();

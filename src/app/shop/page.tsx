@@ -83,7 +83,7 @@ export default function ShopPage() {
   useEffect(() => {
     // Ensure this runs only on the client where window.Worker is available
     if (typeof window !== 'undefined' && window.Worker) {
-      workerRef.current = new Worker('/workers/product-filter.worker.js');
+      workerRef.current = new Worker(new URL('/workers/product-filter.worker.js', window.location.origin));
       
       // Listen for messages from the worker
       workerRef.current.onmessage = (event: MessageEvent<Product[]>) => {
