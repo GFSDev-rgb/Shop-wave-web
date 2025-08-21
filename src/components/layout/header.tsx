@@ -173,7 +173,7 @@ export function Header() {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="flex flex-col w-[300px] sm:w-[400px] bg-background/90 backdrop-blur-lg p-0 border-r">
+              <SheetContent side="left" className="flex flex-col w-[320px] sm:w-[400px] bg-background/90 backdrop-blur-lg p-0 border-r">
                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 {/* Header */}
                 <div className="p-6 border-b">
@@ -279,12 +279,14 @@ export function Header() {
                     {loading ? (
                       <Skeleton className="h-10 w-24 rounded-lg" />
                     ) : user ? (
-                      <SheetClose asChild>
-                        <Button variant="outline" onClick={signOut} className="flex-1">
-                          <LogOut className="mr-2 h-4 w-4" />
-                          Logout
-                        </Button>
-                      </SheetClose>
+                      <div className="flex items-center gap-2 flex-1">
+                        <SheetClose asChild>
+                          <Button variant="outline" onClick={signOut} className="flex-1">
+                            <LogOut className="mr-2 h-4 w-4" />
+                            Logout
+                          </Button>
+                        </SheetClose>
+                      </div>
                     ) : (
                       <div className="flex items-center gap-2 flex-1">
                         <SheetClose asChild>
