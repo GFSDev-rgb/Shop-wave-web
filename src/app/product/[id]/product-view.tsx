@@ -80,7 +80,7 @@ export default function ProductView({ initialProduct }: { initialProduct: Produc
   }
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 lg:py-12">
+    <div className="container mx-auto px-4 py-8 lg:py-12">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:gap-12">
         
         {/* Main Product Content */}
