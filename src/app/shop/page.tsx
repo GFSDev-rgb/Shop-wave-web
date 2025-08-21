@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useMemo, useRef, useCallback, useEffect, useTransition } from "react";
@@ -73,78 +72,40 @@ export default function ShopPage() {
   const { products, loading: productsLoading } = useProducts();
   const { user, loading: authLoading, isAdmin } = useAuth();
   
-  const workerRef = useRef<Worker>();
-  const [sortedAndFilteredProducts, setSortedAndFilteredProducts] = useState<Product[]>([]);
-  
   const isLoading = authLoading || productsLoading;
   const isFiltering = isPending;
 
-  // Effect to initialize the Web Worker
-  useEffect(() => {
-    // Ensure this runs only on the client where window.Worker is available
-    if (typeof window !== 'undefined' && window.Worker) {
-      workerRef.current = new Worker(new URL('/workers/product-filter.worker.js', window.location.origin));
-      
-      // Listen for messages from the worker
-      workerRef.current.onmessage = (event: MessageEvent<Product[]>) => {
-        setSortedAndFilteredProducts(event.data);
-      };
+  const sortedAndFilteredProducts = useMemo(() => {
+    let result = [...products];
 
-      // Cleanup on component unmount
-      return () => {
-        workerRef.current?.terminate();
-      };
-    }
-  }, []);
-
-  // Effect to process filtering and sorting
-  useEffect(() => {
-    // Wait until products have been loaded
-    if (productsLoading) {
-      // While loading, keep the list empty to allow skeletons to show
-      setSortedAndFilteredProducts([]);
-      return;
-    }
-
-    // Use the Web Worker if it's available
-    if (workerRef.current) {
-      workerRef.current.postMessage({
-        products,
-        priceRange: debouncedPriceRange,
-        selectedCategories: debouncedSelectedCategories,
-        sortOption,
-        searchQuery: debouncedSearchQuery,
-      });
-    } else {
-      // Fallback for browsers without Web Worker support or before worker is initialized
-      let result = products
-        .filter((product) => {
-          const inSearch = debouncedSearchQuery === '' || product.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
-          const inCategory =
+    // Filter
+    result = result.filter((product) => {
+        const inSearch = debouncedSearchQuery.trim() === '' || product.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase().trim());
+        const inCategory =
             debouncedSelectedCategories.length === 0 || debouncedSelectedCategories.includes(product.category);
-          const inPriceRange =
+        const inPriceRange =
             product.price >= debouncedPriceRange[0] && product.price <= debouncedPriceRange[1];
-          return inSearch && inCategory && inPriceRange;
-        });
+        return inSearch && inCategory && inPriceRange;
+    });
 
-      switch (sortOption) {
+    // Sort
+    switch (sortOption) {
         case "price-asc":
-          result.sort((a, b) => a.price - b.price);
-          break;
+            result.sort((a, b) => a.price - b.price);
+            break;
         case "price-desc":
-          result.sort((a, b) => b.price - a.price);
-          break;
+            result.sort((a, b) => b.price - a.price);
+            break;
         case "rating-desc":
-          result.sort((a, b) => b.rating - a.rating);
-          break;
+            result.sort((a, b) => b.rating - a.rating);
+            break;
         case "newest":
         default:
-          break;
-      }
-      setSortedAndFilteredProducts(result);
+            // The default order is assumed to be "newest" as it comes from the database.
+            break;
     }
-  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, debouncedSearchQuery, products, productsLoading]);
-
+    return result;
+  }, [sortOption, debouncedPriceRange, debouncedSelectedCategories, debouncedSearchQuery, products]);
 
   // Reset visible count when filters change
   useEffect(() => {
