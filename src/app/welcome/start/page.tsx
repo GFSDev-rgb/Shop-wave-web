@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 
 export default function WelcomeStartPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-white text-black">
+    <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <Card className="w-full max-w-2xl text-center shadow-2xl rounded-xl border">
         <CardHeader className="p-8 md:p-12">
             <div className="flex justify-center mb-6">
-                <Logo className="text-black"/>
+                <Logo />
             </div>
             <Sparkles className="h-12 w-12 mx-auto text-primary" />
             <CardTitle className="font-headline text-4xl md:text-5xl mt-4">Welcome to ShopWave!</CardTitle>
