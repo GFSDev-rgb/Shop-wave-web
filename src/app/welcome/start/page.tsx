@@ -1,7 +1,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import type { Metadata } from 'next';
 import { Logo } from '@/components/logo';
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 
 export default function WelcomeStartPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4">
-      <Card className="w-full max-w-2xl text-center shadow-2xl rounded-xl border">
-        <CardHeader className="p-8 md:p-12">
+    <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-card">
+      <div className="w-full max-w-2xl text-center">
+        <div className="p-8 md:p-12">
             <div className="flex justify-center mb-6">
                 <Logo />
             </div>
@@ -24,15 +24,15 @@ export default function WelcomeStartPage() {
             <CardDescription className="mt-4 text-lg text-muted-foreground max-w-prose mx-auto">
                 Create an account or sign in to unlock a personalized shopping experience, save your favorite items, and track your orders seamlessly.
             </CardDescription>
-        </CardHeader>
-        <CardContent className="p-8 pt-0">
+        </div>
+        <div className="p-8 pt-0">
           <Button asChild size="lg" className="w-full max-w-xs mx-auto">
             <Link href="/auth">
               Get Started <ArrowRight className="ml-2" />
             </Link>
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
