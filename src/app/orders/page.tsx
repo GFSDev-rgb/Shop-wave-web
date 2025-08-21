@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, Timestamp, orderBy } from 'firebase/firestore';
 import type { Order } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,13 +15,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ShoppingBag } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
-type OrderWithDate = Omit<Order, 'createdAt'> & {
-    createdAt: Date;
+type OrderWithId = Omit<Order, 'id'> & {
+    id: string;
 }
 
 export default function OrdersPage() {
   const { user, loading: authLoading } = useAuth();
-  const [orders, setOrders] = useState<OrderWithDate[]>([]);
+  const [orders, setOrders] = useState<OrderWithId[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -36,22 +36,19 @@ export default function OrdersPage() {
         const ordersCollectionRef = collection(db, 'orders');
         const q = query(
           ordersCollectionRef, 
-          where('userId', '==', user.uid)
+          where('userId', '==', user.uid),
+          orderBy('orderTime', 'desc')
         );
 
         const querySnapshot = await getDocs(q);
-        const fetchedOrders: OrderWithDate[] = querySnapshot.docs.map(doc => {
-            const data = doc.data() as Order;
-            const createdAt = (data.createdAt as unknown as Timestamp)?.toDate() || new Date();
+        const fetchedOrders: OrderWithId[] = querySnapshot.docs.map(doc => {
+            const data = doc.data() as Omit<Order, 'id'>;
             return {
               ...data,
               id: doc.id,
-              createdAt,
             }
         });
         
-        fetchedOrders.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-
         setOrders(fetchedOrders);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -63,9 +60,9 @@ export default function OrdersPage() {
     if (user && !authLoading) {
       fetchOrders();
     } else if (!user && !authLoading) {
-      setLoading(false);
+        router.push('/login');
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, router]);
 
   if (authLoading || loading) {
     return (
@@ -91,15 +88,15 @@ export default function OrdersPage() {
         </p>
       </header>
       
-      {!user || orders.length === 0 ? (
+      {orders.length === 0 ? (
         <div className="text-center py-16 border-2 border-dashed rounded-lg">
           <ShoppingBag className="mx-auto h-16 w-16 text-muted-foreground" />
           <h2 className="mt-6 text-2xl font-semibold">No orders yet</h2>
           <p className="mt-2 text-muted-foreground">
-            {user ? "You haven't placed any orders with us yet." : "Log in to see your order history."}
+            You haven't placed any orders with us yet.
           </p>
           <Button asChild className="mt-6">
-            <Link href={user ? "/shop" : "/login"}>{user ? "Start Shopping" : "Login"}</Link>
+            <Link href="/shop">Start Shopping</Link>
           </Button>
         </div>
       ) : (
@@ -110,7 +107,7 @@ export default function OrdersPage() {
                         <CardTitle className="flex justify-between items-center text-xl">
                             <span>Order #{order.id.substring(0, 8)}...</span>
                             <span className="text-base font-normal text-muted-foreground">
-                                {order.createdAt.toLocaleDateString()}
+                                {(order.orderTime as unknown as Timestamp)?.toDate().toLocaleDateString() ?? 'N/A'}
                             </span>
                         </CardTitle>
                         <CardDescription>

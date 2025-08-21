@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -24,12 +25,16 @@ export default function SignupPage() {
     if (!isFirebaseEnabled) return;
     
     try {
-      await signUp(email, password);
+      const { shouldRedirect } = await signUp(email, password);
       toast({
-        title: 'Account created!',
-        description: "You've been successfully signed up.",
+        title: 'Welcome!',
+        description: "Your account has been created. Let's get you set up.",
       });
-      router.push('/');
+      if (shouldRedirect) {
+          router.push('/welcome/setup');
+      } else {
+          router.push('/');
+      }
     } catch (error: any) {
       toast({
         variant: 'destructive',

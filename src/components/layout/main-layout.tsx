@@ -8,8 +8,8 @@ import { ReactNode } from 'react';
 import { ScrollToTopButton } from '../scroll-to-top';
 import { AnimatePresence, motion } from 'framer-motion';
 
-const noHeaderPaths = ['/login', '/signup'];
-const noFooterPaths = ['/login', '/signup', '/profile', '/admin'];
+const noHeaderPaths = ['/login', '/signup', '/welcome/setup'];
+const noFooterPaths = ['/login', '/signup', '/profile', '/admin', '/welcome/setup', '/profile/edit'];
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();

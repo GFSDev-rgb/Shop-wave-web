@@ -4,9 +4,10 @@
 import React, { createContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
 import { onAuthStateChanged, User, signOut as firebaseSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile as updateFirebaseProfile } from 'firebase/auth';
 import { auth, db, isFirebaseEnabled } from '@/lib/firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import type { UserProfile } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -15,7 +16,7 @@ interface AuthContextType {
   isAdmin: boolean;
   isFirebaseEnabled: boolean;
   signIn: (email: string, pass: string) => Promise<void>;
-  signUp: (email: string, pass: string) => Promise<void>;
+  signUp: (email: string, pass: string) => Promise<{ shouldRedirect: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
   setProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
@@ -28,6 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     if (!auth) {
@@ -42,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (docSnap.exists()) {
           setProfile(docSnap.data() as UserProfile);
         } else {
-          // Profile doesn't exist for a signed-in user (e.g., first-time social login, or new user signup)
+          // This case should ideally be handled at sign-up, but as a fallback:
           const newProfile: UserProfile = {
             fullName: user.displayName || '',
             email: user.email || '',
@@ -51,6 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             address: '',
             bio: '',
             likes: {},
+            createdAt: serverTimestamp(),
           };
           await setDoc(profileDocRef, newProfile);
           setProfile(newProfile);
@@ -79,11 +82,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   
   const signUp = async (email: string, pass: string) => {
-    if (!auth) throw new Error("Firebase is not configured. Please check your .env file.");
+    if (!auth || !db) throw new Error("Firebase is not configured. Please check your .env file.");
     setLoading(true);
     try {
-      // The onAuthStateChanged listener will handle creating the profile doc, this just creates the user.
-      await createUserWithEmailAndPassword(auth, email, pass);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+      const user = userCredential.user;
+      
+      const newProfile: UserProfile = {
+        fullName: '',
+        email: user.email || '',
+        photoURL: user.photoURL || '',
+        phoneNumber: '',
+        address: '',
+        bio: '',
+        likes: {},
+        createdAt: serverTimestamp(),
+      };
+      
+      const profileDocRef = doc(db, 'profiles', user.uid);
+      await setDoc(profileDocRef, newProfile);
+      setProfile(newProfile);
+
+      return { shouldRedirect: true };
+
     } catch(error) {
         console.error("Error signing up", error);
         throw error;
@@ -95,10 +116,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = async () => {
     if (!auth) return;
     await firebaseSignOut(auth);
-    // Clear local storage for guest data and force a reload
     localStorage.removeItem('cart');
     localStorage.removeItem('wishlist');
-    window.location.reload();
+    router.push('/');
+    router.refresh();
   };
 
   const updateProfile = useCallback(async (data: Partial<UserProfile>) => {
@@ -107,24 +128,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     
     try {
-      // Prepare data for Firebase Auth update (only displayName and photoURL are supported)
       const authUpdateData: { displayName?: string, photoURL?: string } = {};
       if (data.fullName !== undefined) authUpdateData.displayName = data.fullName;
       if (data.photoURL !== undefined) authUpdateData.photoURL = data.photoURL;
 
-      // Update Firebase Auth profile
       if (Object.keys(authUpdateData).length > 0) {
         await updateFirebaseProfile(auth.currentUser, authUpdateData);
       }
       
-      // Update Firestore profile document with all data
       const profileDocRef = doc(db, "profiles", user.uid);
       await setDoc(profileDocRef, data, { merge: true });
 
-      // Optimistically update local state to reflect changes immediately
       setProfile(prev => ({...prev, ...data} as UserProfile));
       
-      // Refresh user object from auth to sync local user state
       setUser(auth.currentUser);
 
       toast({

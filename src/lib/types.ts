@@ -34,7 +34,7 @@ export type OrderItem = {
 export type Order = {
   id: string;
   userId: string;
-  createdAt: number; // Using number for JS Date timestamp
+  createdAt: Timestamp;
   items: OrderItem[];
   total: number;
   // New fields from the order form
@@ -61,4 +61,5 @@ export type UserProfile = {
   address: string;
   bio: string;
   likes?: Record<string, boolean>;
+  createdAt: Timestamp | ReturnType<typeof import("firebase/firestore").serverTimestamp>;
 };
