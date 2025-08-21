@@ -35,7 +35,7 @@ export default function OrderPlacement({ productId }: { productId: string }) {
     
     useEffect(() => {
         if (!authLoading && !user) {
-            router.push(`/login?redirect=/order/${productId}?quantity=${quantity}`);
+            router.push(`/welcome/start`);
         }
     }, [user, authLoading, router, productId, quantity]);
 

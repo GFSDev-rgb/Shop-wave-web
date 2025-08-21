@@ -126,12 +126,12 @@ export default function CheckoutPage() {
         <Card className="w-full max-w-md text-center">
             <CardHeader>
                 <User className="mx-auto h-12 w-12 text-primary mb-4" />
-                <CardTitle>Login Required</CardTitle>
-                <CardDescription>Please log in to proceed to checkout.</CardDescription>
+                <CardTitle>Authentication Required</CardTitle>
+                <CardDescription>Please sign up or log in to complete your purchase.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Button asChild>
-                    <Link href="/login">Go to Login</Link>
+                    <Link href="/welcome/start">Get Started</Link>
                 </Button>
             </CardContent>
         </Card>

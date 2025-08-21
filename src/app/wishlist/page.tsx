@@ -50,7 +50,7 @@ export default function WishlistPage() {
           <Heart className="mx-auto h-16 w-16 text-muted-foreground" />
           <h2 className="mt-6 text-2xl font-semibold">Your wishlist is empty</h2>
           <p className="mt-2 text-muted-foreground">
-            {user ? "Explore our collections and save your favorites." : "Log in to see your wishlist."}
+            {user ? "Explore our collections and save your favorites." : "Sign up or log in to see your wishlist."}
           </p>
           <Button asChild className="mt-6">
             <Link href={user ? "/shop" : "/welcome/start"}>{user ? "Discover Products" : "Get Started"}</Link>
