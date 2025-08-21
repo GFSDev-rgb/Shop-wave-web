@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Sparkles, UserCheck } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import type { Metadata } from 'next';
 import { Logo } from '@/components/logo';
 
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 
 export default function WelcomeStartPage() {
   return (
-    <div className="container flex min-h-screen flex-col items-center justify-center p-4">
-      <Card className="w-full max-w-2xl text-center shadow-2xl">
+    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+      <Card className="w-full text-center shadow-2xl rounded-none border-none min-h-screen flex flex-col justify-center">
         <CardHeader className="p-8 md:p-12">
             <div className="flex justify-center mb-6">
                 <Logo />
