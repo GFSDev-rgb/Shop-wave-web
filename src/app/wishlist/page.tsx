@@ -53,7 +53,7 @@ export default function WishlistPage() {
             {user ? "Explore our collections and save your favorites." : "Log in to see your wishlist."}
           </p>
           <Button asChild className="mt-6">
-            <Link href={user ? "/shop" : "/login"}>{user ? "Discover Products" : "Login"}</Link>
+            <Link href={user ? "/shop" : "/welcome/start"}>{user ? "Discover Products" : "Get Started"}</Link>
           </Button>
         </div>
       ) : (

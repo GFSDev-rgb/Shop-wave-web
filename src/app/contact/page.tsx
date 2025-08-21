@@ -24,7 +24,7 @@ export default function ContactPage() {
         variant: 'destructive',
         title: "Login Required",
         description: "You must be logged in to send a message.",
-        action: <ToastAction altText="Login" onClick={() => router.push('/login')}>Login</ToastAction>,
+        action: <ToastAction altText="Get Started" onClick={() => router.push('/welcome/start')}>Get Started</ToastAction>,
       });
       return;
     }

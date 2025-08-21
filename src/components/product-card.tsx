@@ -59,7 +59,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
             variant: 'destructive',
             title: "Login Required",
             description: "You need to be logged in to perform this action.",
-            action: <ToastAction altText="Login" onClick={() => router.push('/login')}>Login</ToastAction>,
+            action: <ToastAction altText="Get Started" onClick={() => router.push('/welcome/start')}>Get Started</ToastAction>,
         });
     };
 
