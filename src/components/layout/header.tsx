@@ -276,7 +276,7 @@ export function Header() {
                 {/* Footer */}
                 <div className="p-4 mt-auto border-t">
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="flex items-center gap-2">
                       {loading ? (
                         <Skeleton className="h-10 w-24 rounded-lg" />
                       ) : user ? (
@@ -287,7 +287,7 @@ export function Header() {
                           </Button>
                         </SheetClose>
                       ) : (
-                        <div className="flex gap-2">
+                        <>
                           <SheetClose asChild>
                             <Button asChild>
                               <Link href="/login">
@@ -304,7 +304,7 @@ export function Header() {
                               </Link>
                             </Button>
                           </SheetClose>
-                        </div>
+                        </>
                       )}
                     </div>
                     <ThemeToggle />
