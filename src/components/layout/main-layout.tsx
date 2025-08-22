@@ -7,8 +7,8 @@ import { Footer } from '@/components/layout/footer';
 import { ReactNode } from 'react';
 import { ScrollToTopButton } from '../scroll-to-top';
 
-const noHeaderPaths = ['/login', '/signup', '/welcome/setup', '/auth', '/welcome/start'];
-const noFooterPaths = ['/login', '/signup', '/profile', '/admin', '/welcome/setup', '/profile/edit', '/auth', '/welcome/start'];
+const noHeaderPaths = ['/login', '/signup', '/auth', '/welcome/start'];
+const noFooterPaths = ['/login', '/signup', '/profile', '/admin', '/profile/edit', '/auth', '/welcome/start'];
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();

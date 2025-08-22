@@ -16,7 +16,7 @@ interface AuthContextType {
   isAdmin: boolean;
   isFirebaseEnabled: boolean;
   signIn: (email: string, pass: string) => Promise<void>;
-  signUp: (email: string, pass: string, details: { fullName: string; address?: string; phoneNumber?: string }) => Promise<{ shouldRedirect: boolean }>;
+  signUp: (email: string, pass: string, details: { fullName: string; address?: string; phoneNumber?: string }) => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
   setProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
@@ -105,8 +105,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Update the user's auth profile as well
       await updateFirebaseProfile(user, { displayName: details.fullName });
-
-      return { shouldRedirect: false }; // Don't redirect to setup page anymore
 
     } catch(error) {
         console.error("Error signing up", error);

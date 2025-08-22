@@ -17,16 +17,15 @@ import { collection, query, where, getDocs, Timestamp, limit, orderBy } from 'fi
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 
-type OrderWithDate = Omit<Order, 'createdAt' | 'orderTime'> & {
+type OrderWithId = Omit<Order, 'id' | 'createdAt' | 'orderTime'> & {
     id: string;
-    createdAt: Date;
     orderTime: Date;
 }
 
 export default function ProfilePage() {
   const { user, profile, loading } = useAuth();
   const router = useRouter();
-  const [recentOrders, setRecentOrders] = useState<OrderWithDate[]>([]);
+  const [recentOrders, setRecentOrders] = useState<OrderWithId[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
 
   useEffect(() => {
@@ -51,15 +50,14 @@ export default function ProfilePage() {
                 limit(3)
             );
             const querySnapshot = await getDocs(q);
-            const fetchedOrders: OrderWithDate[] = querySnapshot.docs.map(doc => {
+            const fetchedOrders = querySnapshot.docs.map(doc => {
                 const data = doc.data() as Order;
                 return {
                     ...data,
                     id: doc.id,
-                    createdAt: (data.createdAt as any)?.toDate() || new Date(),
                     orderTime: (data.orderTime as Timestamp)?.toDate() || new Date(),
                 }
-            });
+            }) as OrderWithId[];
             setRecentOrders(fetchedOrders);
         } catch (error) {
             console.error("Error fetching recent orders:", error);
@@ -72,7 +70,7 @@ export default function ProfilePage() {
     }
   }, [user]);
 
-  if (loading || !profile) {
+  if (loading || !profile || !user) {
     return (
       <div className="container mx-auto max-w-4xl py-12 px-4">
         <Card className="p-8">
@@ -141,10 +139,10 @@ export default function ProfilePage() {
                             {recentOrders.map(order => (
                                 <Card key={order.id} className="p-4 flex items-center gap-4">
                                      <div className="bg-secondary rounded-md p-2">
-                                        <Image src={order.productImage} alt={order.productName} width={48} height={48} className="rounded-sm" />
+                                        <Image src={order.items[0]?.image} alt={order.items[0]?.name} width={48} height={48} className="rounded-sm" />
                                     </div>
                                     <div className="flex-grow">
-                                        <p className="font-semibold">{order.productName}</p>
+                                        <p className="font-semibold">{order.items.length > 1 ? `${order.items[0].name} & more` : order.items[0].name}</p>
                                         <p className="text-xs text-muted-foreground">{order.orderTime.toLocaleDateString()}</p>
                                     </div>
                                     <Badge variant={order.orderStatus === 'Delivered' ? 'default' : 'secondary'} className={order.orderStatus === 'Delivered' ? 'bg-green-600' : 'bg-amber-500'}>

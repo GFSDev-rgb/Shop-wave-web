@@ -37,20 +37,13 @@ export type Order = {
   createdAt: Timestamp;
   items: OrderItem[];
   total: number;
-  // New fields from the order form
-  productId: string;
-  productName: string;
-  productImage: string;
-  price: number;
-  quantity: number;
-  deliveryMethod: 'Cash on Delivery';
-  fullName: string;
-  phoneNumber: string;
-  city: string;
-  village: string;
-  fullAddress: string;
   orderTime: Timestamp;
   orderStatus: 'Pending' | 'Delivered';
+  customerInfo: {
+    fullName: string;
+    phoneNumber: string;
+    address: string;
+  };
 };
 
 export type UserProfile = {
