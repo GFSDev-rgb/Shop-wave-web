@@ -16,6 +16,10 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [address, setAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const { signUp, loading, isFirebaseEnabled } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
@@ -24,17 +28,22 @@ export default function SignupPage() {
     e.preventDefault();
     if (!isFirebaseEnabled) return;
     
+    if (password !== confirmPassword) {
+      toast({
+        variant: 'destructive',
+        title: 'Signup Failed',
+        description: "Passwords do not match.",
+      });
+      return;
+    }
+
     try {
-      const { shouldRedirect } = await signUp(email, password);
+      await signUp(email, password, { fullName, address, phoneNumber });
       toast({
         title: 'Welcome!',
-        description: "Your account has been created. Let's get you set up.",
+        description: "Your account has been created successfully.",
       });
-      if (shouldRedirect) {
-          router.push('/welcome/setup');
-      } else {
-          router.push('/');
-      }
+      router.push('/');
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -46,7 +55,7 @@ export default function SignupPage() {
 
   return (
     <div className="container flex flex-1 flex-col items-center justify-center p-4">
-      <Card className="mx-auto max-w-sm w-full bg-card/50 backdrop-blur-lg border-white/20">
+      <Card className="mx-auto max-w-md w-full bg-card/50 backdrop-blur-lg border-white/20">
         <CardHeader className="items-center text-center">
           <UserPlus className="h-10 w-10 mb-4 text-primary" />
           <CardTitle className="text-3xl font-headline">Create Your Account</CardTitle>
@@ -63,6 +72,18 @@ export default function SignupPage() {
                     </AlertDescription>
                 </Alert>
             )}
+             <div className="grid gap-2">
+              <Label htmlFor="fullName">Full Name</Label>
+              <Input
+                id="fullName"
+                type="text"
+                placeholder="John Doe"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="bg-background/50 border-white/20"
+              />
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -75,6 +96,28 @@ export default function SignupPage() {
                 className="bg-background/50 border-white/20"
               />
             </div>
+             <div className="grid gap-2">
+              <Label htmlFor="phoneNumber">Phone Number (Optional)</Label>
+              <Input
+                id="phoneNumber"
+                type="tel"
+                placeholder="+123456789"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="bg-background/50 border-white/20"
+              />
+            </div>
+             <div className="grid gap-2">
+              <Label htmlFor="address">Address (Optional)</Label>
+              <Input
+                id="address"
+                type="text"
+                placeholder="123 Main St, Anytown"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="bg-background/50 border-white/20"
+              />
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
               <Input
@@ -83,6 +126,17 @@ export default function SignupPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="bg-background/50 border-white/20"
+              />
+            </div>
+             <div className="grid gap-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 className="bg-background/50 border-white/20"
               />
             </div>

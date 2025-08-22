@@ -16,7 +16,7 @@ interface AuthContextType {
   isAdmin: boolean;
   isFirebaseEnabled: boolean;
   signIn: (email: string, pass: string) => Promise<void>;
-  signUp: (email: string, pass: string) => Promise<{ shouldRedirect: boolean }>;
+  signUp: (email: string, pass: string, details: { fullName: string; address?: string; phoneNumber?: string }) => Promise<{ shouldRedirect: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
   setProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   
-  const signUp = async (email: string, pass: string) => {
+  const signUp = async (email: string, pass: string, details: { fullName: string; address?: string; phoneNumber?: string }) => {
     if (!auth || !db) throw new Error("Firebase is not configured. Please check your .env file.");
     setLoading(true);
     try {
@@ -89,11 +89,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const user = userCredential.user;
       
       const newProfile: UserProfile = {
-        fullName: '',
+        fullName: details.fullName,
         email: user.email || '',
         photoURL: user.photoURL || '',
-        phoneNumber: '',
-        address: '',
+        phoneNumber: details.phoneNumber || '',
+        address: details.address || '',
         bio: '',
         likes: {},
         createdAt: serverTimestamp(),
@@ -102,8 +102,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const profileDocRef = doc(db, 'profiles', user.uid);
       await setDoc(profileDocRef, newProfile);
       setProfile(newProfile);
+      
+      // Update the user's auth profile as well
+      await updateFirebaseProfile(user, { displayName: details.fullName });
 
-      return { shouldRedirect: true };
+      return { shouldRedirect: false }; // Don't redirect to setup page anymore
 
     } catch(error) {
         console.error("Error signing up", error);
