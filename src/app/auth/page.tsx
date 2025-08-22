@@ -1,11 +1,10 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { ArrowRight, UserPlus, LogIn } from 'lucide-react';
 import type { Metadata } from 'next';
-import { Logo } from '@/components/logo';
 
 export const metadata: Metadata = {
     title: 'Get Started',
@@ -14,9 +13,8 @@ export const metadata: Metadata = {
 
 export default function AuthPage() {
   return (
-    <div className="flex min-h-screen flex-col justify-center p-8 md:p-16 lg:p-24 bg-card">
-      <div className="mx-auto w-full max-w-4xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 w-full overflow-hidden rounded-lg bg-background shadow-lg">
+    <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 w-full max-w-4xl overflow-hidden rounded-lg bg-background shadow-lg">
           {/* Sign Up Section */}
           <div className="p-8 md:p-12 bg-background/50">
               <CardHeader className="p-0 text-center md:text-left">
@@ -70,7 +68,6 @@ export default function AuthPage() {
                 <Link href="/">Back to Home</Link>
             </Button>
         </div>
-      </div>
     </div>
   );
 }
