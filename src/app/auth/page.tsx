@@ -27,7 +27,7 @@ export default function AuthPage() {
               <CardContent className="p-0 mt-8">
               <Button asChild size="lg" className="w-full">
                   <Link href="/signup">
-                  Sign Up for Free <ArrowRight className="ml-2" />
+                  Sign Up <ArrowRight className="ml-2" />
                   </Link>
               </Button>
               </CardContent>
