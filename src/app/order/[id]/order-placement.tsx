@@ -19,18 +19,14 @@ import Image from 'next/image';
 export default function OrderPlacement({ productId }: { productId: string }) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { user, loading: authLoading } = useAuth();
+    const { user, profile, loading: authLoading } = useAuth();
     const { products, loading: productsLoading } = useProducts();
     const { toast } = useToast();
 
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-    const [fullName, setFullName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [city, setCity] = useState('');
-    const [village, setVillage] = useState('');
-    const [fullAddress, setFullAddress] = useState('');
 
     const quantity = parseInt(searchParams.get('quantity') || '1', 10);
+    const size = searchParams.get('size') || 'One Size';
     const product = products.find(p => p.id === productId);
     
     useEffect(() => {
@@ -41,16 +37,7 @@ export default function OrderPlacement({ productId }: { productId: string }) {
 
     const handlePlaceOrder = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!user || !product) return;
-
-        if (!fullName || !phoneNumber || !city || !village || !fullAddress) {
-            toast({
-                variant: 'destructive',
-                title: 'Validation Error',
-                description: 'Please fill out all required fields.',
-            });
-            return;
-        }
+        if (!user || !product || !profile) return;
 
         setIsPlacingOrder(true);
         const total = product.price * quantity;
@@ -58,24 +45,19 @@ export default function OrderPlacement({ productId }: { productId: string }) {
         try {
             await addDoc(collection(db, 'orders'), {
                 userId: user.uid,
-                items: [{
-                    productId: product.id,
-                    name: product.name,
-                    price: product.price,
-                    quantity: quantity,
-                    image: product.image,
-                }],
+                productName: product.name,
+                productImage: product.image,
+                quantity: quantity,
+                price: product.price,
+                size: size,
                 total: total,
-                deliveryMethod: 'Cash on Delivery',
                 orderTime: serverTimestamp(),
                 orderStatus: 'Pending',
-                customerInfo: {
-                    fullName,
-                    phoneNumber,
-                    city,
-                    village,
-                    fullAddress,
-                }
+                fullName: profile.fullName,
+                phoneNumber: profile.phoneNumber,
+                city: profile.address.split(',').pop()?.trim() || '',
+                village: profile.address.split(',').slice(0, -1).join(',').trim() || '',
+                fullAddress: profile.address,
             });
 
             toast({
@@ -110,6 +92,23 @@ export default function OrderPlacement({ productId }: { productId: string }) {
         )
     }
 
+     if (!profile?.fullName || !profile.address) {
+        return (
+             <div className="container mx-auto px-4 py-12 max-w-2xl">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-3xl">Complete Your Profile</CardTitle>
+                        <CardDescription>Please complete your profile with your full name and address before placing an order.</CardDescription>
+                    </CardHeader>
+                    <CardFooter>
+                        <Button asChild><Link href="/profile/edit">Edit Profile</Link></Button>
+                    </CardFooter>
+                </Card>
+            </div>
+        )
+    }
+
+
     return (
         <div className="container mx-auto px-4 py-12 max-w-4xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
@@ -123,14 +122,17 @@ export default function OrderPlacement({ productId }: { productId: string }) {
                                 <Image src={product.image} alt={product.name} width={100} height={120} className="rounded-lg object-cover" />
                                 <div>
                                     <h3 className="font-semibold text-lg">{product.name}</h3>
+                                     <p className="text-muted-foreground">Size: {size}</p>
                                     <p className="text-muted-foreground">Quantity: {quantity}</p>
                                     <p className="font-bold text-xl text-primary mt-2">Tk {(product.price * quantity).toFixed(2)}</p>
 
                                 </div>
                             </div>
                              <div className="mt-6">
-                                <h4 className="font-semibold mb-2">Delivery Method</h4>
-                                <p className="text-muted-foreground">Cash on Delivery</p>
+                                <h4 className="font-semibold mb-2">Delivery Address</h4>
+                                <p className="text-muted-foreground">{profile.fullName}</p>
+                                <p className="text-muted-foreground">{profile.fullAddress}</p>
+                                <p className="text-muted-foreground">{profile.phoneNumber}</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -138,39 +140,19 @@ export default function OrderPlacement({ productId }: { productId: string }) {
                 <div>
                     <Card>
                         <CardHeader>
-                            <CardTitle className="font-headline text-3xl">Delivery Information</CardTitle>
-                            <CardDescription>Please provide your delivery details.</CardDescription>
+                            <CardTitle className="font-headline text-3xl">Confirm Order</CardTitle>
+                            <CardDescription>Your order will be shipped to the address in your profile. Review and place your order.</CardDescription>
                         </CardHeader>
                         <form onSubmit={handlePlaceOrder}>
-                            <CardContent className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="fullName">Full Name</Label>
-                                    <Input id="fullName" value={fullName} onChange={e => setFullName(e.target.value)} required />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="phoneNumber">Phone Number</Label>
-                                    <Input id="phoneNumber" type="tel" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} required />
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="city">City</Label>
-                                        <Input id="city" value={city} onChange={e => setCity(e.target.value)} required />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="village">Village/Area</Label>
-                                        <Input id="village" value={village} onChange={e => setVillage(e.target.value)} required />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="fullAddress">Full Delivery Address</Label>
-                                    <Input id="fullAddress" value={fullAddress} onChange={e => setFullAddress(e.target.value)} required />
-                                </div>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground">Payment will be handled as Cash on Delivery.</p>
                             </CardContent>
-                            <CardFooter>
+                            <CardFooter className="flex flex-col gap-4">
                                 <Button size="lg" className="w-full" type="submit" disabled={isPlacingOrder}>
                                     {isPlacingOrder ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShoppingBag className="mr-2 h-4 w-4" />}
                                     Place Order
                                 </Button>
+                                <Button variant="link" asChild><Link href={`/product/${product.id}`}>Cancel</Link></Button>
                             </CardFooter>
                         </form>
                     </Card>

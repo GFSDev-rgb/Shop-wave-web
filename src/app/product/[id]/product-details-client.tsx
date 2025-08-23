@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils";
 import { ToastAction } from "@/components/ui/toast";
 import { PlantButton } from "@/components/ui/plant-button";
 import { useAuth } from "@/hooks/use-auth";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface ProductDetailsClientProps {
   product: Product;
@@ -21,6 +23,7 @@ interface ProductDetailsClientProps {
 
 export default function ProductDetailsClient({ product }: ProductDetailsClientProps) {
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const { addToCart, cartItems } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { isLiked, toggleLike, loading: likeLoading } = useLikes();
@@ -28,40 +31,63 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const router = useRouter();
   const { user } = useAuth();
 
-  const isInCart = cartItems.some((item) => item.product.id === product.id);
+  const hasSizes = product.sizes && product.sizes.length > 0;
+  const cartItem = cartItems.find(
+    (item) => item.product.id === product.id && item.size === selectedSize
+  );
+  const isInCart = !!cartItem;
 
   const showLoginToast = () => {
     toast({
         variant: 'destructive',
         title: "Login Required",
         description: "You need to be logged in to perform this action.",
-        action: <ToastAction altText="Get Started" onClick={() => router.push('/welcome/start')}>Get Started</ToastAction>,
+        action: <ToastAction altText="Get Started" onClick={() => router.push('/auth')}>Get Started</ToastAction>,
     });
   };
+
+  const validateSelection = () => {
+    if (hasSizes && !selectedSize) {
+        toast({
+            variant: 'destructive',
+            title: 'Please select a size',
+        });
+        return false;
+    }
+    return true;
+  }
 
   const handleAddToCart = async () => {
     if (!user) {
       showLoginToast();
       return;
     }
+    if (!validateSelection()) return;
+
     if (isInCart) {
       router.push("/cart");
       return;
     }
 
-    await addToCart(product, quantity);
+    // `selectedSize` will be non-null here if `hasSizes` is true because of `validateSelection`
+    const size = hasSizes ? selectedSize! : 'One Size';
+    
+    await addToCart(product, quantity, size);
     toast({
       title: "Added to cart",
-      description: `${quantity} x ${product.name} added to your cart.`,
+      description: `${quantity} x ${product.name} (Size: ${size}) added to your cart.`,
     });
   };
 
   const handleOrderNow = () => {
-      if (!user) {
-          showLoginToast();
-          return;
-      }
-      router.push(`/order/${product.id}?quantity=${quantity}`);
+    if (!user) {
+        showLoginToast();
+        return;
+    }
+    if (!validateSelection()) return;
+    
+    const size = hasSizes ? selectedSize! : 'One Size';
+    router.push(`/order/${product.id}?quantity=${quantity}&size=${encodeURIComponent(size)}`);
   }
 
   const handleWishlistToggle = () => {
@@ -94,6 +120,34 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
   return (
     <div className="space-y-6">
+       {hasSizes && (
+         <div className="space-y-4">
+          <Label className="text-base font-medium">Select Size:</Label>
+           <RadioGroup
+            value={selectedSize ?? undefined}
+            onValueChange={setSelectedSize}
+            className="flex flex-wrap gap-2"
+          >
+            {product.sizes?.map((size) => (
+              <div key={size} className="flex items-center">
+                <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />
+                <Label
+                  htmlFor={`size-${size}`}
+                  className={cn(
+                    "cursor-pointer rounded-md border px-4 py-2 transition-colors",
+                    selectedSize === size
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-transparent hover:bg-accent"
+                  )}
+                >
+                  {size}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+        </div>
+      )}
+
       {!isInCart && (
         <div className="flex items-center gap-4">
           <p>Quantity:</p>
@@ -142,7 +196,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                 <Heart
                     className={cn(
                     "mr-2 h-5 w-5",
-                    isInWishlist(product.id) && "text-yellow-400 fill-current"
+                    isInWishlist(product.id) && "text-red-500 fill-current"
                     )}
                 />
                 {isInWishlist(product.id)

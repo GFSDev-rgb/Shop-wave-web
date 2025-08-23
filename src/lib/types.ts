@@ -12,11 +12,14 @@ export type Product = {
   rating: number;
   reviews: number;
   likeCount: number;
+  sizes?: string[];
 };
 
 export type CartItem = {
+  id: string; // Unique ID for the cart item, e.g., `${productId}-${size}`
   product: Product;
   quantity: number;
+  size: string;
 };
 
 export type WishlistItem = {
@@ -29,6 +32,7 @@ export type OrderItem = {
   price: number;
   quantity: number;
   image: string;
+  size: string;
 };
 
 export type Order = {
@@ -41,6 +45,7 @@ export type Order = {
   productImage: string;
   quantity: number;
   price: number;
+  size: string;
   total: number;
   // Customer info
   fullName: string;

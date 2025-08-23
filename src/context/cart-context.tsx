@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useState, useEffect, ReactNode, useCallback, useMemo } from "react";
@@ -9,9 +10,9 @@ import { useProducts } from "@/hooks/use-products";
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product, quantityToAdd?: number) => Promise<void>;
-  removeFromCart: (productId: string) => Promise<void>;
-  updateQuantity: (productId: string, quantity: number) => Promise<void>;
+  addToCart: (product: Product, quantityToAdd: number, size: string) => Promise<void>;
+  removeFromCart: (cartItemId: string) => Promise<void>;
+  updateQuantity: (cartItemId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
   cartCount: number;
   cartTotal: number;
@@ -20,14 +21,47 @@ interface CartContextType {
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// A map of productId to quantity
-type CartState = Record<string, number>;
-
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartState, setCartState] = useState<CartState>({});
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isContextLoaded, setIsContextLoaded] = useState(false);
   const { user, loading: authLoading } = useAuth();
   const { products, loading: productsLoading } = useProducts();
+
+  const updateCartState = useCallback(async (newCartItems: CartItem[]) => {
+    setCartItems(newCartItems);
+    const simplifiedCart = newCartItems.map(({ id, product, quantity, size }) => ({
+      id,
+      productId: product.id,
+      quantity,
+      size,
+    }));
+
+    if (user && db) {
+      const cartDocRef = doc(db, "carts", user.uid);
+      await setDoc(cartDocRef, { items: simplifiedCart });
+    } else {
+      localStorage.setItem("cart", JSON.stringify(simplifiedCart));
+    }
+  }, [user]);
+
+  const loadCart = useCallback(async (cartData: any[]) => {
+    if (productsLoading) return;
+    const loadedCartItems: CartItem[] = cartData
+      .map((item) => {
+        const product = products.find((p) => p.id === item.productId);
+        if (product) {
+          return {
+            id: item.id || `${item.productId}-${item.size}`,
+            product,
+            quantity: item.quantity,
+            size: item.size,
+          };
+        }
+        return null;
+      })
+      .filter((item): item is CartItem => item !== null);
+    setCartItems(loadedCartItems);
+  }, [products, productsLoading]);
 
   // Effect to load cart from localStorage for guest users
   useEffect(() => {
@@ -35,8 +69,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const storedCartRaw = localStorage.getItem("cart");
       if (storedCartRaw) {
         try {
-          const loadedState: CartState = JSON.parse(storedCartRaw);
-          setCartState(loadedState);
+          const storedCart = JSON.parse(storedCartRaw);
+          loadCart(storedCart);
         } catch (error) {
           console.error("Error parsing cart from localStorage", error);
           localStorage.removeItem("cart");
@@ -44,11 +78,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
       setIsContextLoaded(true);
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, loadCart]);
 
   // Effect to sync cart with Firestore for logged-in users.
-  // The cart for a user is stored in a document inside the 'carts' collection,
-  // with the document ID being the user's UID for data isolation.
   useEffect(() => {
     if (user && db) {
       const cartDocRef = doc(db, "carts", user.uid);
@@ -57,19 +89,26 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         const localCartRaw = localStorage.getItem("cart");
         if (localCartRaw) {
           try {
-            const localCartState: CartState = JSON.parse(localCartRaw);
+            const localCart = JSON.parse(localCartRaw);
             localStorage.removeItem("cart");
 
-            if (Object.keys(localCartState).length > 0) {
+            if (Array.isArray(localCart) && localCart.length > 0) {
               const docSnap = await getDoc(cartDocRef);
-              const remoteState = docSnap.exists() ? (docSnap.data().items as CartState) : {};
+              const remoteCart = docSnap.exists() ? (docSnap.data().items as any[]) : [];
               
-              // Merge guest cart into the logged-in user's cart
-              Object.entries(localCartState).forEach(([productId, quantity]) => {
-                remoteState[productId] = (remoteState[productId] || 0) + quantity;
+              const mergedCart = [...remoteCart];
+              localCart.forEach(localItem => {
+                const existingItemIndex = mergedCart.findIndex(
+                  remoteItem => remoteItem.productId === localItem.productId && remoteItem.size === localItem.size
+                );
+                if (existingItemIndex > -1) {
+                  mergedCart[existingItemIndex].quantity += localItem.quantity;
+                } else {
+                  mergedCart.push(localItem);
+                }
               });
               
-              await setDoc(cartDocRef, { items: remoteState }, { merge: true });
+              await setDoc(cartDocRef, { items: mergedCart }, { merge: true });
             }
           } catch (error) {
              console.error("Error syncing local cart to Firestore", error);
@@ -81,9 +120,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
       const unsubscribe = onSnapshot(cartDocRef, (snapshot) => {
         if (snapshot.exists()) {
-          setCartState(snapshot.data().items || {});
+          const remoteData = snapshot.data().items || [];
+          loadCart(remoteData);
         } else {
-          setCartState({});
+          setCartItems([]);
         }
         setIsContextLoaded(true);
       }, (error) => {
@@ -94,53 +134,40 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     } else if (user && !db) {
         console.warn("Firestore not available, cart will not be synced for logged in user.")
     }
-  }, [user]);
+  }, [user, loadCart]);
   
-  const updateCart = useCallback(async (newCartState: CartState) => {
-    setCartState(newCartState);
-    if (user && db) {
-        const cartDocRef = doc(db, "carts", user.uid);
-        await setDoc(cartDocRef, { items: newCartState });
+  const addToCart = useCallback(async (product: Product, quantityToAdd: number = 1, size: string) => {
+    const cartItemId = `${product.id}-${size}`;
+    const existingItemIndex = cartItems.findIndex(item => item.id === cartItemId);
+    let newCartItems = [...cartItems];
+
+    if (existingItemIndex > -1) {
+      newCartItems[existingItemIndex].quantity += quantityToAdd;
     } else {
-        localStorage.setItem("cart", JSON.stringify(newCartState));
+      newCartItems.push({ id: cartItemId, product, quantity: quantityToAdd, size });
     }
-  }, [user]);
+    await updateCartState(newCartItems);
+  }, [cartItems, updateCartState]);
 
-  const addToCart = useCallback(async (product: Product, quantityToAdd: number = 1) => {
-    const newState = { ...cartState };
-    newState[product.id] = (newState[product.id] || 0) + quantityToAdd;
-    await updateCart(newState);
-  }, [cartState, updateCart]);
-
-  const removeFromCart = useCallback(async (productId: string) => {
-    const newState = { ...cartState };
-    delete newState[productId];
-    await updateCart(newState);
-  }, [cartState, updateCart]);
+  const removeFromCart = useCallback(async (cartItemId: string) => {
+    const newCartItems = cartItems.filter(item => item.id !== cartItemId);
+    await updateCartState(newCartItems);
+  }, [cartItems, updateCartState]);
   
-  const updateQuantity = useCallback(async (productId: string, quantity: number) => {
+  const updateQuantity = useCallback(async (cartItemId: string, quantity: number) => {
     if (quantity <= 0) {
-      await removeFromCart(productId);
+      await removeFromCart(cartItemId);
     } else {
-      const newState = { ...cartState };
-      newState[productId] = quantity;
-      await updateCart(newState);
+      const newCartItems = cartItems.map(item =>
+        item.id === cartItemId ? { ...item, quantity } : item
+      );
+      await updateCartState(newCartItems);
     }
-  }, [cartState, updateCart, removeFromCart]);
+  }, [cartItems, updateCartState, removeFromCart]);
 
   const clearCart = useCallback(async () => {
-    await updateCart({});
-  }, [updateCart]);
-
-  const cartItems: CartItem[] = useMemo(() => {
-    if (productsLoading) return [];
-    return Object.entries(cartState)
-      .map(([productId, quantity]) => {
-        const product = products.find((p) => p.id === productId);
-        return product ? { product, quantity } : null;
-      })
-      .filter((item): item is CartItem => item !== null);
-  }, [cartState, products, productsLoading]);
+    await updateCartState([]);
+  }, [updateCartState]);
 
   const cartCount = useMemo(() => cartItems.reduce((acc, item) => acc + item.quantity, 0), [cartItems]);
 

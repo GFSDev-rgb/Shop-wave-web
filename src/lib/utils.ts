@@ -26,5 +26,6 @@ export function formatProduct(doc: DocumentSnapshot): Product {
         rating: data.rating || 0,
         reviews: data.reviews || 0,
         likeCount: data.likeCount || 0,
+        sizes: data.sizes && Array.isArray(data.sizes) ? data.sizes : [],
     };
 }

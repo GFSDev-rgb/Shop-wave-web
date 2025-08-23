@@ -60,8 +60,8 @@ export default function CartPage() {
       ) : (
         <div className="grid lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-6">
-            {cartItems.map(({ product, quantity }) => (
-              <Card key={product.id} className="flex items-center p-4">
+            {cartItems.map(({ id, product, quantity, size }) => (
+              <Card key={id} className="flex items-center p-4">
                 <Image
                   src={product.image}
                   alt={product.name}
@@ -74,20 +74,20 @@ export default function CartPage() {
                   <Link href={`/product/${product.id}`} className="font-semibold text-lg hover:underline">
                     {product.name}
                   </Link>
-                  <p className="text-sm text-muted-foreground">{product.category}</p>
+                  <p className="text-sm text-muted-foreground">Size: {size}</p>
                   <p className="text-lg font-bold text-primary mt-1">Tk {product.price.toFixed(2)}</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="flex items-center border rounded-md">
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateQuantity(product.id, quantity - 1)}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateQuantity(id, quantity - 1)}>
                             <Minus className="h-4 w-4" />
                         </Button>
                         <span className="w-8 text-center text-sm">{quantity}</span>
-                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateQuantity(product.id, quantity + 1)}>
+                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateQuantity(id, quantity + 1)}>
                             <Plus className="h-4 w-4" />
                         </Button>
                     </div>
-                  <Button variant="outline" size="icon" onClick={() => removeFromCart(product.id)}>
+                  <Button variant="outline" size="icon" onClick={() => removeFromCart(id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>

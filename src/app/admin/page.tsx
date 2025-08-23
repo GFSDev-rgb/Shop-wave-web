@@ -195,6 +195,7 @@ export default function AdminDashboard() {
                                              <Image src={order.productImage} alt={order.productName} width={80} height={100} className="rounded-md object-cover" />
                                              <div>
                                                 <p className="font-semibold">{order.productName}</p>
+                                                {order.size && <p className="text-sm">Size: {order.size}</p>}
                                                 <p className="text-sm">Qty: {order.quantity}</p>
                                                 <p className="text-sm font-bold">Tk {(order.price * order.quantity).toFixed(2)}</p>
                                              </div>

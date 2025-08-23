@@ -123,6 +123,7 @@ export default function OrdersPage() {
                                     <p className="text-sm text-muted-foreground">
                                         {order.quantity} x Tk {order.price.toFixed(2)}
                                     </p>
+                                     {order.size && <p className="text-sm text-muted-foreground">Size: {order.size}</p>}
                                 </div>
                             </div>
                         </div>

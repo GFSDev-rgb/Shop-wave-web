@@ -13,6 +13,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviews: 120,
     likeCount: 431,
+    sizes: ['40 Medium', '42 Large', '44 XL', '46 2XL'],
   },
   {
     id: '2',
@@ -52,6 +53,7 @@ export const products: Product[] = [
     rating: 5.0,
     reviews: 310,
     likeCount: 945,
+    sizes: ['40 Medium', '42 Large', '44 XL'],
   },
   {
     id: '5',
@@ -78,6 +80,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviews: 215,
     likeCount: 388,
+    sizes: ['38', '40', '42', '44', '46'],
   },
   {
     id: '7',
@@ -107,15 +110,16 @@ export const products: Product[] = [
   },
   {
     id: '9',
-    name: 'Urban Explorer Backpack',
-    description: 'A stylish and functional backpack for your daily commute or weekend adventures. Features multiple compartments and a padded laptop sleeve.',
+    name: 'Urban Explorer Pants',
+    description: 'Stylish and functional pants for your daily commute or weekend adventures. Made from a durable stretch-twill fabric for ultimate comfort and mobility.',
     price: 120.0,
     image: 'https://i.pinimg.com/736x/96/58/e9/9658e9925bb105cc8c49140fbb436317.jpg',
     images: ['https://i.pinimg.com/736x/96/58/e9/9658e9925bb105cc8c49140fbb436317.jpg', 'https://i.pinimg.com/736x/96/58/e9/9658e9925bb105cc8c49140fbb436317.jpg', 'https://i.pinimg.com/736x/96/58/e9/9658e9925bb105cc8c49140fbb436317.jpg'],
-    category: 'Accessories',
+    category: 'Apparel',
     rating: 4.5,
     reviews: 90,
     likeCount: 350,
+    sizes: ['30', '32', '34', '36', '38', '40', '42', '44', '46', '48'],
   },
   {
     id: '10',

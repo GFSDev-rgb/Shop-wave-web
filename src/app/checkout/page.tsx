@@ -55,6 +55,7 @@ export default function CheckoutPage() {
           productImage: cartItem.product.image,
           quantity: cartItem.quantity,
           price: cartItem.product.price,
+          size: cartItem.size,
           total: cartItem.product.price * cartItem.quantity,
           orderTime: serverTimestamp(),
           orderStatus: 'Pending',
@@ -141,8 +142,8 @@ export default function CheckoutPage() {
           <div className="rounded-lg border p-4">
             <h3 className="font-semibold mb-2">Order Summary</h3>
             {cartItems.map(item => (
-                <div key={item.product.id} className="flex justify-between items-center text-sm py-1">
-                    <span>{item.product.name} x {item.quantity}</span>
+                <div key={item.id} className="flex justify-between items-center text-sm py-1">
+                    <span>{item.product.name} (x{item.quantity}) - {item.size}</span>
                     <span>Tk {(item.product.price * item.quantity).toFixed(2)}</span>
                 </div>
             ))}
