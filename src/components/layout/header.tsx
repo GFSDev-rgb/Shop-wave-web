@@ -221,6 +221,20 @@ export function Header() {
                   {user && (
                     <>
                       <Separator className="my-4" />
+                       {isAdmin && (
+                        <SheetClose asChild>
+                          <Link
+                            href="/admin"
+                            className={cn(
+                              "flex items-center gap-4 px-2.5 py-3 rounded-lg text-base font-medium",
+                              pathname === '/admin' ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                            )}
+                          >
+                            <ShieldCheck className="h-5 w-5" />
+                            Admin Dashboard
+                          </Link>
+                        </SheetClose>
+                       )}
                        <SheetClose asChild>
                         <Link
                           href="/profile"
