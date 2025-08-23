@@ -44,9 +44,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
-  const loadCart = useCallback(async (cartData: any[]) => {
+  const loadCart = useCallback(async (cartData: any) => {
     if (productsLoading) return;
-    const loadedCartItems: CartItem[] = cartData
+
+    // Ensure cartData is an array before mapping
+    const dataToProcess = Array.isArray(cartData) ? cartData : [];
+
+    const loadedCartItems: CartItem[] = dataToProcess
       .map((item) => {
         const product = products.find((p) => p.id === item.productId);
         if (product) {
