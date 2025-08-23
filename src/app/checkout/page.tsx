@@ -5,12 +5,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreditCard, Lock, Loader2, User } from 'lucide-react';
 import Link from 'next/link';
-import { addDoc, collection, serverTimestamp, writeBatch } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, doc, writeBatch } from 'firebase/firestore';
 import { useAuth } from '@/hooks/use-auth';
 import { useCart } from '@/hooks/use-cart';
 import { useToast } from '@/hooks/use-toast';
 import { db } from '@/lib/firebase';
-import type { OrderItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -45,11 +44,10 @@ export default function CheckoutPage() {
     setIsPlacingOrder(true);
 
     try {
-      const ordersCollectionRef = collection(db, 'orders');
       const batch = writeBatch(db);
 
       for (const cartItem of cartItems) {
-        const orderDocRef = doc(ordersCollectionRef); // Create a new document reference for each order
+        const orderDocRef = doc(collection(db, 'orders'));
         
         const orderData = {
           userId: user.uid,
@@ -62,8 +60,8 @@ export default function CheckoutPage() {
           orderStatus: 'Pending',
           fullName: profile.fullName,
           phoneNumber: profile.phoneNumber,
-          city: profile.address.split(',')[2]?.trim() || '',
-          village: profile.address.split(',')[1]?.trim() || '',
+          city: profile.address.split(',').pop()?.trim() || '',
+          village: profile.address.split(',').slice(0, -1).join(',').trim() || '',
           fullAddress: profile.address,
         };
 

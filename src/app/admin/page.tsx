@@ -181,7 +181,7 @@ export default function AdminDashboard() {
                                         </div>
                                         <div className="flex items-center gap-4">
                                             <p className="text-sm text-muted-foreground hidden md:block">
-                                                {order.orderTime ? (order.orderTime as Timestamp).toDate().toLocaleString() : 'N/A'}
+                                                {order.orderTime ? (order.orderTime as unknown as Timestamp).toDate().toLocaleString() : 'N/A'}
                                             </p>
                                             <Badge variant={order.orderStatus === 'Delivered' ? 'default' : 'secondary'} className={order.orderStatus === 'Delivered' ? 'bg-green-600' : 'bg-amber-500'}>
                                                 {order.orderStatus}
