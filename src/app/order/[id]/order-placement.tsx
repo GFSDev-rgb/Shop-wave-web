@@ -35,9 +35,9 @@ export default function OrderPlacement({ productId }: { productId: string }) {
     
     useEffect(() => {
         if (!authLoading && !user) {
-            router.push(`/welcome/start`);
+            router.push(`/login`);
         }
-    }, [user, authLoading, router, productId, quantity]);
+    }, [user, authLoading, router]);
 
     const handlePlaceOrder = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -53,23 +53,29 @@ export default function OrderPlacement({ productId }: { productId: string }) {
         }
 
         setIsPlacingOrder(true);
+        const total = product.price * quantity;
 
         try {
             await addDoc(collection(db, 'orders'), {
                 userId: user.uid,
-                productId: product.id,
-                productName: product.name,
-                productImage: product.image,
-                price: product.price,
-                quantity: quantity,
+                items: [{
+                    productId: product.id,
+                    name: product.name,
+                    price: product.price,
+                    quantity: quantity,
+                    image: product.image,
+                }],
+                total: total,
                 deliveryMethod: 'Cash on Delivery',
-                fullName,
-                phoneNumber,
-                city,
-                village,
-                fullAddress,
                 orderTime: serverTimestamp(),
                 orderStatus: 'Pending',
+                customerInfo: {
+                    fullName,
+                    phoneNumber,
+                    city,
+                    village,
+                    fullAddress,
+                }
             });
 
             toast({
@@ -77,7 +83,7 @@ export default function OrderPlacement({ productId }: { productId: string }) {
                 description: 'Thank you for your purchase. We will contact you soon.',
             });
 
-            router.push('/');
+            router.push('/orders');
         } catch (error) {
             console.error('Error placing order:', error);
             toast({
@@ -119,6 +125,7 @@ export default function OrderPlacement({ productId }: { productId: string }) {
                                     <h3 className="font-semibold text-lg">{product.name}</h3>
                                     <p className="text-muted-foreground">Quantity: {quantity}</p>
                                     <p className="font-bold text-xl text-primary mt-2">Tk {(product.price * quantity).toFixed(2)}</p>
+
                                 </div>
                             </div>
                              <div className="mt-6">
