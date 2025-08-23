@@ -15,9 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ShoppingBag } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
-type OrderWithId = Omit<Order, 'id'> & {
-    id: string;
-}
+type OrderWithId = Order & { id: string };
 
 export default function OrdersPage() {
   const { user, loading: authLoading } = useAuth();
@@ -42,7 +40,7 @@ export default function OrdersPage() {
 
         const querySnapshot = await getDocs(q);
         const fetchedOrders: OrderWithId[] = querySnapshot.docs.map(doc => {
-            const data = doc.data() as Omit<Order, 'id'>;
+            const data = doc.data() as Order;
             return {
               ...data,
               id: doc.id,
@@ -112,22 +110,21 @@ export default function OrdersPage() {
                         </CardTitle>
                         <CardDescription>
                             Total: <span className="font-bold text-primary">Tk {order.total.toFixed(2)}</span>
+                             | Status: <span className="font-semibold">{order.orderStatus}</span>
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Separator className="mb-4" />
                         <div className="space-y-4">
-                            {order.items.map(item => (
-                                <div key={item.productId} className="flex items-center gap-4">
-                                    <Image src={item.image} alt={item.name} data-ai-hint="product photo" width={64} height={64} className="rounded-md object-cover"/>
-                                    <div>
-                                        <p className="font-semibold">{item.name}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                            {item.quantity} x Tk {item.price.toFixed(2)}
-                                        </p>
-                                    </div>
+                           <div className="flex items-center gap-4">
+                                <Image src={order.productImage} alt={order.productName} data-ai-hint="product photo" width={64} height={64} className="rounded-md object-cover"/>
+                                <div>
+                                    <p className="font-semibold">{order.productName}</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        {order.quantity} x Tk {order.price.toFixed(2)}
+                                    </p>
                                 </div>
-                            ))}
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

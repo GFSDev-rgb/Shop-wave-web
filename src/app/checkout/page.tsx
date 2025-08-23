@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreditCard, Lock, Loader2, User } from 'lucide-react';
 import Link from 'next/link';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, writeBatch } from 'firebase/firestore';
 import { useAuth } from '@/hooks/use-auth';
 import { useCart } from '@/hooks/use-cart';
 import { useToast } from '@/hooks/use-toast';
@@ -45,30 +45,32 @@ export default function CheckoutPage() {
     setIsPlacingOrder(true);
 
     try {
-      const orderItems: OrderItem[] = cartItems.map(({ product, quantity }) => ({
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: quantity,
-        image: product.image,
-      }));
-
       const ordersCollectionRef = collection(db, 'orders');
+      const batch = writeBatch(db);
 
-      await addDoc(ordersCollectionRef, {
-        userId: user.uid,
-        items: orderItems,
-        total: cartTotal,
-        createdAt: serverTimestamp(),
-        orderTime: serverTimestamp(),
-        orderStatus: 'Pending',
-        customerInfo: {
-            fullName: profile.fullName,
-            phoneNumber: profile.phoneNumber,
-            address: profile.address,
-        }
-      });
+      for (const cartItem of cartItems) {
+        const orderDocRef = doc(ordersCollectionRef); // Create a new document reference for each order
+        
+        const orderData = {
+          userId: user.uid,
+          productName: cartItem.product.name,
+          productImage: cartItem.product.image,
+          quantity: cartItem.quantity,
+          price: cartItem.product.price,
+          total: cartItem.product.price * cartItem.quantity,
+          orderTime: serverTimestamp(),
+          orderStatus: 'Pending',
+          fullName: profile.fullName,
+          phoneNumber: profile.phoneNumber,
+          city: profile.address.split(',')[2]?.trim() || '',
+          village: profile.address.split(',')[1]?.trim() || '',
+          fullAddress: profile.address,
+        };
+
+        batch.set(orderDocRef, orderData);
+      }
       
+      await batch.commit();
       await clearCart();
 
       toast({
