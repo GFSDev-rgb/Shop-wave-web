@@ -71,7 +71,7 @@ export default function ShopPage() {
   const isFiltering = isPending;
 
   useEffect(() => {
-    workerRef.current = new Worker(new URL('@/workers/product-filter.worker.ts', import.meta.url));
+    workerRef.current = new Worker(new URL('../../workers/product-filter.worker.ts', import.meta.url));
     workerRef.current.onmessage = (event: MessageEvent<Product[]>) => {
         setFilteredProducts(event.data);
     };
@@ -87,17 +87,19 @@ export default function ShopPage() {
 
   useEffect(() => {
     if (products.length > 0 && workerRef.current) {
-        workerRef.current.postMessage({
+      startTransition(() => {
+        workerRef.current?.postMessage({
             products,
             priceRange: debouncedPriceRange,
             selectedCategories: debouncedSelectedCategories,
             sortOption: debouncedSortOption,
             searchQuery: debouncedSearchQuery
         });
-    } else {
+      });
+    } else if (!productsLoading) {
         setFilteredProducts(products);
     }
-  }, [products, debouncedPriceRange, debouncedSelectedCategories, debouncedSortOption, debouncedSearchQuery]);
+  }, [products, productsLoading, debouncedPriceRange, debouncedSelectedCategories, debouncedSortOption, debouncedSearchQuery]);
   
 
   useEffect(() => {
@@ -122,31 +124,23 @@ export default function ShopPage() {
   }, [isLoading, visibleCount, filteredProducts.length]);
 
   const handleSortChange = (value: string) => {
-    startTransition(() => {
-      setSortOption(value);
-    });
+    setSortOption(value);
   };
 
   const handlePriceChange = (value: [number, number]) => {
-    startTransition(() => {
-      setPriceRange(value);
-    });
+    setPriceRange(value);
   };
 
   const handleCategoryToggle = (category: string) => {
-    startTransition(() => {
-      setSelectedCategories((prev) =>
-        prev.includes(category)
-          ? prev.filter((c) => c !== category)
-          : [...prev, category]
-      );
-    });
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    );
   };
   
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    startTransition(() => {
-      setSearchQuery(event.target.value);
-    });
+    setSearchQuery(event.target.value);
   };
 
   const clearFilters = () => {
@@ -268,7 +262,7 @@ export default function ShopPage() {
                 })}
             </div>
 
-            {renderedProducts.length === 0 && (
+            {renderedProducts.length === 0 && !isLoading && (
                 <div className="text-center py-16 border-2 border-dashed rounded-lg col-span-full">
                     <Search className="mx-auto h-16 w-16 text-muted-foreground" />
                     <h2 className="mt-6 text-2xl font-semibold">No Products Found</h2>
@@ -309,3 +303,5 @@ export default function ShopPage() {
     </div>
   );
 }
+
+    
