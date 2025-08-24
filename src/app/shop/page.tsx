@@ -70,7 +70,7 @@ export default function ShopPage() {
   const isFiltering = isPending;
 
   useEffect(() => {
-    workerRef.current = new Worker(new URL('../../workers/product-filter.worker.ts', import.meta.url));
+    workerRef.current = new Worker('/workers/product-filter.worker.js');
     workerRef.current.onmessage = (event: MessageEvent<Product[]>) => {
         setFilteredProducts(event.data);
     };
