@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useState, useEffect, ReactNode, useCallback } from "react";
@@ -20,6 +21,7 @@ interface ProductFormData {
   description: string;
   price: number;
   category: string;
+  sizes?: string;
   image1: string;
   image2?: string;
   image3?: string;
@@ -103,8 +105,9 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     }
     try {
       const productsCollectionRef = collection(db, "products");
-      const { image1, image2, image3, ...rest } = productData;
+      const { image1, image2, image3, sizes, ...rest } = productData;
       const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
+      const sizesArray = sizes ? sizes.split(',').map(s => s.trim()).filter(Boolean) : [];
       
       const newProductData = {
         ...rest,
@@ -112,6 +115,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
         reviews: 0,
         image: image1,
         images: images,
+        sizes: sizesArray,
         likeCount: 0,
       };
 
@@ -139,6 +143,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       const productDoc = doc(db, "products", productId);
       
       const images = [productData.image1, productData.image2, productData.image3].filter((img): img is string => !!img && img.trim() !== '');
+      const sizesArray = productData.sizes ? productData.sizes.split(',').map(s => s.trim()).filter(Boolean) : [];
       
       const updatedData = {
         name: productData.name,
@@ -147,6 +152,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
         category: productData.category,
         image: productData.image1,
         images: images,
+        sizes: sizesArray,
       };
 
       await updateDoc(productDoc, updatedData);

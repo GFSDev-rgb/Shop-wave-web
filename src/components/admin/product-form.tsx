@@ -33,6 +33,7 @@ const productSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters long"),
   price: z.coerce.number().min(0, "Price must be a positive number"),
   category: z.string().min(1, "Please select a category"),
+  sizes: z.string().optional(),
   image1: z.string().url("Please enter a valid URL for the main image."),
   image2: z.string().url("Please enter a valid URL or leave empty.").optional().or(z.literal('')),
   image3: z.string().url("Please enter a valid URL or leave empty.").optional().or(z.literal('')),
@@ -58,6 +59,7 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
       description: product?.description || "",
       price: product?.price || 0,
       category: product?.category || "",
+      sizes: product?.sizes?.join(", ") || "",
       image1: product?.images?.[0] || product?.image || "",
       image2: product?.images?.[1] || "",
       image3: product?.images?.[2] || "",
@@ -125,7 +127,7 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
         <Separator />
 
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-foreground">Pricing & Category</h3>
+          <h3 className="text-lg font-medium text-foreground">Pricing, Category & Sizing</h3>
           <div className="grid grid-cols-2 gap-4">
               <FormField
               control={form.control}
@@ -161,6 +163,19 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
                   )}
               />
           </div>
+          <FormField
+              control={form.control}
+              name="sizes"
+              render={({ field }) => (
+                  <FormItem>
+                      <FormLabel>Sizes (optional)</FormLabel>
+                      <FormControl>
+                          <Input placeholder="e.g. S, M, L, XL" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                  </FormItem>
+              )}
+          />
         </div>
 
         <Separator />
