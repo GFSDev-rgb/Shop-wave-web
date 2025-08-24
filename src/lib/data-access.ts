@@ -1,3 +1,4 @@
+
 'use server';
 
 import { db } from "@/lib/firebase";
@@ -6,12 +7,12 @@ import type { Product } from "@/lib/types";
 import { products as initialProducts } from "@/lib/data";
 import { formatProduct } from "@/lib/utils";
 
+// This function is kept for potential future use or for server-only scenarios,
+// but the main app will now rely on the ProductProvider context for consistency.
 export async function getProductById(id: string): Promise<Product | null> {
     if (!db) {
         console.warn("Firestore is not initialized. Using local product data for getProductById.");
         const product = initialProducts.find(p => p.id === id) || null;
-        // The local data has an 'id' field, but firestore docs don't until we add it.
-        // This function's return type assumes 'id' is present.
         return product;
     }
 
@@ -27,7 +28,7 @@ export async function getProductById(id: string): Promise<Product | null> {
         }
     } catch (error) {
         console.error(`Error fetching product with id ${id} from Firestore:`, error);
-        return null; // Fallback or re-throw as needed
+        return null;
     }
 }
 

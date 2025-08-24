@@ -1,47 +1,28 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { getProductById } from '@/lib/data-access';
-import ProductView from './product-view';
-import { Suspense } from 'react';
-import ProductPageSkeleton from './product-page-skeleton';
 
-async function getProduct(id: string) {
-  const product = await getProductById(id);
+'use client';
+
+import { Suspense } from 'react';
+import { notFound, useParams } from 'next/navigation';
+import ProductView from './product-view';
+import ProductPageSkeleton from './product-page-skeleton';
+import { useProducts } from '@/hooks/use-products';
+
+export default function ProductPage() {
+  const params = useParams();
+  const { products, loading } = useProducts();
+  const id = params.id as string;
+
+  if (loading) {
+    return <ProductPageSkeleton />;
+  }
+
+  const product = products.find(p => p.id === id);
+
   if (!product) {
+    // This can still be useful if the ID is genuinely invalid
+    // after the products have loaded.
     notFound();
   }
-  return product;
-}
-
-export async function generateMetadata({ params }: { params: { id:string } }): Promise<Metadata> {
-  const product = await getProductById(params.id);
-
-  if (!product) {
-    return {
-      title: 'Product Not Found',
-    }
-  }
-
-  return {
-    title: product.name,
-    description: product.description.substring(0, 150),
-    openGraph: {
-      title: product.name,
-      description: product.description.substring(0, 150),
-      images: [
-        {
-          url: product.image,
-          width: 800,
-          height: 1000,
-          alt: product.name,
-        },
-      ],
-    },
-  }
-}
-
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const product = await getProduct(params.id);
   
   return (
     <Suspense fallback={<ProductPageSkeleton />}>
