@@ -2,9 +2,6 @@
 "use client";
 
 import { useState, useMemo, useRef, useCallback, useEffect, useTransition } from "react";
-import Link from 'next/link';
-import { useDebounce } from "use-debounce";
-import dynamic from "next/dynamic";
 import type { Product } from "@/lib/types";
 import ProductCard from "@/components/product-card";
 import { Filters } from "./filters";
@@ -18,11 +15,13 @@ import {
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import { Filter, ArrowUpDown, PlusCircle, Loader2, Search, User } from "lucide-react";
+import { Filter, ArrowUpDown, PlusCircle, Loader2, Search } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
 import { useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import dynamic from 'next/dynamic';
+import { useDebounce } from "use-debounce";
 
 const ProductForm = dynamic(() => import('@/components/admin/product-form'), {
   loading: () => (
@@ -112,7 +111,7 @@ export default function ShopPage() {
   }, [filteredProducts, visibleCount]);
 
   const observer = useRef<IntersectionObserver>();
-  const lastProductElementRef = useCallback((node: HTMLElement) => {
+  const lastProductElementRef = useCallback((node: HTMLElement | null) => {
     if (isLoading) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
@@ -303,5 +302,3 @@ export default function ShopPage() {
     </div>
   );
 }
-
-    

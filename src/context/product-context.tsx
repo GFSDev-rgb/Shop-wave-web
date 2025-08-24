@@ -36,14 +36,17 @@ interface ProductContextType {
 
 export const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
+// Cache products in memory to avoid repeated Firestore reads
+let productCache: Product[] | null = null;
+
 /**
  * Provides product data to the application.
  * It fetches products from Firestore and handles CRUD operations.
  * If Firestore is empty, it will automatically seed the database with initial data.
  */
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(productCache || []);
+  const [loading, setLoading] = useState(!productCache);
 
   /**
    * Fetches all products from the 'products' collection in Firestore.
@@ -51,10 +54,17 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
    * This function ensures that the product list is always available for the app.
    */
   const fetchProducts = useCallback(async () => {
+    if (productCache) {
+      setProducts(productCache);
+      setLoading(false);
+      return;
+    }
+    
     setLoading(true);
 
     if (!db) {
         console.warn("Firestore is not initialized. Using local product data.");
+        productCache = initialProducts;
         setProducts(initialProducts);
         setLoading(false);
         return;
@@ -77,15 +87,18 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
         });
         await Promise.all(seedPromises);
         setProducts(seededProducts);
+        productCache = seededProducts;
       } else {
         // Safely format each document to prevent errors from malformed data
         const fetchedProducts = data.docs.map(formatProduct);
         setProducts(fetchedProducts);
+        productCache = fetchedProducts;
       }
     } catch (error) {
       console.error("Error fetching products from Firestore:", error);
       // Fallback to local data on error
       setProducts(initialProducts);
+      productCache = initialProducts;
     } finally {
       setLoading(false);
     }
@@ -113,12 +126,12 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       };
 
       const docRef = await addDoc(productsCollectionRef, newProductData);
+      
+      const newProductEntry = { ...newProductData, id: docRef.id } as Product;
 
-      // Update state locally instead of refetching
-      setProducts(prevProducts => [
-        ...prevProducts,
-        { ...newProductData, id: docRef.id } as Product
-      ]);
+      // Update state and cache locally
+      setProducts(prevProducts => [...prevProducts, newProductEntry]);
+      productCache = [...(productCache || []), newProductEntry];
 
     } catch (error) {
       console.error("Error adding product in context:", error);
@@ -143,12 +156,12 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       
       await updateDoc(productDoc, updatedData);
 
-      // Update state locally instead of refetching
-      setProducts(prevProducts =>
-        prevProducts.map(p => 
-          p.id === productId ? { ...p, ...updatedData } : p
-        )
+      // Update state and cache locally
+      const updatedProducts = (productCache || []).map(p => 
+        p.id === productId ? { ...p, ...updatedData } : p
       );
+      setProducts(updatedProducts);
+      productCache = updatedProducts;
 
     } catch (error) {
         console.error("Error updating product in context:", error);
@@ -166,8 +179,10 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       const productDoc = doc(db, "products", productId);
       await deleteDoc(productDoc);
       
-      // Update state locally instead of refetching
-      setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+      // Update state and cache locally
+      const updatedProducts = (productCache || []).filter(p => p.id !== productId);
+      setProducts(updatedProducts);
+      productCache = updatedProducts;
       
     } catch (error) {
       console.error("Error deleting product in context:", error);
