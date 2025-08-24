@@ -1,18 +1,16 @@
 
-import type { Product } from '@/lib/types';
-
 /**
  * Filters and sorts an array of products based on the provided criteria.
  * This function is designed to run in a Web Worker to offload computation
  * from the main thread.
  */
 const filterAndSortProducts = (
-  products: Product[],
-  priceRange: [number, number],
-  selectedCategories: string[],
-  sortOption: string,
-  searchQuery: string
-): Product[] => {
+  products,
+  priceRange,
+  selectedCategories,
+  sortOption,
+  searchQuery
+) => {
   let result = products.filter((product) => {
     const inSearch = searchQuery.trim() === '' || product.name.toLowerCase().includes(searchQuery.toLowerCase().trim());
     const inCategory =
@@ -45,13 +43,7 @@ const filterAndSortProducts = (
  * filter criteria. It processes the data and sends the filtered/sorted list back.
  */
 self.onmessage = (
-    event: MessageEvent<{ 
-        products: Product[]; 
-        priceRange: [number, number]; 
-        selectedCategories: string[]; 
-        sortOption: string; 
-        searchQuery: string;
-    }>
+    event
 ) => {
   const { products, priceRange, selectedCategories, sortOption, searchQuery } = event.data;
   const filteredResult = filterAndSortProducts(products, priceRange, selectedCategories, sortOption, searchQuery);
