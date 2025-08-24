@@ -191,7 +191,7 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
                        <FormControl>
                         <Input placeholder={`e.g. Medium or 42`} {...field} />
                       </FormControl>
-                      <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
+                      <Button type="button" variant="outline" size="icon" onClick={() => remove(index)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
