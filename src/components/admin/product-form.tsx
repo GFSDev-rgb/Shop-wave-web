@@ -34,7 +34,7 @@ const productSchema = z.object({
   price: z.coerce.number().min(0, "Price must be a positive number"),
   category: z.string().min(1, "Please select a category"),
   sizes: z.array(z.object({ value: z.string().min(1, "Size cannot be empty.") })).optional(),
-  images: z.array(z.object({ value: z.string().url("Please enter a valid URL.") })).min(1, "At least one image is required."),
+  images: z.array(z.object({ value: z.string().url("Please enter a valid URL.") })).min(1, "At least one image is required.").max(10, "You can add a maximum of 10 images."),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -218,37 +218,52 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
         <Separator />
 
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-foreground">Images</h3>
-          {imageFields.map((field, index) => (
-             <FormField
-                key={field.id}
-                control={form.control}
-                name={`images.${index}.value`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image URL {index + 1}</FormLabel>
-                    <div className="flex items-center gap-2">
-                       <FormControl>
-                        <Input placeholder="https://example.com/image.jpg" {...field} />
-                      </FormControl>
-                      <Button type="button" variant="outline" size="icon" onClick={() => removeImage(index)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-          ))}
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium text-foreground">Images</h3>
+            <p className="text-sm text-muted-foreground">{imageFields.length} / 10</p>
+          </div>
+           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {imageFields.map((field, index) => (
+                <FormField
+                    key={field.id}
+                    control={form.control}
+                    name={`images.${index}.value`}
+                    render={({ field: formField }) => (
+                    <FormItem>
+                        <FormLabel className="text-xs text-muted-foreground">Image URL {index + 1}</FormLabel>
+                        <div className="flex items-center gap-2">
+                        <FormControl>
+                            <Input placeholder="https://..." {...formField} />
+                        </FormControl>
+                        <Button type="button" variant="outline" size="icon" onClick={() => removeImage(index)}>
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                        </div>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+            ))}
+          </div>
           <Button
             type="button"
             variant="secondary"
             size="sm"
             onClick={() => appendImage({ value: "" })}
+            disabled={imageFields.length >= 10}
           >
             <PlusCircle className="mr-2 h-4 w-4" />
             Add Image
           </Button>
+          <FormField
+            control={form.control}
+            name="images"
+            render={() => (
+              <FormItem>
+                 <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <Button type="submit" className="w-full !mt-10" disabled={isSubmitting}>
