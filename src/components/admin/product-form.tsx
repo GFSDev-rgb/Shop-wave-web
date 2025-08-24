@@ -34,9 +34,7 @@ const productSchema = z.object({
   price: z.coerce.number().min(0, "Price must be a positive number"),
   category: z.string().min(1, "Please select a category"),
   sizes: z.array(z.object({ value: z.string().min(1, "Size cannot be empty.") })).optional(),
-  image1: z.string().url("Please enter a valid URL for the main image."),
-  image2: z.string().url("Please enter a valid URL or leave empty.").optional().or(z.literal('')),
-  image3: z.string().url("Please enter a valid URL or leave empty.").optional().or(z.literal('')),
+  images: z.array(z.object({ value: z.string().url("Please enter a valid URL.") })).min(1, "At least one image is required."),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -60,16 +58,20 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
       price: product?.price || 0,
       category: product?.category || "",
       sizes: product?.sizes?.map(size => ({ value: size })) || [],
-      image1: product?.images?.[0] || product?.image || "",
-      image2: product?.images?.[1] || "",
-      image3: product?.images?.[2] || "",
+      images: (product?.images?.length ? product.images : [product?.image || ""]).filter(Boolean).map(img => ({ value: img })),
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields: sizeFields, append: appendSize, remove: removeSize } = useFieldArray({
     control: form.control,
     name: "sizes",
   });
+
+  const { fields: imageFields, append: appendImage, remove: removeImage } = useFieldArray({
+    control: form.control,
+    name: "images",
+  });
+
 
   const { isSubmitting } = form.formState;
 
@@ -77,7 +79,8 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
     try {
       const productDataToSave = {
         ...data,
-        sizes: data.sizes?.map(s => s.value)
+        sizes: data.sizes?.map(s => s.value),
+        images: data.images.map(i => i.value),
       }
 
       if (product) {
@@ -179,7 +182,7 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
         
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-foreground">Sizing</h3>
-          {fields.map((field, index) => (
+          {sizeFields.map((field, index) => (
              <FormField
                 key={field.id}
                 control={form.control}
@@ -191,7 +194,7 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
                        <FormControl>
                         <Input placeholder={`e.g. Medium or 42`} {...field} />
                       </FormControl>
-                      <Button type="button" variant="outline" size="icon" onClick={() => remove(index)}>
+                      <Button type="button" variant="outline" size="icon" onClick={() => removeSize(index)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -204,7 +207,7 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
             type="button"
             variant="secondary"
             size="sm"
-            onClick={() => append({ value: "" })}
+            onClick={() => appendSize({ value: "" })}
           >
             <PlusCircle className="mr-2 h-4 w-4" />
             Add Size
@@ -216,46 +219,38 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
 
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-foreground">Images</h3>
-          <FormField
-            control={form.control}
-            name="image1"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Main Image URL</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://example.com/image.jpg" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="image2"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Additional Image URL 2</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://example.com/image2.jpg" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="image3"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Additional Image URL 3</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://example.com/image3.jpg" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {imageFields.map((field, index) => (
+             <FormField
+                key={field.id}
+                control={form.control}
+                name={`images.${index}.value`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image URL {index + 1}</FormLabel>
+                    <div className="flex items-center gap-2">
+                       <FormControl>
+                        <Input placeholder="https://example.com/image.jpg" {...field} />
+                      </FormControl>
+                      <Button type="button" variant="outline" size="icon" onClick={() => removeImage(index)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+          ))}
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => appendImage({ value: "" })}
+          >
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Image
+          </Button>
         </div>
+
         <Button type="submit" className="w-full !mt-10" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {product ? "Save Changes" : "Add Product"}

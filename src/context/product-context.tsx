@@ -22,9 +22,7 @@ interface ProductFormData {
   price: number;
   category: string;
   sizes?: string[];
-  image1: string;
-  image2?: string;
-  image3?: string;
+  images: string[];
 }
 
 interface ProductContextType {
@@ -105,15 +103,12 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     }
     try {
       const productsCollectionRef = collection(db, "products");
-      const { image1, image2, image3, ...rest } = productData;
-      const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
       
       const newProductData = {
-        ...rest,
+        ...productData,
         rating: 0,
         reviews: 0,
-        image: image1,
-        images: images,
+        image: productData.images[0], // Use the first image as the primary one
         likeCount: 0,
       };
 
@@ -140,14 +135,10 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     try {
       const productDoc = doc(db, "products", productId);
       
-      const { image1, image2, image3, ...rest } = productData;
-      
-      const updatedData: Partial<Product> = { ...rest };
+      const updatedData: Partial<Product> = { ...productData };
 
-      if (image1) {
-          const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
-          updatedData.image = image1;
-          updatedData.images = images;
+      if (productData.images && productData.images.length > 0) {
+          updatedData.image = productData.images[0];
       }
       
       await updateDoc(productDoc, updatedData);
