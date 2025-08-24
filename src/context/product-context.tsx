@@ -154,6 +154,11 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
           updatedData.image = productData.images[0];
       }
       
+      // Ensure sizes are always included in the update if they exist
+      if (productData.sizes !== undefined) {
+        updatedData.sizes = productData.sizes;
+      }
+      
       await updateDoc(productDoc, updatedData);
 
       // Update state and cache locally
