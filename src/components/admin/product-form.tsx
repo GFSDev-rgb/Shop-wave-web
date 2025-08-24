@@ -202,7 +202,7 @@ export default function ProductForm({ product, onFinished }: ProductFormProps) {
           ))}
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={() => append({ value: "" })}
           >
