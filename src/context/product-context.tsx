@@ -148,22 +148,21 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     try {
       const productDoc = doc(db, "products", productId);
       
-      const updatedData: Partial<Product> = { ...productData };
+      // Create a new object for the update to avoid directly mutating the input
+      const dataToUpdate: Partial<Product> = { ...productData };
 
+      // If new images are provided, set the primary `image` field to the first one.
       if (productData.images && productData.images.length > 0) {
-          updatedData.image = productData.images[0];
+          dataToUpdate.image = productData.images[0];
       }
       
-      // Ensure sizes are always included in the update if they exist
-      if (productData.sizes !== undefined) {
-        updatedData.sizes = productData.sizes;
-      }
-      
-      await updateDoc(productDoc, updatedData);
+      // Firestore `updateDoc` will update fields, leaving others untouched if not specified.
+      // It can also create fields that don't exist. This is perfect for `sizes`.
+      await updateDoc(productDoc, dataToUpdate);
 
-      // Update state and cache locally
+      // Update state and cache locally with the merged data
       const updatedProducts = (productCache || []).map(p => 
-        p.id === productId ? { ...p, ...updatedData } : p
+        p.id === productId ? { ...p, ...dataToUpdate } : p
       );
       setProducts(updatedProducts);
       productCache = updatedProducts;
