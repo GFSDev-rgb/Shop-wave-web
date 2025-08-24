@@ -21,7 +21,7 @@ interface ProductFormData {
   description: string;
   price: number;
   category: string;
-  sizes?: string;
+  sizes?: string[];
   image1: string;
   image2?: string;
   image3?: string;
@@ -32,7 +32,7 @@ interface ProductContextType {
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   loading: boolean;
   addProduct: (productData: ProductFormData) => Promise<void>;
-  updateProduct: (productId: string, productData: ProductFormData) => Promise<void>;
+  updateProduct: (productId: string, productData: Partial<ProductFormData>) => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
 }
 
@@ -105,9 +105,8 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     }
     try {
       const productsCollectionRef = collection(db, "products");
-      const { image1, image2, image3, sizes, ...rest } = productData;
+      const { image1, image2, image3, ...rest } = productData;
       const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
-      const sizesArray = sizes ? sizes.split(',').map(s => s.trim()).filter(Boolean) : [];
       
       const newProductData = {
         ...rest,
@@ -115,7 +114,6 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
         reviews: 0,
         image: image1,
         images: images,
-        sizes: sizesArray,
         likeCount: 0,
       };
 
@@ -124,7 +122,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       // Update state locally instead of refetching
       setProducts(prevProducts => [
         ...prevProducts,
-        { ...newProductData, id: docRef.id }
+        { ...newProductData, id: docRef.id } as Product
       ]);
 
     } catch (error) {
@@ -133,7 +131,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const updateProduct = useCallback(async (productId: string, productData: ProductFormData) => {
+  const updateProduct = useCallback(async (productId: string, productData: Partial<ProductFormData>) => {
     if (!db) {
         const error = new Error("Cannot update product, Firestore is not configured.");
         console.error(error);
@@ -142,19 +140,16 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     try {
       const productDoc = doc(db, "products", productId);
       
-      const images = [productData.image1, productData.image2, productData.image3].filter((img): img is string => !!img && img.trim() !== '');
-      const sizesArray = productData.sizes ? productData.sizes.split(',').map(s => s.trim()).filter(Boolean) : [];
+      const { image1, image2, image3, ...rest } = productData;
       
-      const updatedData = {
-        name: productData.name,
-        description: productData.description,
-        price: productData.price,
-        category: productData.category,
-        image: productData.image1,
-        images: images,
-        sizes: sizesArray,
-      };
+      const updatedData: Partial<Product> = { ...rest };
 
+      if (image1) {
+          const images = [image1, image2, image3].filter((img): img is string => !!img && img.trim() !== '');
+          updatedData.image = image1;
+          updatedData.images = images;
+      }
+      
       await updateDoc(productDoc, updatedData);
 
       // Update state locally instead of refetching
