@@ -59,50 +59,64 @@ export default function ShopPage() {
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [isPending, startTransition] = useTransition();
 
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  
-  const workerRef = useRef<Worker>();
-
   const { products, loading: productsLoading } = useProducts();
   const { user, loading: authLoading, isAdmin } = useAuth();
   
-  const isLoading = authLoading || productsLoading;
-  const isFiltering = isPending;
-
-  useEffect(() => {
-    workerRef.current = new Worker('/workers/product-filter.worker.js');
-    workerRef.current.onmessage = (event: MessageEvent<Product[]>) => {
-        setFilteredProducts(event.data);
-    };
-    return () => {
-        workerRef.current?.terminate();
-    }
-  }, []);
-
   const [debouncedPriceRange] = useDebounce(priceRange, 300);
   const [debouncedSelectedCategories] = useDebounce(selectedCategories, 300);
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
   const [debouncedSortOption] = useDebounce(sortOption, 300);
-
-  useEffect(() => {
-    if (products.length > 0 && workerRef.current) {
-      startTransition(() => {
-        workerRef.current?.postMessage({
-            products,
-            priceRange: debouncedPriceRange,
-            selectedCategories: debouncedSelectedCategories,
-            sortOption: debouncedSortOption,
-            searchQuery: debouncedSearchQuery
-        });
-      });
-    } else if (!productsLoading) {
-        setFilteredProducts(products);
-    }
-  }, [products, productsLoading, debouncedPriceRange, debouncedSelectedCategories, debouncedSortOption, debouncedSearchQuery]);
   
+  const isLoading = authLoading || productsLoading;
+
+  const filteredProducts = useMemo(() => {
+    let tempProducts = [...products];
+
+    // Filter by search query
+    if (debouncedSearchQuery) {
+        tempProducts = tempProducts.filter((product) =>
+            product.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+        );
+    }
+    
+    // Filter by category
+    if (debouncedSelectedCategories.length > 0) {
+        tempProducts = tempProducts.filter((product) =>
+            debouncedSelectedCategories.includes(product.category)
+        );
+    }
+
+    // Filter by price range
+    tempProducts = tempProducts.filter(
+        (product) => product.price >= debouncedPriceRange[0] && product.price <= debouncedPriceRange[1]
+    );
+
+    // Sort products
+    switch (debouncedSortOption) {
+        case "price-asc":
+            tempProducts.sort((a, b) => a.price - b.price);
+            break;
+        case "price-desc":
+            tempProducts.sort((a, b) => b.price - a.price);
+            break;
+        case "rating-desc":
+            tempProducts.sort((a, b) => b.rating - a.rating);
+            break;
+        case "newest":
+        default:
+            // Assuming products are already sorted by date from the source
+            // If not, a timestamp would be needed to sort properly.
+            break;
+    }
+
+    return tempProducts;
+  }, [products, debouncedSearchQuery, debouncedSelectedCategories, debouncedPriceRange, debouncedSortOption]);
+
 
   useEffect(() => {
-    setVisibleCount(ITEMS_PER_PAGE);
+    startTransition(() => {
+      setVisibleCount(ITEMS_PER_PAGE);
+    })
   }, [debouncedPriceRange, debouncedSelectedCategories, debouncedSearchQuery, debouncedSortOption]);
 
 
@@ -116,7 +130,9 @@ export default function ShopPage() {
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting && visibleCount < filteredProducts.length) {
-        setVisibleCount(prev => prev + ITEMS_PER_PAGE);
+        startTransition(() => {
+          setVisibleCount(prev => prev + ITEMS_PER_PAGE);
+        });
       }
     });
     if (node) observer.current.observe(node);
@@ -143,12 +159,10 @@ export default function ShopPage() {
   };
 
   const clearFilters = () => {
-    startTransition(() => {
-      setPriceRange([0, 500]);
-      setSelectedCategories([]);
-      setSearchQuery("");
-      setSortOption("newest");
-    });
+    setPriceRange([0, 500]);
+    setSelectedCategories([]);
+    setSearchQuery("");
+    setSortOption("newest");
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
@@ -229,7 +243,7 @@ export default function ShopPage() {
                 
                 <div className="flex items-center gap-4 w-full sm:w-auto sm:justify-end">
                     <p className="hidden sm:block text-sm text-muted-foreground">{filteredProducts.length} Products</p>
-                    {isFiltering && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
+                    {isPending && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
                     <Select value={sortOption} onValueChange={handleSortChange}>
                         <SelectTrigger className="w-full sm:w-[180px] bg-secondary">
                             <ArrowUpDown className="h-4 w-4 mr-2" />
@@ -247,7 +261,7 @@ export default function ShopPage() {
 
             <div className={cn(
                 "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 transition-opacity duration-300",
-                isFiltering && "opacity-70"
+                isPending && "opacity-70"
             )}>
                  {renderedProducts.map((product, index) => {
                      const isLastElement = index === renderedProducts.length - 1;
