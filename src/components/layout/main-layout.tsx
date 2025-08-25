@@ -7,17 +7,19 @@ import { Footer } from '@/components/layout/footer';
 import { ReactNode } from 'react';
 import { ScrollToTopButton } from '../scroll-to-top';
 
-const noHeaderPaths = ['/login', '/signup', '/auth', '/welcome/start'];
-const noFooterPaths = ['/login', '/signup', '/profile', '/admin', '/profile/edit', '/auth', '/welcome/start'];
+const noHeaderPaths = ['/login', '/signup', '/auth', '/welcome/start', '/welcome/setup'];
+const noFooterPaths = ['/login', '/signup', '/profile', '/admin', '/profile/edit', '/auth', '/welcome/start', '/welcome/setup'];
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
-  const showHeader = !noHeaderPaths.includes(pathname);
+  const showHeader = !noHeaderPaths.some(path => pathname.startsWith(path));
   
-  const isProductPage = pathname.startsWith('/product/');
-  const isOrderPage = pathname.startsWith('/order/');
-  const showFooter = !noFooterPaths.includes(pathname) && !isProductPage && !isOrderPage;
+  const isExcluded = noFooterPaths.some(path => pathname.startsWith(path)) || 
+                   pathname.startsWith('/product/') ||
+                   pathname.startsWith('/order/');
+
+  const showFooter = !isExcluded;
 
   return (
     <div className="relative flex min-h-dvh flex-col bg-background">
