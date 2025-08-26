@@ -57,7 +57,7 @@ export default function Home() {
           </div>
           <div className="flex justify-center">
             <Image
-              src="https://scontent.fdac138-1.fna.fbcdn.net/v/t39.30808-6/514417589_122134632728805080_1173047015335082163_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=127cfc&nc_ohc=XTuSkngGCwQQ7kNvwG6fsVt&_nc_oc=Admk96UMg_zdI3PLup9wRY0uX-YY6RcjD5Wy8Nz__mhHhngCrQTdWo1QLZJqW1Tm8gw&_nc_zt=23&_nc_ht=scontent.fdac138-1.fna&_nc_gid=pvYlFEQOzvoNLr04dEQJOw&oh=00_AfXcUoJDPGNeKRAqHEOv4l8uJfAz81F563Z_Dd2Z5cfYDg&oe=68AC61F5"
+              src="/assets/home.jpg"
               alt="A stylish arrangement of fashion products"
               data-ai-hint="fashion layout"
               width={600}
