@@ -13,16 +13,18 @@ import dynamic from 'next/dynamic';
 
 const RecommendedProducts = dynamic(() => import('@/components/ai/recommended-products'), {
     loading: () => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex flex-col space-y-3">
-                    <Skeleton className="h-[400px] w-full rounded-lg bg-black/20" />
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-3/4 bg-black/20" />
-                        <Skeleton className="h-4 w-1/2 bg-black/20" />
+        <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="flex flex-col space-y-3">
+                        <Skeleton className="h-[400px] w-full rounded-lg bg-black/20" />
+                        <div className="space-y-2">
+                            <Skeleton className="h-4 w-3/4 bg-black/20" />
+                            <Skeleton className="h-4 w-1/2 bg-black/20" />
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     ),
     ssr: false
@@ -84,14 +86,6 @@ export default function Home() {
         </div>
       </section>
       
-      <section className="bg-muted/30 w-full">
-        <div className="container mx-auto px-4">
-          <div className="p-12 md:p-20 text-center">
-            <h2 className="font-headline text-6xl md:text-8xl font-bold text-primary">For you</h2>
-          </div>
-        </div>
-      </section>
-
       {user && <RecommendedProducts />}
 
     </div>
