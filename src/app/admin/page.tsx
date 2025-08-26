@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -189,7 +190,7 @@ export default function AdminDashboard() {
                                             <p className="text-sm text-muted-foreground hidden md:block">
                                                 {order.orderTime ? new Date(order.orderTime).toLocaleString() : 'N/A'}
                                             </p>
-                                            <Badge variant={order.orderStatus === 'Delivered' ? 'default' : 'secondary'} className={order.orderStatus === 'Delivered' ? 'bg-green-600' : 'bg-amber-500'}>
+                                            <Badge variant={order.orderStatus === 'Delivered' ? 'default' : 'secondary'}>
                                                 {order.orderStatus}
                                             </Badge>
                                         </div>

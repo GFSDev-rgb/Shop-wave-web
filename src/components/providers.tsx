@@ -10,7 +10,7 @@ import { ProductProvider } from "@/context/product-context";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
       <AuthProvider>
         <ProductProvider>
           <CartProvider>

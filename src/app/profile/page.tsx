@@ -149,7 +149,7 @@ export default function ProfilePage() {
                                         }
                                         <p className="text-xs text-muted-foreground">{order.orderTime.toLocaleDateString()}</p>
                                     </div>
-                                    <Badge variant={order.orderStatus === 'Delivered' ? 'default' : 'secondary'} className={order.orderStatus === 'Delivered' ? 'bg-green-600' : 'bg-amber-500'}>
+                                    <Badge variant={order.orderStatus === 'Delivered' ? 'default' : 'secondary'}>
                                         {order.orderStatus === 'Delivered' ? <PackageCheck className="mr-1 h-3 w-3" /> : <Clock className="mr-1 h-3 w-3" />}
                                         {order.orderStatus}
                                     </Badge>
