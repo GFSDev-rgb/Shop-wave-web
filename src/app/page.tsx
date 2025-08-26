@@ -20,7 +20,7 @@ export default function Home() {
   const isLoading = authLoading || productsLoading;
 
   return (
-    <div className="flex flex-col gap-16 md:gap-24 flex-1">
+    <div className="flex flex-col gap-16 flex-1">
       {/* Hero Section */}
       <section className="bg-transparent">
         <div className="container mx-auto grid md:grid-cols-2 items-center gap-12 px-4 py-16 md:py-24">
@@ -67,12 +67,9 @@ export default function Home() {
           )}
         </div>
       </section>
-
-      {/* Spacer div */}
-      <div className="py-8"></div>
       
       {/* Conditionally render recommendations if not admin */}
-      {!isAdmin && <RecommendedProducts />}
+      <RecommendedProducts />
     </div>
   );
 }
