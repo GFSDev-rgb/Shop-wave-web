@@ -3,14 +3,12 @@
 
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useLenis } from '@studio-freight/react-lenis';
 import { ArrowUp } from 'lucide-react';
 import { throttle } from 'lodash';
 import { Button } from '@/components/ui/button';
 
 export function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
-  const lenis = useLenis();
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -32,15 +30,10 @@ export function ScrollToTopButton() {
   }, []);
 
   const scrollToTop = () => {
-    // Prioritize lenis for smooth scrolling, but fall back to native scroll for robustness.
-    if (lenis) {
-      lenis.scrollTo(0);
-    } else {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
-    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   };
 
   return (
