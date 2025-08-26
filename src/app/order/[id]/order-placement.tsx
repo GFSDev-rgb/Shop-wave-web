@@ -15,6 +15,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Loader2, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import type { OrderItem } from '@/lib/types';
 
 export default function OrderPlacement({ productId }: { productId: string }) {
     const router = useRouter();
@@ -42,14 +43,19 @@ export default function OrderPlacement({ productId }: { productId: string }) {
         setIsPlacingOrder(true);
         const total = product.price * quantity;
 
+        const orderItem: OrderItem = {
+            productId: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: quantity,
+            image: product.image,
+            size: size,
+        };
+
         try {
             await addDoc(collection(db, 'orders'), {
                 userId: user.uid,
-                productName: product.name,
-                productImage: product.image,
-                quantity: quantity,
-                price: product.price,
-                size: size,
+                items: [orderItem],
                 total: total,
                 orderTime: serverTimestamp(),
                 orderStatus: 'Pending',

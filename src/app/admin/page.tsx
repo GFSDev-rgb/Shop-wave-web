@@ -46,10 +46,16 @@ export default function AdminDashboard() {
         if (user && isAdmin) {
             const q = query(collection(db, 'orders'), orderBy('orderTime', 'desc'));
             const unsubscribe = onSnapshot(q, (querySnapshot) => {
-                const ordersData = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...(doc.data() as Omit<Order, 'id'>)
-                })) as OrderWithId[];
+                const ordersData = querySnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    // Ensure orderTime is converted to a Date object safely
+                    const orderTime = data.orderTime instanceof Timestamp ? data.orderTime.toDate() : new Date();
+                    return {
+                        id: doc.id,
+                        ...(data as Omit<Order, 'id'>),
+                        orderTime,
+                    }
+                }) as OrderWithId[];
                 setOrders(ordersData);
                 setLoading(false);
             }, (error) => {
@@ -176,12 +182,12 @@ export default function AdminDashboard() {
                                 <AccordionTrigger className="hover:no-underline">
                                     <div className="flex items-center justify-between w-full">
                                         <div className="text-left">
-                                            <p className="font-semibold">{order.productName}</p>
+                                            <p className="font-semibold">{order.items.length > 1 ? `${order.items[0].name} & more...` : order.items[0].name}</p>
                                             <p className="text-sm text-muted-foreground">{order.fullName}</p>
                                         </div>
                                         <div className="flex items-center gap-4">
                                             <p className="text-sm text-muted-foreground hidden md:block">
-                                                {order.orderTime ? (order.orderTime as unknown as Timestamp).toDate().toLocaleString() : 'N/A'}
+                                                {order.orderTime ? new Date(order.orderTime).toLocaleString() : 'N/A'}
                                             </p>
                                             <Badge variant={order.orderStatus === 'Delivered' ? 'default' : 'secondary'} className={order.orderStatus === 'Delivered' ? 'bg-green-600' : 'bg-amber-500'}>
                                                 {order.orderStatus}
@@ -191,14 +197,19 @@ export default function AdminDashboard() {
                                 </AccordionTrigger>
                                 <AccordionContent className="pt-4 border-t">
                                     <div className="grid md:grid-cols-3 gap-6">
-                                        <div className="md:col-span-1 flex items-center gap-4">
-                                             <Image src={order.productImage} alt={order.productName} width={80} height={100} className="rounded-md object-cover" />
-                                             <div>
-                                                <p className="font-semibold">{order.productName}</p>
-                                                {order.size && <p className="text-sm">Size: {order.size}</p>}
-                                                <p className="text-sm">Qty: {order.quantity}</p>
-                                                <p className="text-sm font-bold">Tk {(order.price * order.quantity).toFixed(2)}</p>
-                                             </div>
+                                        <div className="md:col-span-1 space-y-4">
+                                            <h4 className="font-semibold mb-2">Items</h4>
+                                            {order.items.map((item, index) => (
+                                                <div key={index} className="flex items-center gap-4">
+                                                    <Image src={item.image} alt={item.name} width={60} height={75} className="rounded-md object-cover" />
+                                                    <div>
+                                                        <p className="font-semibold">{item.name}</p>
+                                                        {item.size && <p className="text-sm">Size: {item.size}</p>}
+                                                        <p className="text-sm">Qty: {item.quantity}</p>
+                                                        <p className="text-sm font-bold">Tk {item.price.toFixed(2)}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
                                         <div className="md:col-span-1">
                                             <h4 className="font-semibold mb-2">Customer Details</h4>

@@ -38,15 +38,10 @@ export type OrderItem = {
 export type Order = {
   id?: string; // Optional because it's assigned by Firestore
   userId: string;
-  orderTime: Timestamp;
-  orderStatus: 'Pending' | 'Delivered';
-  // Single product info
-  productName: string;
-  productImage: string;
-  quantity: number;
-  price: number;
-  size: string;
+  items: OrderItem[];
   total: number;
+  orderTime: Timestamp | Date;
+  orderStatus: 'Pending' | 'Delivered';
   // Customer info
   fullName: string;
   phoneNumber: string;

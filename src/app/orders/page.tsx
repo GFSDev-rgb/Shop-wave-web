@@ -40,12 +40,12 @@ export default function OrdersPage() {
 
         const querySnapshot = await getDocs(q);
         const fetchedOrders: OrderWithId[] = querySnapshot.docs.map(doc => {
-            const data = doc.data() as Order;
+            const data = doc.data() as Omit<Order, 'id'>;
             return {
               ...data,
               id: doc.id,
             }
-        });
+        }) as OrderWithId[];
         
         setOrders(fetchedOrders);
       } catch (error) {
@@ -116,16 +116,18 @@ export default function OrdersPage() {
                     <CardContent>
                         <Separator className="mb-4" />
                         <div className="space-y-4">
-                           <div className="flex items-center gap-4">
-                                <Image src={order.productImage} alt={order.productName} data-ai-hint="product photo" width={64} height={64} className="rounded-md object-cover"/>
+                           {order.items.map((item) => (
+                             <div key={item.productId} className="flex items-center gap-4">
+                                <Image src={item.image} alt={item.name} data-ai-hint="product photo" width={64} height={64} className="rounded-md object-cover"/>
                                 <div>
-                                    <p className="font-semibold">{order.productName}</p>
+                                    <p className="font-semibold">{item.name}</p>
                                     <p className="text-sm text-muted-foreground">
-                                        {order.quantity} x Tk {order.price.toFixed(2)}
+                                        {item.quantity} x Tk {item.price.toFixed(2)}
                                     </p>
-                                     {order.size && <p className="text-sm text-muted-foreground">Size: {order.size}</p>}
+                                     {item.size && <p className="text-sm text-muted-foreground">Size: {item.size}</p>}
                                 </div>
                             </div>
+                           ))}
                         </div>
                     </CardContent>
                 </Card>

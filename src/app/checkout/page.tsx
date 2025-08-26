@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreditCard, Lock, Loader2, User } from 'lucide-react';
 import Link from 'next/link';
-import { addDoc, collection, serverTimestamp, doc, writeBatch } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useAuth } from '@/hooks/use-auth';
 import { useCart } from '@/hooks/use-cart';
 import { useToast } from '@/hooks/use-toast';
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
+import { OrderItem } from '@/lib/types';
 
 export default function CheckoutPage() {
   const { user, profile, isFirebaseEnabled, loading: authLoading } = useAuth();
@@ -44,32 +45,31 @@ export default function CheckoutPage() {
     setIsPlacingOrder(true);
 
     try {
-      const batch = writeBatch(db);
-
-      for (const cartItem of cartItems) {
-        const orderDocRef = doc(collection(db, 'orders'));
-        
-        const orderData = {
-          userId: user.uid,
-          productName: cartItem.product.name,
-          productImage: cartItem.product.image,
-          quantity: cartItem.quantity,
-          price: cartItem.product.price,
-          size: cartItem.size,
-          total: cartItem.product.price * cartItem.quantity,
-          orderTime: serverTimestamp(),
-          orderStatus: 'Pending',
-          fullName: profile.fullName,
-          phoneNumber: profile.phoneNumber,
-          city: profile.address.split(',').pop()?.trim() || '',
-          village: profile.address.split(',').slice(0, -1).join(',').trim() || '',
-          fullAddress: profile.address,
-        };
-
-        batch.set(orderDocRef, orderData);
-      }
+      const ordersCollectionRef = collection(db, 'orders');
       
-      await batch.commit();
+      const orderItems: OrderItem[] = cartItems.map(item => ({
+        productId: item.product.id,
+        name: item.product.name,
+        price: item.product.price,
+        quantity: item.quantity,
+        image: item.product.image,
+        size: item.size
+      }));
+
+      const orderData = {
+        userId: user.uid,
+        items: orderItems,
+        total: cartTotal,
+        orderTime: serverTimestamp(),
+        orderStatus: 'Pending',
+        fullName: profile.fullName,
+        phoneNumber: profile.phoneNumber,
+        city: profile.address.split(',').pop()?.trim() || '',
+        village: profile.address.split(',').slice(0, -1).join(',').trim() || '',
+        fullAddress: profile.address,
+      };
+
+      await addDoc(ordersCollectionRef, orderData);
       await clearCart();
 
       toast({

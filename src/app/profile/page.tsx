@@ -17,7 +17,7 @@ import { collection, query, where, getDocs, Timestamp, limit, orderBy } from 'fi
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 
-type OrderWithId = Omit<Order, 'id' | 'createdAt' | 'orderTime'> & {
+type OrderWithId = Omit<Order, 'id' | 'orderTime'> & {
     id: string;
     orderTime: Date;
 }
@@ -51,7 +51,7 @@ export default function ProfilePage() {
             );
             const querySnapshot = await getDocs(q);
             const fetchedOrders = querySnapshot.docs.map(doc => {
-                const data = doc.data() as Order;
+                const data = doc.data() as Omit<Order, 'id'>;
                 return {
                     ...data,
                     id: doc.id,
@@ -139,10 +139,14 @@ export default function ProfilePage() {
                             {recentOrders.map(order => (
                                 <Card key={order.id} className="p-4 flex items-center gap-4">
                                      <div className="bg-secondary rounded-md p-2">
-                                        <Image src={order.items[0]?.image} alt={order.items[0]?.name} width={48} height={48} className="rounded-sm" />
+                                        {order.items && order.items.length > 0 &&
+                                            <Image src={order.items[0].image} alt={order.items[0].name} width={48} height={48} className="rounded-sm" />
+                                        }
                                     </div>
                                     <div className="flex-grow">
-                                        <p className="font-semibold">{order.items.length > 1 ? `${order.items[0].name} & more` : order.items[0].name}</p>
+                                        {order.items && order.items.length > 0 &&
+                                            <p className="font-semibold">{order.items.length > 1 ? `${order.items[0].name} & more` : order.items[0].name}</p>
+                                        }
                                         <p className="text-xs text-muted-foreground">{order.orderTime.toLocaleDateString()}</p>
                                     </div>
                                     <Badge variant={order.orderStatus === 'Delivered' ? 'default' : 'secondary'} className={order.orderStatus === 'Delivered' ? 'bg-green-600' : 'bg-amber-500'}>
