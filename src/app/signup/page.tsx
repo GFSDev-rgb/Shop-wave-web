@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -81,7 +80,7 @@ export default function SignupPage() {
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="bg-background/50 border-white/20"
+                className="bg-background/50 border-input"
               />
             </div>
             <div className="grid gap-2">
@@ -93,7 +92,7 @@ export default function SignupPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-background/50 border-white/20"
+                className="bg-background/50 border-input"
               />
             </div>
              <div className="grid gap-2">
@@ -104,7 +103,7 @@ export default function SignupPage() {
                 placeholder="+123456789"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                className="bg-background/50 border-white/20"
+                className="bg-background/50 border-input"
               />
             </div>
              <div className="grid gap-2">
@@ -115,7 +114,7 @@ export default function SignupPage() {
                 placeholder="123 Main St, Anytown"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="bg-background/50 border-white/20"
+                className="bg-background/50 border-input"
               />
             </div>
             <div className="grid gap-2">
@@ -126,7 +125,7 @@ export default function SignupPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-background/50 border-white/20"
+                className="bg-background/50 border-input"
               />
             </div>
              <div className="grid gap-2">
@@ -137,7 +136,7 @@ export default function SignupPage() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="bg-background/50 border-white/20"
+                className="bg-background/50 border-input"
               />
             </div>
             <Button
