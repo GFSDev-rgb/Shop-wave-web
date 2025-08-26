@@ -5,35 +5,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import ProductCard from '@/components/product-card';
-import { ArrowRight, Wand2 } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
-import dynamic from 'next/dynamic';
 import { InteractiveImage } from '@/components/ui/interactive-image';
-
-const RecommendedProducts = dynamic(() => import('@/components/ai/recommended-products'), {
-    loading: () => (
-        <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="flex flex-col space-y-3">
-                        <Skeleton className="h-[400px] w-full rounded-lg bg-black/20" />
-                        <div className="space-y-2">
-                            <Skeleton className="h-4 w-3/4 bg-black/20" />
-                            <Skeleton className="h-4 w-1/2 bg-black/20" />
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    ),
-    ssr: false
-});
 
 export default function Home() {
   const { products, loading: productsLoading } = useProducts();
-  const { loading: authLoading, isAdmin } = useAuth();
+  const { loading: authLoading } = useAuth();
   const featuredProducts = products.slice(0, 4);
 
   const isLoading = authLoading || productsLoading;
@@ -86,11 +66,6 @@ export default function Home() {
           )}
         </div>
       </section>
-
-      <div className="py-8" />
-      
-      {!isAdmin && <RecommendedProducts />}
-
     </div>
   );
 }
