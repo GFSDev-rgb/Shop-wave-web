@@ -182,7 +182,7 @@
     font-weight: 700;
     text-shadow: rgba(0, 0, 0, 0.8) 0 2px 8px;
     margin-bottom: 0.5rem;
-    color: hsl(var(--card-foreground));
+    color: hsl(var(--primary-foreground));
 }
 .card-info .card-price {
     font-size: 1.25rem;
