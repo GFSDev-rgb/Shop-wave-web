@@ -44,10 +44,10 @@ export default function Home() {
       <section className="bg-transparent">
         <div className="container mx-auto grid md:grid-cols-2 items-center gap-12 px-4 py-16 md:py-24">
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <h1 className="font-headline text-5xl md:text-6xl lg:text-7xl font-bold text-primary-foreground">
+            <h1 className="font-headline text-5xl md:text-6xl lg:text-7xl font-bold text-foreground">
               Experience the New Wave
             </h1>
-            <p className="mt-4 max-w-xl text-lg text-muted-foreground">
+            <p className="mt-4 max-w-xl text-lg text-foreground/80">
               Discover curated collections and unique finds. ShopWave brings you the best in modern style and quality.
             </p>
             <Button asChild size="lg" className="mt-8">
