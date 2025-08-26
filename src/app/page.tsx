@@ -57,7 +57,7 @@ export default function Home() {
           </div>
           <div className="flex justify-center">
             <Image
-              src="/assets/home.jpg"
+              src="https://picsum.photos/600/400"
               alt="A stylish arrangement of fashion products"
               data-ai-hint="fashion layout"
               width={600}
