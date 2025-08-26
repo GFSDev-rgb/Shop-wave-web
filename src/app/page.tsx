@@ -84,9 +84,11 @@ export default function Home() {
         </div>
       </section>
       
-      <section className="container mx-auto px-4">
-        <div className="bg-muted/30 rounded-lg p-12 md:p-20 text-center">
-          <h2 className="font-headline text-6xl md:text-8xl font-bold text-primary">For you</h2>
+      <section className="bg-muted/30 w-full">
+        <div className="container mx-auto px-4">
+          <div className="p-12 md:p-20 text-center">
+            <h2 className="font-headline text-6xl md:text-8xl font-bold text-primary">For you</h2>
+          </div>
         </div>
       </section>
 
