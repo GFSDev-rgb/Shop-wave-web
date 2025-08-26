@@ -82,6 +82,12 @@
   }
 }
 
+/* 3D Interactive Hero Image */
+.interactive-image-container {
+  transition: transform 0.1s ease-out;
+  transform-style: preserve-3d;
+}
+
 /* 3D Product Card Styles - Simplified for new theme */
 .card-wrap {
   transform-style: preserve-3d;

@@ -10,6 +10,7 @@ import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
 import dynamic from 'next/dynamic';
+import { InteractiveImage } from '@/components/ui/interactive-image';
 
 const RecommendedProducts = dynamic(() => import('@/components/ai/recommended-products'), {
     loading: () => (
@@ -56,14 +57,14 @@ export default function Home() {
             </Button>
           </div>
           <div className="flex justify-center">
-            <Image
-              src="https://picsum.photos/600/400"
-              alt="A stylish arrangement of fashion products"
-              data-ai-hint="fashion layout"
-              width={600}
-              height={400}
-              className="rounded-lg object-cover shadow-2xl"
-              priority
+            <InteractiveImage
+                src="https://picsum.photos/600/400"
+                alt="A stylish arrangement of fashion products"
+                data-ai-hint="fashion layout"
+                width={600}
+                height={400}
+                className="rounded-lg object-cover shadow-2xl"
+                priority
             />
           </div>
         </div>
