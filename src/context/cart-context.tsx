@@ -140,7 +140,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user, loadCart]);
   
-  const addToCart = useCallback(async (product: Product, quantityToAdd: number = 1, size: string) => {
+  const addToCart = useCallback(async (product: Product, quantityToAdd: number = 1, size: string = 'One Size') => {
     const cartItemId = `${product.id}-${size}`;
     const existingItemIndex = cartItems.findIndex(item => item.id === cartItemId);
     let newCartItems = [...cartItems];
@@ -199,3 +199,5 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     </CartContext.Provider>
   );
 };
+
+    

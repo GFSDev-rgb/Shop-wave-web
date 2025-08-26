@@ -77,7 +77,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
       if (isInCart) {
         router.push('/cart');
       } else {
-        await addToCart(localProduct);
+        await addToCart(localProduct, 1, localProduct.sizes?.[0] || 'One Size');
         toast({
           title: "Added to cart",
           description: `${localProduct.name} is now in your cart.`,
@@ -225,3 +225,5 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
 ProductCard.displayName = "ProductCard";
 
 export default ProductCard;
+
+    
