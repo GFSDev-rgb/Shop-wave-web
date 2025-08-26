@@ -6,6 +6,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { ReactNode } from 'react';
 import { ScrollToTopButton } from '../scroll-to-top';
+import { AuroraBackground } from '../ui/aurora-background';
 
 const noHeaderPaths = ['/login', '/signup', '/auth', '/welcome/start', '/welcome/setup'];
 const noFooterPaths = ['/login', '/signup', '/auth', '/welcome/start', '/welcome/setup', '/admin', '/profile/edit'];
@@ -19,6 +20,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="relative flex min-h-dvh flex-col bg-background">
+      <AuroraBackground />
       <div className="relative z-10 flex flex-1 flex-col">
         {showHeader && <Header />}
         <main className="flex flex-1 flex-col">
