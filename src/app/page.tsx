@@ -33,7 +33,7 @@ const RecommendedProducts = dynamic(() => import('@/components/ai/recommended-pr
 
 export default function Home() {
   const { products, loading: productsLoading } = useProducts();
-  const { user, loading: authLoading } = useAuth();
+  const { loading: authLoading, isAdmin } = useAuth();
   const featuredProducts = products.slice(0, 4);
 
   const isLoading = authLoading || productsLoading;
@@ -89,7 +89,7 @@ export default function Home() {
 
       <div className="py-8" />
       
-      {user && <RecommendedProducts />}
+      {!isAdmin && <RecommendedProducts />}
 
     </div>
   );
