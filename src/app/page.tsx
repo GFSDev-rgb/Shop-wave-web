@@ -10,10 +10,11 @@ import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
 import { InteractiveImage } from '@/components/ui/interactive-image';
+import RecommendedProducts from '@/components/ai/recommended-products';
 
 export default function Home() {
   const { products, loading: productsLoading } = useProducts();
-  const { loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isAdmin } = useAuth();
   const featuredProducts = products.slice(0, 4);
 
   const isLoading = authLoading || productsLoading;
@@ -66,6 +67,12 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* Spacer div */}
+      <div className="py-8"></div>
+      
+      {/* Conditionally render recommendations if not admin */}
+      {!isAdmin && <RecommendedProducts />}
     </div>
   );
 }
