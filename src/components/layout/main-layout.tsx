@@ -8,18 +8,14 @@ import { ReactNode } from 'react';
 import { ScrollToTopButton } from '../scroll-to-top';
 
 const noHeaderPaths = ['/login', '/signup', '/auth', '/welcome/start', '/welcome/setup'];
-const noFooterPaths = ['/login', '/signup', '/profile', '/admin', '/profile/edit', '/auth', '/welcome/start', '/welcome/setup'];
+const noFooterPaths = ['/login', '/signup', '/auth', '/welcome/start', '/welcome/setup', '/admin', '/profile/edit'];
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   const showHeader = !noHeaderPaths.some(path => pathname.startsWith(path));
   
-  const isExcluded = noFooterPaths.some(path => pathname.startsWith(path)) || 
-                   pathname.startsWith('/product/') ||
-                   pathname.startsWith('/order/');
-
-  const showFooter = !isExcluded;
+  const showFooter = !noFooterPaths.some(path => pathname.startsWith(path));
 
   return (
     <div className="relative flex min-h-dvh flex-col bg-background">

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import ProductCard from '@/components/product-card';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Wand2 } from 'lucide-react';
 import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
@@ -81,6 +81,12 @@ export default function Home() {
               <ProductCard key={product.id} product={product} />
             ))
           )}
+        </div>
+      </section>
+      
+      <section className="container mx-auto px-4">
+        <div className="bg-muted/30 rounded-lg p-12 md:p-20 text-center">
+          <h2 className="font-headline text-6xl md:text-8xl font-bold text-primary">For you</h2>
         </div>
       </section>
 
