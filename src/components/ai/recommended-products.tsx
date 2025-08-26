@@ -25,7 +25,7 @@ export default function RecommendedProducts() {
   }, []);
 
   return (
-    <section className="container mx-auto px-4 pt-8 pb-16">
+    <section className="container mx-auto px-4 pt-8 pb-8">
         <div className="flex items-center justify-center gap-4 mb-12">
             <Wand2 className="h-8 w-8 text-primary" />
             <h2 className="font-headline text-4xl font-bold text-center">Just For You</h2>
