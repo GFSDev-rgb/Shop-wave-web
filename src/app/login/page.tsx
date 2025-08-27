@@ -9,12 +9,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, LogIn, AlertTriangle } from 'lucide-react';
+import { Loader2, LogIn, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { signIn, loading, isFirebaseEnabled } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
@@ -38,6 +39,8 @@ export default function LoginPage() {
       });
     }
   };
+  
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
     <div className="container flex flex-1 flex-col items-center justify-center p-4">
@@ -70,16 +73,26 @@ export default function LoginPage() {
                 className="bg-background/50 border-input"
               />
             </div>
-            <div className="grid gap-2">
+            <div className="grid gap-2 relative">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-background/50 border-input"
+                className="bg-background/50 border-input pr-10"
               />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-7 h-7 w-7 text-muted-foreground hover:text-foreground"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
+              </Button>
             </div>
             <Button
               type="submit"
