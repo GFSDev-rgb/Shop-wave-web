@@ -1,8 +1,7 @@
-
 'use client';
 
 import React, { createContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
-import { onAuthStateChanged, User, signOut as firebaseSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile as updateFirebaseProfile } from 'firebase/auth';
+import { onAuthStateChanged, User, signOut as firebaseSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile as updateFirebaseProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth, db, isFirebaseEnabled } from '@/lib/firebase';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import type { UserProfile } from '@/lib/types';
@@ -17,6 +16,7 @@ interface AuthContextType {
   isFirebaseEnabled: boolean;
   signIn: (email: string, pass: string) => Promise<void>;
   signUp: (email: string, pass: string, details: { fullName: string; address?: string; phoneNumber?: string }) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
   setProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
@@ -114,6 +114,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const signInWithGoogle = async () => {
+    if (!auth || !db) throw new Error("Firebase is not configured. Please check your .env file.");
+    setLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      const userCredential = await signInWithPopup(auth, provider);
+      const user = userCredential.user;
+
+      const profileDocRef = doc(db, 'profiles', user.uid);
+      const docSnap = await getDoc(profileDocRef);
+
+      if (!docSnap.exists()) {
+        const newProfile: UserProfile = {
+          fullName: user.displayName || '',
+          email: user.email || '',
+          photoURL: user.photoURL || '',
+          phoneNumber: user.phoneNumber || '',
+          address: '',
+          bio: '',
+          likes: {},
+          createdAt: serverTimestamp(),
+        };
+        await setDoc(profileDocRef, newProfile);
+        setProfile(newProfile);
+      }
+    } catch (error) {
+        console.error("Error signing in with Google", error);
+        throw error;
+    } finally {
+        setLoading(false);
+    }
+  };
+
   const signOut = async () => {
     if (!auth) return;
     await firebaseSignOut(auth);
@@ -161,7 +194,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [user, toast]);
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, isAdmin, isFirebaseEnabled, signIn, signUp, signOut, updateProfile, setProfile }}>
+    <AuthContext.Provider value={{ user, profile, loading, isAdmin, isFirebaseEnabled, signIn, signUp, signInWithGoogle, signOut, updateProfile, setProfile }}>
       {children}
     </AuthContext.Provider>
   );
