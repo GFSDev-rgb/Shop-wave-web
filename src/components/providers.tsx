@@ -7,7 +7,6 @@ import { WishlistProvider } from "@/context/wishlist-context";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "next-themes";
 import { ProductProvider } from "@/context/product-context";
-import { ReactLenis } from "@studio-freight/react-lenis";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -16,9 +15,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
         <ProductProvider>
           <CartProvider>
             <WishlistProvider>
-              <ReactLenis root>
-                {children}
-              </ReactLenis>
+              {children}
               <Toaster />
             </WishlistProvider>
           </CartProvider>
