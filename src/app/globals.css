@@ -40,35 +40,35 @@
     --chart-5: 30 54% 90%;
   }
 
-  /* Dark theme is removed as per the new design constraints */
+  /* Dark theme is now correctly defined */
   .dark {
-    --background: 210 20% 98%; /* Dark White */
-    --foreground: 210 5% 40%; /* Gray */
+    --background: 210 10% 10%; /* Dark Gray */
+    --foreground: 210 5% 80%; /* Light Gray */
 
-    --card: 210 20% 98%; /* Dark White */
-    --card-foreground: 210 5% 40%; /* Gray */
+    --card: 210 10% 12%; /* Slightly Lighter Dark Gray */
+    --card-foreground: 210 5% 85%; /* Lighter Gray */
 
-    --popover: 210 20% 98%; /* Dark White */
-    --popover-foreground: 210 5% 40%; /* Gray */
+    --popover: 210 10% 10%; /* Dark Gray */
+    --popover-foreground: 210 5% 80%; /* Light Gray */
 
-    --primary: 30 54% 40%; /* Brown */
+    --primary: 30 54% 60%; /* Lighter Brown */
     --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 210 10% 92%; /* Light Gray */
-    --secondary-foreground: 30 54% 40%; /* Brown */
+    --secondary: 210 10% 20%; /* Medium Dark Gray */
+    --secondary-foreground: 30 54% 70%; /* Lighter Brown */
     
-    --muted: 210 10% 92%; /* Light Gray */
-    --muted-foreground: 210 5% 60%; /* Lighter Gray */
+    --muted: 210 10% 20%; /* Medium Dark Gray */
+    --muted-foreground: 210 5% 50%; /* Medium Gray */
     
-    --accent: 30 54% 94%; /* Light Brown */
-    --accent-foreground: 30 54% 30%; /* Dark Brown */
+    --accent: 30 54% 20%; /* Dark Brown */
+    --accent-foreground: 30 54% 90%; /* Light Brown */
     
-    --destructive: 0 84% 60%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 210 10% 88%; /* Gray */
-    --input: 210 10% 88%; /* Gray */
-    --ring: 30 54% 40%; /* Brown */
+    --border: 210 10% 25%; /* Medium Dark Gray */
+    --input: 210 10% 25%; /* Medium Dark Gray */
+    --ring: 30 54% 60%; /* Lighter Brown */
   }
 }
 
