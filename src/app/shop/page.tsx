@@ -48,7 +48,7 @@ const ProductForm = dynamic(() => import('@/components/admin/product-form'), {
   ),
 });
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 10;
 
 export default function ShopPage() {
   const [sortOption, setSortOption] = useState("newest");
@@ -169,8 +169,8 @@ export default function ShopPage() {
   const renderContent = () => {
     if (isLoading) {
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 lg:col-span-4">
-            {Array.from({ length: 8 }).map((_, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8 lg:col-span-4">
+            {Array.from({ length: 10 }).map((_, i) => (
                 <div key={i} className="flex flex-col space-y-3">
                     <Skeleton className="h-[400px] w-full rounded-lg" />
                 </div>
@@ -181,11 +181,11 @@ export default function ShopPage() {
     
     return (
         <main className="lg:col-span-4">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Sheet>
                         <SheetTrigger asChild>
-                            <Button variant="outline" className="flex items-center gap-2">
+                            <Button variant="outline" className="flex items-center gap-2 lg:hidden">
                                 <Filter className="h-4 w-4" />
                                 <span>Filters</span>
                             </Button>
@@ -230,37 +230,39 @@ export default function ShopPage() {
                     )}
                 </div>
 
-                <div className="relative w-full sm:flex-1 sm:max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        type="search"
-                        placeholder="Search products..."
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        className="pl-9 bg-secondary w-full"
-                    />
-                </div>
-                
-                <div className="flex items-center gap-4 w-full sm:w-auto sm:justify-end">
-                    <p className="hidden sm:block text-sm text-muted-foreground">{filteredProducts.length} Products</p>
-                    {isPending && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
-                    <Select value={sortOption} onValueChange={handleSortChange}>
-                        <SelectTrigger className="w-full sm:w-[180px] bg-secondary">
-                            <ArrowUpDown className="h-4 w-4 mr-2" />
-                            <SelectValue placeholder="Sort by" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="newest">Newest</SelectItem>
-                            <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                            <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                            <SelectItem value="rating-desc">Top Rated</SelectItem>
-                        </SelectContent>
-                    </Select>
+                <div className="flex w-full sm:w-auto sm:flex-1 justify-end items-center gap-4">
+                    <div className="relative w-full sm:max-w-xs">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            type="search"
+                            placeholder="Search products..."
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            className="pl-9 bg-secondary w-full"
+                        />
+                    </div>
+                    
+                    <div className="hidden sm:flex items-center gap-4">
+                        <p className="text-sm text-muted-foreground">{filteredProducts.length} Products</p>
+                        {isPending && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
+                        <Select value={sortOption} onValueChange={handleSortChange}>
+                            <SelectTrigger className="w-[180px] bg-secondary">
+                                <ArrowUpDown className="h-4 w-4 mr-2" />
+                                <SelectValue placeholder="Sort by" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="newest">Newest</SelectItem>
+                                <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                                <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                                <SelectItem value="rating-desc">Top Rated</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
             </div>
 
             <div className={cn(
-                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 transition-opacity duration-300",
+                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8 transition-opacity duration-300",
                 isPending && "opacity-70"
             )}>
                  {renderedProducts.map((product, index) => {
@@ -288,8 +290,8 @@ export default function ShopPage() {
             
             {/* Loading indicator for infinite scroll */}
             {visibleCount < filteredProducts.length && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-8">
-                     {Array.from({ length: 4 }).map((_, i) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8 mt-8">
+                     {Array.from({ length: 5 }).map((_, i) => (
                         <div key={`placeholder-${i}`} className="flex flex-col space-y-3">
                             <Skeleton className="h-[400px] w-full rounded-lg" />
                         </div>
@@ -310,7 +312,19 @@ export default function ShopPage() {
         </p>
       </header>
       
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <aside className="hidden lg:block lg:col-span-1">
+            <div className="sticky top-24">
+                <h2 className="font-headline text-2xl font-bold mb-4">Filters</h2>
+                 <Filters
+                    priceRange={priceRange}
+                    onPriceChange={handlePriceChange}
+                    selectedCategories={selectedCategories}
+                    onCategoryToggle={handleCategoryToggle}
+                />
+                 <Button variant="ghost" className="w-full mt-6" onClick={clearFilters}>Clear all filters</Button>
+            </div>
+        </aside>
         {renderContent()}
       </div>
     </div>
