@@ -122,47 +122,49 @@ export default function ProfilePage() {
                         <span>{profile.address || "Not provided"}</span>
                     </div>
                 </div>
-                <div className="space-y-4">
+                <div className="flex flex-col space-y-4">
                     <div className="flex justify-between items-center">
                         <h2 className="font-headline text-xl font-semibold">Recent Orders</h2>
                         <Button variant="ghost" asChild>
                             <Link href="/orders">View All <History className="ml-2 h-4 w-4"/></Link>
                         </Button>
                     </div>
-                    {ordersLoading ? (
-                         <div className="space-y-2">
-                             <Skeleton className="h-16 w-full" />
-                             <Skeleton className="h-16 w-full" />
-                         </div>
-                    ) : recentOrders.length > 0 ? (
-                        <div className="space-y-4">
-                            {recentOrders.map(order => (
-                                <Card key={order.id} className="p-4 flex items-center gap-4">
-                                     <div className="bg-secondary rounded-md p-2">
-                                        {order.items && order.items.length > 0 &&
-                                            <Image src={order.items[0].image} alt={order.items[0].name} width={48} height={48} className="rounded-sm" />
-                                        }
-                                    </div>
-                                    <div className="flex-grow">
-                                        {order.items && order.items.length > 0 &&
-                                            <p className="font-semibold">{order.items.length > 1 ? `${order.items[0].name} & more` : order.items[0].name}</p>
-                                        }
-                                        <p className="text-xs text-muted-foreground">{order.orderTime.toLocaleDateString()}</p>
-                                    </div>
-                                    <Badge variant={order.orderStatus === 'Delivered' ? 'default' : 'secondary'}>
-                                        {order.orderStatus === 'Delivered' ? <PackageCheck className="mr-1 h-3 w-3" /> : <Clock className="mr-1 h-3 w-3" />}
-                                        {order.orderStatus}
-                                    </Badge>
-                                </Card>
-                            ))}
-                        </div>
-                    ) : (
-                        <Card className="flex flex-col items-center justify-center p-8 border-2 border-dashed h-full text-center">
-                             <ShoppingBag className="h-10 w-10 text-muted-foreground mb-2" />
-                             <p className="text-muted-foreground text-sm">You haven't placed any orders yet.</p>
-                             <Button variant="secondary" className="mt-4" asChild><Link href="/shop">Start Shopping</Link></Button>
-                        </Card>
-                    )}
+                    <div className="flex-grow">
+                      {ordersLoading ? (
+                          <div className="space-y-2">
+                              <Skeleton className="h-16 w-full" />
+                              <Skeleton className="h-16 w-full" />
+                          </div>
+                      ) : recentOrders.length > 0 ? (
+                          <div className="space-y-4">
+                              {recentOrders.map(order => (
+                                  <Card key={order.id} className="p-4 flex items-center gap-4">
+                                      <div className="bg-secondary rounded-md p-2">
+                                          {order.items && order.items.length > 0 &&
+                                              <Image src={order.items[0].image} alt={order.items[0].name} width={48} height={48} className="rounded-sm" />
+                                          }
+                                      </div>
+                                      <div className="flex-grow">
+                                          {order.items && order.items.length > 0 &&
+                                              <p className="font-semibold">{order.items.length > 1 ? `${order.items[0].name} & more` : order.items[0].name}</p>
+                                          }
+                                          <p className="text-xs text-muted-foreground">{order.orderTime.toLocaleDateString()}</p>
+                                      </div>
+                                      <Badge variant={order.orderStatus === 'Delivered' ? 'default' : 'secondary'}>
+                                          {order.orderStatus === 'Delivered' ? <PackageCheck className="mr-1 h-3 w-3" /> : <Clock className="mr-1 h-3 w-3" />}
+                                          {order.orderStatus}
+                                      </Badge>
+                                  </Card>
+                              ))}
+                          </div>
+                      ) : (
+                          <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed h-full rounded-lg text-center">
+                              <ShoppingBag className="h-10 w-10 text-muted-foreground mb-2" />
+                              <p className="text-muted-foreground text-sm">You haven't placed any orders yet.</p>
+                              <Button variant="secondary" className="mt-4" asChild><Link href="/shop">Start Shopping</Link></Button>
+                          </div>
+                      )}
+                    </div>
                 </div>
             </CardContent>
         </Card>
