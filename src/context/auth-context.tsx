@@ -153,6 +153,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await firebaseSignOut(auth);
     localStorage.removeItem('cart');
     localStorage.removeItem('wishlist');
+    setProfile(null);
+    setUser(null);
     router.push('/');
     router.refresh();
   };

@@ -42,7 +42,7 @@ export default function LoginPage() {
         title: 'Success!',
         description: 'You have been logged in.',
       });
-      router.push('/welcome/start');
+      router.push('/profile');
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -59,7 +59,7 @@ export default function LoginPage() {
         title: 'Success!',
         description: 'You have been logged in with Google.',
       });
-      router.push('/');
+      router.push('/profile');
     } catch (error: any) {
       toast({
         variant: 'destructive',

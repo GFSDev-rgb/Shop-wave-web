@@ -56,7 +56,7 @@ export default function SignupPage() {
         title: 'Welcome!',
         description: "Your account has been created successfully.",
       });
-      router.push('/');
+      router.push('/welcome/setup');
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -73,7 +73,7 @@ export default function SignupPage() {
         title: 'Welcome!',
         description: 'You have been signed up with Google.',
       });
-      router.push('/');
+      router.push('/welcome/setup');
     } catch (error: any) {
       toast({
         variant: 'destructive',
