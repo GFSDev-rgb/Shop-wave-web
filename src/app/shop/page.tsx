@@ -97,7 +97,7 @@ export default function ShopPage() {
             tempProducts.sort((a, b) => a.price - b.price);
             break;
         case "price-desc":
-            tempProducts.sort((a, b) => b.price - a.price);
+            tempProducts.sort((a, b) => b.price - b.price);
             break;
         case "rating-desc":
             tempProducts.sort((a, b) => b.rating - a.rating);
@@ -213,6 +213,19 @@ export default function ShopPage() {
                         </SheetContent>
                     </Sheet>
 
+                    <Select value={sortOption} onValueChange={handleSortChange}>
+                        <SelectTrigger className="w-[180px] bg-secondary">
+                            <ArrowUpDown className="h-4 w-4 mr-2" />
+                            <SelectValue placeholder="Sort by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="newest">Newest</SelectItem>
+                            <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                            <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                            <SelectItem value="rating-desc">Top Rated</SelectItem>
+                        </SelectContent>
+                    </Select>
+
                     {isAdmin && (
                         <Sheet open={isAddSheetOpen} onOpenChange={setAddSheetOpen}>
                             <SheetTrigger asChild>
@@ -244,21 +257,9 @@ export default function ShopPage() {
                         />
                     </div>
                     
-                    <div className="flex items-center gap-4">
-                        <p className="hidden sm:block text-sm text-muted-foreground">{filteredProducts.length} Products</p>
+                    <div className="hidden sm:flex items-center gap-4">
+                        <p className="text-sm text-muted-foreground">{filteredProducts.length} Products</p>
                         {isPending && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
-                        <Select value={sortOption} onValueChange={handleSortChange}>
-                            <SelectTrigger className="w-[180px] bg-secondary">
-                                <ArrowUpDown className="h-4 w-4 mr-2" />
-                                <SelectValue placeholder="Sort by" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="newest">Newest</SelectItem>
-                                <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                                <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                                <SelectItem value="rating-desc">Top Rated</SelectItem>
-                            </SelectContent>
-                        </Select>
                     </div>
                 </div>
             </div>
@@ -318,3 +319,4 @@ export default function ShopPage() {
     </div>
   );
 }
+
