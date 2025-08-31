@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Filter, ArrowUpDown, PlusCircle, Loader2, Search } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
@@ -169,7 +169,7 @@ export default function ShopPage() {
   const renderContent = () => {
     if (isLoading) {
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8 lg:col-span-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8">
             {Array.from({ length: 10 }).map((_, i) => (
                 <div key={i} className="flex flex-col space-y-3">
                     <Skeleton className="h-[400px] w-full rounded-lg" />
@@ -180,12 +180,12 @@ export default function ShopPage() {
     }
     
     return (
-        <main className="lg:col-span-4">
+        <main>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Sheet>
                         <SheetTrigger asChild>
-                            <Button variant="outline" className="flex items-center gap-2 lg:hidden">
+                            <Button variant="outline" className="flex items-center gap-2">
                                 <Filter className="h-4 w-4" />
                                 <span>Filters</span>
                             </Button>
@@ -206,7 +206,9 @@ export default function ShopPage() {
                                 />
                             </div>
                             <div className="p-6 border-t">
-                                <Button variant="ghost" className="w-full" onClick={clearFilters}>Clear all filters</Button>
+                                <SheetClose asChild>
+                                    <Button variant="ghost" className="w-full" onClick={clearFilters}>Clear all filters</Button>
+                                </SheetClose>
                             </div>
                         </SheetContent>
                     </Sheet>
@@ -312,23 +314,7 @@ export default function ShopPage() {
         </p>
       </header>
       
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        <aside className="hidden lg:block lg:col-span-1">
-            <div className="sticky top-24">
-                <h2 className="font-headline text-2xl font-bold mb-4">Filters</h2>
-                 <Filters
-                    priceRange={priceRange}
-                    onPriceChange={handlePriceChange}
-                    selectedCategories={selectedCategories}
-                    onCategoryToggle={handleCategoryToggle}
-                />
-                 <Button variant="ghost" className="w-full mt-6" onClick={clearFilters}>Clear all filters</Button>
-            </div>
-        </aside>
-        {renderContent()}
-      </div>
+      {renderContent()}
     </div>
   );
 }
-
-    
