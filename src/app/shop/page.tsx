@@ -169,7 +169,7 @@ export default function ShopPage() {
   const renderContent = () => {
     if (isLoading) {
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
             {Array.from({ length: 10 }).map((_, i) => (
                 <div key={i} className="flex flex-col space-y-3">
                     <Skeleton className="h-[400px] w-full rounded-lg" />
@@ -265,7 +265,7 @@ export default function ShopPage() {
             </div>
 
             <div className={cn(
-                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8 transition-opacity duration-300",
+                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 transition-opacity duration-300",
                 isPending && "opacity-70"
             )}>
                  {renderedProducts.map((product, index) => {
@@ -293,7 +293,7 @@ export default function ShopPage() {
             
             {/* Loading indicator for infinite scroll */}
             {visibleCount < filteredProducts.length && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-8">
                      {Array.from({ length: 5 }).map((_, i) => (
                         <div key={`placeholder-${i}`} className="flex flex-col space-y-3">
                             <Skeleton className="h-[400px] w-full rounded-lg" />
@@ -319,5 +319,6 @@ export default function ShopPage() {
     </div>
   );
 }
+
 
 
