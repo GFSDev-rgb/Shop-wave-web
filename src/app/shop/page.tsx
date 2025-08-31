@@ -97,7 +97,7 @@ export default function ShopPage() {
             tempProducts.sort((a, b) => a.price - b.price);
             break;
         case "price-desc":
-            tempProducts.sort((a, b) => b.price - b.price);
+            tempProducts.sort((a, b) => b.price - a.price);
             break;
         case "rating-desc":
             tempProducts.sort((a, b) => b.rating - a.rating);
@@ -169,7 +169,7 @@ export default function ShopPage() {
   const renderContent = () => {
     if (isLoading) {
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
             {Array.from({ length: 10 }).map((_, i) => (
                 <div key={i} className="flex flex-col space-y-3">
                     <Skeleton className="h-[400px] w-full rounded-lg" />
@@ -182,10 +182,10 @@ export default function ShopPage() {
     return (
         <main>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-                <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="flex items-center gap-2 w-full">
                     <Sheet>
                         <SheetTrigger asChild>
-                            <Button variant="outline" className="flex items-center gap-2 w-1/2 sm:w-auto">
+                            <Button variant="outline" className="flex items-center gap-2 w-1/2">
                                 <Filter className="h-4 w-4" />
                                 <span>Filters</span>
                             </Button>
@@ -214,7 +214,7 @@ export default function ShopPage() {
                     </Sheet>
 
                     <Select value={sortOption} onValueChange={handleSortChange}>
-                        <SelectTrigger className="w-1/2 sm:w-[180px] bg-secondary">
+                        <SelectTrigger className="w-1/2 bg-secondary">
                             <ArrowUpDown className="h-4 w-4 mr-2" />
                             <SelectValue placeholder="Sort by" />
                         </SelectTrigger>
@@ -225,24 +225,6 @@ export default function ShopPage() {
                             <SelectItem value="rating-desc">Top Rated</SelectItem>
                         </SelectContent>
                     </Select>
-
-                    {isAdmin && (
-                        <Sheet open={isAddSheetOpen} onOpenChange={setAddSheetOpen}>
-                            <SheetTrigger asChild>
-                                <Button>
-                                    <PlusCircle className="mr-2 h-4 w-4"/>
-                                    Add Product
-                                </Button>
-                            </SheetTrigger>
-                            <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l p-6 w-full max-w-md overflow-y-auto">
-                                <SheetHeader>
-                                    <SheetTitle>Add a New Product</SheetTitle>
-                                    <SheetDescription>Fill in the details below to add a new product to the store.</SheetDescription>
-                                </SheetHeader>
-                                <ProductForm onFinished={() => setAddSheetOpen(false)} />
-                            </SheetContent>
-                        </Sheet>
-                    )}
                 </div>
 
                 <div className="flex w-full sm:w-auto sm:flex-1 justify-start sm:justify-end items-center gap-4">
@@ -256,6 +238,23 @@ export default function ShopPage() {
                             className="pl-9 bg-secondary w-full"
                         />
                     </div>
+                     {isAdmin && (
+                        <Sheet open={isAddSheetOpen} onOpenChange={setAddSheetOpen}>
+                            <SheetTrigger asChild>
+                                <Button className="hidden sm:inline-flex">
+                                    <PlusCircle className="mr-2 h-4 w-4"/>
+                                    Add Product
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l p-6 w-full max-w-md overflow-y-auto">
+                                <SheetHeader>
+                                    <SheetTitle>Add a New Product</SheetTitle>
+                                    <SheetDescription>Fill in the details below to add a new product to the store.</SheetDescription>
+                                </SheetHeader>
+                                <ProductForm onFinished={() => setAddSheetOpen(false)} />
+                            </SheetContent>
+                        </Sheet>
+                    )}
                     
                     <div className="hidden sm:flex items-center gap-4">
                         <p className="text-sm text-muted-foreground">{filteredProducts.length} Products</p>
@@ -265,7 +264,7 @@ export default function ShopPage() {
             </div>
 
             <div className={cn(
-                "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 transition-opacity duration-300",
+                "grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 transition-opacity duration-300",
                 isPending && "opacity-70"
             )}>
                  {renderedProducts.map((product, index) => {
@@ -293,7 +292,7 @@ export default function ShopPage() {
             
             {/* Loading indicator for infinite scroll */}
             {visibleCount < filteredProducts.length && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-8">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-8">
                      {Array.from({ length: 5 }).map((_, i) => (
                         <div key={`placeholder-${i}`} className="flex flex-col space-y-3">
                             <Skeleton className="h-[400px] w-full rounded-lg" />
@@ -319,6 +318,7 @@ export default function ShopPage() {
     </div>
   );
 }
+
 
 
 
