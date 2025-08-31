@@ -232,7 +232,7 @@ export default function ShopPage() {
                     )}
                 </div>
 
-                <div className="flex w-full sm:w-auto sm:flex-1 justify-end items-center gap-4">
+                <div className="flex w-full sm:w-auto sm:flex-1 justify-start sm:justify-end items-center gap-4">
                     <div className="relative w-full sm:max-w-xs">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -244,8 +244,8 @@ export default function ShopPage() {
                         />
                     </div>
                     
-                    <div className="hidden sm:flex items-center gap-4">
-                        <p className="text-sm text-muted-foreground">{filteredProducts.length} Products</p>
+                    <div className="flex items-center gap-4">
+                        <p className="hidden sm:block text-sm text-muted-foreground">{filteredProducts.length} Products</p>
                         {isPending && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
                         <Select value={sortOption} onValueChange={handleSortChange}>
                             <SelectTrigger className="w-[180px] bg-secondary">
