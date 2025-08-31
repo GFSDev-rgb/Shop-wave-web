@@ -3,8 +3,9 @@
 
 import Link from "next/link";
 import { Heart, ShoppingCart, Pencil, Trash2 } from "lucide-react";
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,13 +30,14 @@ import { useAuth } from "@/hooks/use-auth";
 import { useProducts } from "@/hooks/use-products";
 import ProductForm from "@/components/admin/product-form";
 import { PlantButton } from "./ui/plant-button";
+import { Badge } from "./ui/badge";
 
 interface ProductCardProps {
   product: Product;
   className?: string;
 }
 
-const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
+const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
   ({ product, className }, ref) => {
     const { addToCart, cartItems } = useCart();
     const { addToWishlist, isInWishlist, removeFromWishlist } = useWishlist();
@@ -128,14 +130,22 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
     }
 
     return (
-      <Link href={`/product/${localProduct.id}`} className="block group/card" ref={ref}>
-        <div className={cn("card-wrap", className)}>
-          <div className="card">
+      <div ref={ref} className={cn("product-card-container group/card", className)}>
+        <div className="product-card">
+          <Link href={`/product/${localProduct.id}`} className="block relative overflow-hidden rounded-t-lg">
+            <Image
+              src={localProduct.image}
+              alt={localProduct.name}
+              data-ai-hint="product photo"
+              width={400}
+              height={500}
+              className="product-card-image"
+            />
             {isAdmin ? (
               <div className="absolute top-2 right-2 z-20 flex gap-2" onClick={handleAdminAction}>
-                <Sheet open={isEditSheetOpen} onOpenChange={setEditSheetOpen}>
+                 <Sheet open={isEditSheetOpen} onOpenChange={setEditSheetOpen}>
                     <SheetTrigger asChild>
-                        <Button size="icon" variant="secondary" className="rounded-full h-9 w-9 bg-background/50 hover:bg-background z-20">
+                        <Button size="icon" variant="secondary" className="rounded-full h-9 w-9 bg-background/80 hover:bg-background z-20">
                             <Pencil className="h-4 w-4" />
                         </Button>
                     </SheetTrigger>
@@ -175,49 +185,49 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
               <Button
                 size="icon"
                 variant="secondary"
-                className="absolute top-3 right-3 rounded-full h-9 w-9 bg-black/30 backdrop-blur-sm hover:bg-black/50 z-20 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"
+                className="absolute top-3 right-3 rounded-full h-9 w-9 bg-black/30 backdrop-blur-sm hover:bg-black/50 text-white z-20 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"
                 onClick={handleWishlistToggle}
               >
-                <Heart className={cn("h-5 w-5", isInWishlist(localProduct.id) ? "text-red-500 fill-current" : "text-foreground/80")} />
+                <Heart className={cn("h-5 w-5", isInWishlist(localProduct.id) ? "text-red-500 fill-current" : "text-white/80")} />
               </Button>
             )}
-
-            <div
-              className="card-bg"
-              data-ai-hint="product photo"
-              style={{ backgroundImage: `url(${localProduct.image})` }}
-            />
-            <div className="card-info">
-              <p className="card-category text-sm text-muted-foreground mb-1">{localProduct.category}</p>
-              <h3 className="card-title">{localProduct.name}</h3>
-              <div className="flex justify-between items-center mt-2 mb-4">
-                <p className="card-price">Tk {localProduct.price.toFixed(2)}</p>
-                <div className="flex items-center gap-2">
-                    <PlantButton
-                        onClick={handleLikeToggle}
-                        isLiked={isLiked(localProduct.id)}
-                        disabled={likeLoading}
-                        className="scale-[0.6] -mr-4 -my-4"
-                    />
-                    <span className="text-sm text-white/80">
-                        {(localProduct.likeCount || 0).toLocaleString()}
-                    </span>
-                </div>
-              </div>
-              <div className="card-buttons">
-                  <Button onClick={handleCartAction} className="w-full">
-                    {isInCart ? 'View Cart' : (
-                      <>
-                        <ShoppingCart className="mr-2 h-4 w-4" />
-                        Add to Cart
-                      </>
-                    )}
-                  </Button>
+          </Link>
+          
+          <div className="p-4 flex flex-col flex-grow">
+            <Badge variant="secondary" className="self-start mb-2">{localProduct.category}</Badge>
+            <h3 className="font-headline text-xl font-bold flex-grow">
+              <Link href={`/product/${localProduct.id}`} className="hover:underline">
+                {localProduct.name}
+              </Link>
+            </h3>
+            <div className="flex justify-between items-center mt-4">
+              <p className="text-xl font-bold text-primary">Tk {localProduct.price.toFixed(2)}</p>
+              <div className="flex items-center gap-2">
+                  <PlantButton
+                      onClick={handleLikeToggle}
+                      isLiked={isLiked(localProduct.id)}
+                      disabled={likeLoading}
+                      className="scale-[0.6] -mr-4 -my-4"
+                  />
+                  <span className="text-sm text-muted-foreground">
+                      {(localProduct.likeCount || 0).toLocaleString()}
+                  </span>
               </div>
             </div>
           </div>
+          
+          <div className="p-4 pt-0">
+             <Button onClick={handleCartAction} className="w-full">
+              {isInCart ? 'View in Cart' : (
+                <>
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  Add to Cart
+                </>
+              )}
+            </Button>
+          </div>
         </div>
-      </Link>
+      </div>
     );
   }
 );
@@ -225,5 +235,3 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(
 ProductCard.displayName = "ProductCard";
 
 export default ProductCard;
-
-    
