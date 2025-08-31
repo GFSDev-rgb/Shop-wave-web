@@ -10,7 +10,7 @@ import { AuroraBackground } from '../ui/aurora-background';
 import { ReactLenis } from '@studio-freight/react-lenis';
 
 const noHeaderPaths = ['/login', '/signup', '/auth', '/welcome/start', '/welcome/setup'];
-const noFooterPaths = ['/login', '/signup', '/auth', '/welcome/start', '/welcome/setup', '/admin', '/profile/edit'];
+const noFooterPaths = ['/login', '/signup', '/auth', '/welcome/start', '/welcome/setup', '/admin', '/profile/edit', '/shop'];
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
