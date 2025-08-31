@@ -185,7 +185,7 @@ export default function ShopPage() {
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Sheet>
                         <SheetTrigger asChild>
-                            <Button variant="outline" className="flex items-center gap-2">
+                            <Button variant="outline" className="flex items-center gap-2 w-1/2 sm:w-auto">
                                 <Filter className="h-4 w-4" />
                                 <span>Filters</span>
                             </Button>
@@ -214,7 +214,7 @@ export default function ShopPage() {
                     </Sheet>
 
                     <Select value={sortOption} onValueChange={handleSortChange}>
-                        <SelectTrigger className="w-[180px] bg-secondary">
+                        <SelectTrigger className="w-1/2 sm:w-[180px] bg-secondary">
                             <ArrowUpDown className="h-4 w-4 mr-2" />
                             <SelectValue placeholder="Sort by" />
                         </SelectTrigger>
@@ -319,4 +319,5 @@ export default function ShopPage() {
     </div>
   );
 }
+
 
