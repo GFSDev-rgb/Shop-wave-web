@@ -132,7 +132,7 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
     return (
       <div ref={ref} className={cn("product-card-container group/card", className)}>
         <div className="product-card">
-          <Link href={`/product/${localProduct.id}`} className="block relative overflow-hidden rounded-t-lg">
+          <Link href={`/product/${localProduct.id}`} className="product-card-image-container">
             <Image
               src={localProduct.image}
               alt={localProduct.name}
@@ -141,6 +141,13 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
               height={500}
               className="product-card-image"
             />
+            <div className="product-card-overlay" />
+             <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
+                <h3 className="font-headline text-lg sm:text-base font-bold truncate">
+                    {localProduct.name}
+                </h3>
+                <p className="text-base sm:text-sm font-bold">Tk {localProduct.price.toFixed(2)}</p>
+            </div>
             {isAdmin ? (
               <div className="absolute top-2 right-2 z-20 flex gap-2" onClick={handleAdminAction}>
                  <Sheet open={isEditSheetOpen} onOpenChange={setEditSheetOpen}>
@@ -193,30 +200,7 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
             )}
           </Link>
           
-          <div className="p-4 flex flex-col flex-grow">
-            <Badge variant="secondary" className="self-start mb-2">{localProduct.category}</Badge>
-            <h3 className="font-headline text-xl font-bold flex-grow">
-              <Link href={`/product/${localProduct.id}`} className="hover:underline">
-                {localProduct.name}
-              </Link>
-            </h3>
-            <div className="flex justify-between items-center mt-4">
-              <p className="text-xl font-bold text-primary">Tk {localProduct.price.toFixed(2)}</p>
-              <div className="flex items-center gap-2">
-                  <PlantButton
-                      onClick={handleLikeToggle}
-                      isLiked={isLiked(localProduct.id)}
-                      disabled={likeLoading}
-                      className="scale-[0.6] -mr-4 -my-4"
-                  />
-                  <span className="text-sm text-muted-foreground">
-                      {(localProduct.likeCount || 0).toLocaleString()}
-                  </span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="p-4 pt-0">
+          <div className="p-3 pt-2 mt-auto">
              <Button onClick={handleCartAction} className="w-full">
               {isInCart ? 'View in Cart' : (
                 <>
