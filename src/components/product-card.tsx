@@ -141,7 +141,7 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
                 <p className="text-base sm:text-sm md:text-base font-bold text-primary mt-1">Tk {localProduct.price.toFixed(2)}</p>
             </div>
             
-            <Button onClick={handleCartAction} className="mt-2 w-full md:w-auto shrink-0" size="sm">
+            <Button onClick={handleCartAction} className="mt-2 w-full shrink-0" size="sm">
               {isInCart ? 'View in Cart' : (
                 <>
                   <ShoppingCart className="mr-2 h-4 w-4" />
