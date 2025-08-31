@@ -29,8 +29,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useProducts } from "@/hooks/use-products";
 import ProductForm from "@/components/admin/product-form";
-import { PlantButton } from "./ui/plant-button";
-import { Badge } from "./ui/badge";
 
 interface ProductCardProps {
   product: Product;
@@ -41,7 +39,6 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
   ({ product, className }, ref) => {
     const { addToCart, cartItems } = useCart();
     const { addToWishlist, isInWishlist, removeFromWishlist } = useWishlist();
-    const { isLiked, toggleLike, loading: likeLoading } = useLikes();
     const { toast } = useToast();
     const { isAdmin, user } = useAuth();
     const { deleteProduct } = useProducts();
@@ -87,15 +84,6 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
       }
     };
 
-    const handleLikeToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
-        handleAdminAction(e);
-        if (!user) {
-          showLoginToast();
-          return;
-        }
-        toggleLike(localProduct.id);
-    }
-
     const handleWishlistToggle = (e: React.MouseEvent) => {
       handleAdminAction(e);
       if (!user) {
@@ -132,7 +120,7 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
     return (
       <div ref={ref} className={cn("product-card-container group/card", className)}>
         <div className="product-card">
-          <Link href={`/product/${localProduct.id}`} className="product-card-image-container">
+          <Link href={`/product/${localProduct.id}`} className="product-card-image-link">
             <Image
               src={localProduct.image}
               alt={localProduct.name}
@@ -141,67 +129,19 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
               height={500}
               className="product-card-image"
             />
-            <div className="product-card-overlay" />
-             <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
-                <h3 className="font-headline text-lg sm:text-base font-bold truncate">
-                    {localProduct.name}
-                </h3>
-                <p className="text-base sm:text-sm font-bold">Tk {localProduct.price.toFixed(2)}</p>
-            </div>
-            {isAdmin ? (
-              <div className="absolute top-2 right-2 z-20 flex gap-2" onClick={handleAdminAction}>
-                 <Sheet open={isEditSheetOpen} onOpenChange={setEditSheetOpen}>
-                    <SheetTrigger asChild>
-                        <Button size="icon" variant="secondary" className="rounded-full h-9 w-9 bg-background/80 hover:bg-background z-20">
-                            <Pencil className="h-4 w-4" />
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l p-6 w-full max-w-md overflow-y-auto">
-                        <SheetHeader>
-                            <SheetTitle>Edit Product</SheetTitle>
-                            <SheetDescription>Update the details for "{localProduct.name}".</SheetDescription>
-                        </SheetHeader>
-                        <ProductForm 
-                            product={localProduct} 
-                            onFinished={() => setEditSheetOpen(false)} 
-                        />
-                    </SheetContent>
-                </Sheet>
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <Button size="icon" variant="destructive" className="rounded-full h-9 w-9 bg-destructive/80 hover:bg-destructive z-20">
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the product
-                            "{localProduct.name}".
-                        </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            ) : (
-              <Button
-                size="icon"
-                variant="secondary"
-                className="absolute top-3 right-3 rounded-full h-9 w-9 bg-black/30 backdrop-blur-sm hover:bg-black/50 text-white z-20 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"
-                onClick={handleWishlistToggle}
-              >
-                <Heart className={cn("h-5 w-5", isInWishlist(localProduct.id) ? "text-red-500 fill-current" : "text-white/80")} />
-              </Button>
-            )}
           </Link>
-          
-          <div className="p-3 pt-2 mt-auto">
-             <Button onClick={handleCartAction} className="w-full">
+          <div className="product-card-content">
+            <div className="product-card-details">
+                <Link href={`/product/${localProduct.id}`} className="hover:underline">
+                    <h3 className="font-headline text-lg sm:text-base md:text-lg font-bold truncate">
+                        {localProduct.name}
+                    </h3>
+                </Link>
+                <p className="text-sm text-muted-foreground">{localProduct.category}</p>
+                <p className="text-base sm:text-sm md:text-base font-bold text-primary mt-1">Tk {localProduct.price.toFixed(2)}</p>
+            </div>
+            
+            <Button onClick={handleCartAction} className="mt-2 w-full md:w-auto shrink-0" size="sm">
               {isInCart ? 'View in Cart' : (
                 <>
                   <ShoppingCart className="mr-2 h-4 w-4" />
@@ -210,6 +150,57 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
               )}
             </Button>
           </div>
+          
+          {isAdmin ? (
+            <div className="absolute top-2 right-2 z-20 flex gap-2" onClick={handleAdminAction}>
+               <Sheet open={isEditSheetOpen} onOpenChange={setEditSheetOpen}>
+                  <SheetTrigger asChild>
+                      <Button size="icon" variant="secondary" className="rounded-full h-8 w-8 bg-background/80 hover:bg-background z-20">
+                          <Pencil className="h-4 w-4" />
+                      </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="bg-background/80 backdrop-blur-sm border-l p-6 w-full max-w-md overflow-y-auto">
+                      <SheetHeader>
+                          <SheetTitle>Edit Product</SheetTitle>
+                          <SheetDescription>Update the details for "{localProduct.name}".</SheetDescription>
+                      </SheetHeader>
+                      <ProductForm 
+                          product={localProduct} 
+                          onFinished={() => setEditSheetOpen(false)} 
+                      />
+                  </SheetContent>
+              </Sheet>
+              <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                      <Button size="icon" variant="destructive" className="rounded-full h-8 w-8 bg-destructive/80 hover:bg-destructive z-20">
+                          <Trash2 className="h-4 w-4" />
+                      </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                      <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete the product
+                          "{localProduct.name}".
+                      </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                  </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          ) : (
+            <Button
+              size="icon"
+              variant="secondary"
+              className="absolute top-2 right-2 rounded-full h-8 w-8 bg-black/20 backdrop-blur-sm hover:bg-black/40 text-white z-20"
+              onClick={handleWishlistToggle}
+            >
+              <Heart className={cn("h-4 w-4", isInWishlist(localProduct.id) ? "text-red-500 fill-current" : "text-white/80")} />
+            </Button>
+          )}
         </div>
       </div>
     );
