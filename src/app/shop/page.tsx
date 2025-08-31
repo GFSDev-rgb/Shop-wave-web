@@ -97,7 +97,7 @@ export default function ShopPage() {
             tempProducts.sort((a, b) => a.price - b.price);
             break;
         case "price-desc":
-            tempProducts.sort((a, b) => b.price - b.price);
+            tempProducts.sort((a, b) => b.price - a.price);
             break;
         case "rating-desc":
             tempProducts.sort((a, b) => b.rating - a.rating);
@@ -172,7 +172,7 @@ export default function ShopPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
             {Array.from({ length: 10 }).map((_, i) => (
                 <div key={i} className="flex flex-col space-y-3">
-                    <Skeleton className="h-32 md:h-[400px] w-full rounded-lg" />
+                    <Skeleton className="h-[400px] w-full rounded-lg" />
                 </div>
             ))}
         </div>
@@ -182,7 +182,7 @@ export default function ShopPage() {
     return (
         <main>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-                <div className="flex items-center gap-2 w-full">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button variant="outline" className="flex items-center gap-2 w-1/2">
@@ -227,7 +227,7 @@ export default function ShopPage() {
                     </Select>
                 </div>
 
-                <div className="flex w-full sm:w-auto sm:flex-1 justify-start sm:justify-end items-center gap-4">
+                <div className="flex w-full sm:flex-1 justify-start sm:justify-end items-center gap-4">
                     <div className="relative w-full sm:max-w-xs">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -235,7 +235,7 @@ export default function ShopPage() {
                             placeholder="Search products..."
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            className="pl-9 bg-secondary w-full"
+                            className="pl-9 w-full"
                         />
                     </div>
                      {isAdmin && (
@@ -264,7 +264,7 @@ export default function ShopPage() {
             </div>
 
             <div className={cn(
-                "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 transition-opacity duration-300",
+                "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 transition-opacity duration-300",
                 isPending && "opacity-70"
             )}>
                  {renderedProducts.map((product, index) => {
@@ -292,10 +292,10 @@ export default function ShopPage() {
             
             {/* Loading indicator for infinite scroll */}
             {visibleCount < filteredProducts.length && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-8">
                      {Array.from({ length: 5 }).map((_, i) => (
                         <div key={`placeholder-${i}`} className="flex flex-col space-y-3">
-                            <Skeleton className="h-32 md:h-[400px] w-full rounded-lg" />
+                            <Skeleton className="h-[400px] w-full rounded-lg" />
                         </div>
                     ))}
                 </div>
@@ -318,8 +318,3 @@ export default function ShopPage() {
     </div>
   );
 }
-
-
-
-
-
